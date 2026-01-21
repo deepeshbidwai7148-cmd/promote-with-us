@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promote With Us | From Offline to Online</title>
+    <meta name="description" content="Transform your business from offline to online with Promote With Us. We build stunning websites, web apps, and digital solutions that drive growth.">
+    <meta name="author" content="Promote With Us">
+    
+    <!-- Load Enhanced CSS FIRST -->
+    <link rel="stylesheet" href="css/enhanced.css">
+    <link rel="stylesheet" crossorigin="" href="css/index-Dn9nLpvq.css">
+    
+    <!-- Three.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <style>
+        /* Navigation Styling */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg,#0db8a1 0%, #164069 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(32, 197, 181, 0.3);
+            z-index: 1000;
+            padding: 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        nav .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .logo img {
+            
+        }
+
+        @keyframes logoFloat {
+            0%, 100% {
+                transform: translateY(0px) rotateZ(-2deg);
+            }
+            50% {
+                transform: translateY(-8px) rotateZ(2deg);
+            }
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #fff;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        #root {
+            padding-top: 70px;
+        }
+
+        /* Staggered animations for feature cards */
+        .card:nth-child(1) {
+            animation: slideInUp 0.6s ease-out 0.1s both !important;
+        }
+        .card:nth-child(2) {
+            animation: slideInUp 0.6s ease-out 0.2s both !important;
+        }
+        .card:nth-child(3) {
+            animation: slideInUp 0.6s ease-out 0.3s both !important;
+        }
+        .card:nth-child(4) {
+            animation: slideInUp 0.6s ease-out 0.4s both !important;
+        }
+        .card:nth-child(5) {
+            animation: slideInUp 0.6s ease-out 0.5s both !important;
+        }
+        .card:nth-child(6) {
+            animation: slideInUp 0.6s ease-out 0.6s both !important;
+        }
+
+        /* Icon hover animation */
+        .card:hover > div:first-child {
+            animation: rotate360 0.6s ease-out;
+        }
+
+        /* Enhanced button styling */
+        .btn-primary {
+            background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%) !important;
+            color: white !important;
+            border: none !important;
+            box-shadow: 0 8px 20px rgba(32, 197, 181, 0.2) !important;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 15px 40px rgba(32, 197, 181, 0.4) !important;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #164069 0%, #1a5a8a 100%) !important;
+            color: white !important;
+            border: none !important;
+            box-shadow: 0 8px 20px rgba(22, 64, 105, 0.15) !important;
+        }
+
+        /* Staggered animations for glass cards */
+        .glass-card:nth-child(1) {
+            animation: slideInLeft 0.6s ease-out 0.1s both !important;
+        }
+        .glass-card:nth-child(2) {
+            animation: slideInUp 0.6s ease-out 0.2s both !important;
+        }
+        .glass-card:nth-child(3) {
+            animation: slideInRight 0.6s ease-out 0.3s both !important;
+        }
+        /* Staggered animations for pricing cards */
+        section#plans .glass-card:nth-child(1) {
+            animation: slideInUp 0.6s ease-out 0.1s both !important;
+        }
+        section#plans .glass-card:nth-child(2) {
+            animation: scaleIn 0.6s ease-out 0.2s both !important;
+        }
+        section#plans .glass-card:nth-child(3) {
+            animation: slideInUp 0.6s ease-out 0.3s both !important;
+        }
+
+        /* Impressive hero animations */
+        @keyframes morphShapeLeft {
+            0% { transform: translateX(-100px) rotateZ(-45deg) scale(0.8); opacity: 0; }
+            50% { transform: translateX(0) rotateZ(-45deg) scale(1); }
+            100% { transform: translateX(100px) rotateZ(-45deg) scale(0.8); opacity: 0; }
+        }
+
+        @keyframes morphShapeRight {
+            0% { transform: translateX(100px) rotateZ(45deg) scale(0.8); opacity: 0; }
+            50% { transform: translateX(0) rotateZ(45deg) scale(1); }
+            100% { transform: translateX(-100px) rotateZ(45deg) scale(0.8); opacity: 0; }
+        }
+
+        @keyframes textGlitch {
+            0%, 100% { text-shadow: -2px 0 #20c5b5, 2px 0 #164069; }
+            50% { text-shadow: 2px 0 #20c5b5, -2px 0 #164069; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) translateX(20px) scale(0); opacity: 0; }
+        }
+
+        .hero-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #20c5b5;
+            border-radius: 50%;
+            animation: particleFloat 2s ease-out forwards;
+        }
+
+        .hero-shape {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 2px solid #20c5b5;
+            opacity: 0.3;
+        }
+
+        .shape-1 { animation: morphShapeLeft 4s ease-in-out infinite; top: 20%; left: 10%; }
+        .shape-2 { animation: morphShapeRight 5s ease-in-out infinite; top: 60%; right: 15%; }
+
+        /* New Impressive Animations */
+        @keyframes liquidWave {
+            0%, 100% { d: path('M0,100 Q50,50 100,100'); }
+            50% { d: path('M0,100 Q50,150 100,100'); }
+        }
+
+        @keyframes orbitCircle {
+            from { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+        }
+
+        @keyframes blinkGlow {
+            0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 5px #20c5b5); }
+            50% { opacity: 1; filter: drop-shadow(0 0 20px #20c5b5); }
+        }
+
+        @keyframes floatUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(-100px);
+            }
+        }
+
+        @keyframes textReveal {
+            0% { 
+                background-position: 200% center;
+            }
+            100% { 
+                background-position: -200% center;
+            }
+        }
+
+        .animated-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .orbit-element {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #20c5b5;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .hero-text-animated {
+            background: linear-gradient(90deg, #164069, #20c5b5, #0db8a1, #164069);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textReveal 6s linear infinite;
+        }
+
+        @keyframes boxPulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(32, 197, 181, 0.3);
+                border-color: rgba(32, 197, 181, 0.2);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(32, 197, 181, 0.5);
+                border-color: rgba(32, 197, 181, 0.4);
+            }
+        }
+
+        @keyframes barGrow1 {
+            0%, 100% { height: 100px; y: 150px; }
+            50% { height: 140px; y: 110px; }
+        }
+
+        @keyframes barGrow2 {
+            0%, 100% { height: 150px; y: 100px; }
+            50% { height: 180px; y: 70px; }
+        }
+
+        @keyframes barGrow3 {
+            0%, 100% { height: 170px; y: 80px; }
+            50% { height: 200px; y: 50px; }
+        }
+
+        @keyframes barGrow4 {
+            0%, 100% { height: 130px; y: 120px; }
+            50% { height: 160px; y: 90px; }
+        }
+
+        @keyframes barGrow5 {
+            0%, 100% { height: 160px; y: 90px; }
+            50% { height: 190px; y: 60px; }
+        }
+
+        @keyframes lineShift {
+            0%, 100% { stroke-dashoffset: 0; opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes dotFloat1 {
+            0%, 100% { cy: 200px; }
+            50% { cy: 180px; }
+        }
+
+        @keyframes dotFloat2 {
+            0%, 100% { cy: 130px; }
+            50% { cy: 110px; }
+        }
+
+        @keyframes dotFloat3 {
+            0%, 100% { cy: 110px; }
+            50% { cy: 90px; }
+        }
+
+        @keyframes dotFloat4 {
+            0%, 100% { cy: 150px; }
+            50% { cy: 130px; }
+        }
+
+        @keyframes dotFloat5 {
+            0%, 100% { cy: 80px; }
+            50% { cy: 60px; }
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                opacity: 0;
+                transform: translateY(0px);
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px);
+            }
+        }
+
+        @keyframes expandWidth {
+            0%, 100% { width: 20px; }
+            50% { width: 40px; }
+        }
+
+        @keyframes nowPulse {
+            0%, 100% { 
+                transform: scale(1);
+                text-shadow: 0 0 10px rgba(255,255,255,0.8);
+                color: #fff;
+            }
+            50% { 
+                transform: scale(1.15);
+                text-shadow: 0 0 25px rgba(255,255,255,1), 0 0 40px rgba(32, 197, 181, 0.8);
+                color: #fff;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <img src="images/logo.png" alt="Promote With Us Logo" style="height: auto; width: 200px; object-fit: contain;">
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#plans">Plans</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="root">
+      <!-- Hero Section with Canvas & SVG Animations -->
+      <section id="home" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: linear-gradient(135deg, #0a0e27 0%, #1a2847 100%);">
+        
+        <!-- Canvas Background for Particle Animation -->
+        <canvas id="canvas-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+
+        <!-- SVG Orbital Elements -->
+        <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+          <!-- Orbital Paths -->
+          <circle cx="500" cy="500" r="200" fill="none" stroke="rgba(32, 197, 181, 0.1)" stroke-width="1"/>
+          <circle cx="500" cy="500" r="300" fill="none" stroke="rgba(32, 197, 181, 0.05)" stroke-width="1"/>
+          
+          <!-- Orbiting Particles -->
+          <g style="animation: orbitCircle 20s linear infinite;">
+            <circle cx="700" cy="500" r="8" fill="#20c5b5" opacity="0.8"/>
+          </g>
+          <g style="animation: orbitCircle 25s linear infinite; animation-direction: reverse;">
+            <circle cx="300" cy="500" r="8" fill="#20c5b5" opacity="0.6"/>
+          </g>
+          <g style="animation: orbitCircle 30s linear infinite;">
+            <circle cx="500" cy="300" r="8" fill="#20c5b5" opacity="0.7"/>
+          </g>
+
+          <!-- Pulsing Rings -->
+          <circle cx="500" cy="500" r="100" fill="none" stroke="rgba(32, 197, 181, 0.3)" stroke-width="2" opacity="0.5" style="animation: pulse 2s ease-out infinite;"/>
+          <circle cx="500" cy="500" r="100" fill="none" stroke="rgba(32, 197, 181, 0.3)" stroke-width="2" opacity="0.5" style="animation: pulse 2s ease-out infinite; animation-delay: 0.5s;"/>
+          <circle cx="500" cy="500" r="100" fill="none" stroke="rgba(32, 197, 181, 0.3)" stroke-width="2" opacity="0.5" style="animation: pulse 2s ease-out infinite; animation-delay: 1s;"/>
+        </svg>
+
+        <!-- Main Content Container -->
+        <div style="position: relative; z-index: 10; text-align: center; max-width: 1000px; padding: 40px; width: 100%;">
+          
+          <!-- Intro Label -->
+          <div style="animation: slideInDown 0.8s ease-out; margin-bottom: 30px;">
+            <span style="color: #20c5b5; font-weight: 700; font-size: 14px; letter-spacing: 3px; text-transform: uppercase;">Next Generation Web Solutions</span>
+          </div>
+
+          <!-- Main Heading with Gradient Animation -->
+          <h1 style="font-size: 72px; font-weight: 900; line-height: 1.1; margin-bottom: 25px; animation: slideInDown 0.8s ease-out 0.1s both;">
+            <span class="hero-text-animated">Transform Your Business</span>
+          </h1>
+
+          <!-- Subheading -->
+          <p style="font-size: 24px; color: #20c5b5; margin-bottom: 20px; animation: slideInUp 0.8s ease-out 0.2s both; font-weight: 600; letter-spacing: 1px;">
+            From Offline to Online Excellence
+          </p>
+
+          <!-- Separator Line -->
+          <div style="width: 120px; height: 3px; background: linear-gradient(90deg, transparent, #20c5b5, transparent); margin: 30px auto; animation: slideInUp 0.8s ease-out 0.3s both;"></div>
+
+          <!-- Description -->
+          <p style="font-size: 18px; color: #bbb; max-width: 700px; margin: 30px auto 50px; line-height: 1.8; animation: slideInUp 0.8s ease-out 0.4s both;">
+            Cutting-edge digital solutions that captivate your audience, maximize engagement, and propel your business to extraordinary success.
+          </p>
+
+          <!-- Interactive 3D Preview with Rotating Elements -->
+          <div id="interactive-hero" style="width: 100%; max-width: 600px; height: 300px; margin: 40px auto; background: rgba(32, 197, 181, 0.05); border: 2px solid rgba(32, 197, 181, 0.2); border-radius: 20px; position: relative; overflow: hidden; animation: scaleIn 0.8s ease-out 0.5s both, boxPulse 3s ease-in-out infinite; cursor: pointer; transition: all 0.3s ease;">
+            
+            <!-- Animated Visualization Chart -->
+            <svg style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice">
+              <!-- Background Grid -->
+              <defs>
+                <linearGradient id="barGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#20c5b5;stop-opacity:0.8" />
+                  <stop offset="100%" style="stop-color:#0db8a1;stop-opacity:0.3" />
+                </linearGradient>
+                <linearGradient id="barGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#164069;stop-opacity:0.8" />
+                  <stop offset="100%" style="stop-color:#20c5b5;stop-opacity:0.3" />
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              
+              <!-- Animated Grid Lines -->
+              <line x1="0" y1="75" x2="600" y2="75" stroke="rgba(32,197,181,0.1)" stroke-width="1"/>
+              <line x1="0" y1="150" x2="600" y2="150" stroke="rgba(32,197,181,0.1)" stroke-width="1"/>
+              <line x1="0" y1="225" x2="600" y2="225" stroke="rgba(32,197,181,0.1)" stroke-width="1"/>
+
+              <!-- Animated Bars -->
+              <rect x="80" y="150" width="40" height="100" fill="url(#barGradient1)" rx="5" style="animation: barGrow1 2.5s ease-in-out infinite;"/>
+              <rect x="170" y="100" width="40" height="150" fill="url(#barGradient2)" rx="5" style="animation: barGrow2 2.8s ease-in-out infinite; animation-delay: 0.2s;"/>
+              <rect x="260" y="80" width="40" height="170" fill="url(#barGradient1)" rx="5" style="animation: barGrow3 3s ease-in-out infinite; animation-delay: 0.4s;"/>
+              <rect x="350" y="120" width="40" height="130" fill="url(#barGradient2)" rx="5" style="animation: barGrow4 2.6s ease-in-out infinite; animation-delay: 0.6s;"/>
+              <rect x="440" y="90" width="40" height="160" fill="url(#barGradient1)" rx="5" style="animation: barGrow5 2.9s ease-in-out infinite; animation-delay: 0.8s;"/>
+
+              <!-- Animated Top Line -->
+              <polyline points="100,200 190,130 280,110 360,150 460,80" fill="none" stroke="#20c5b5" stroke-width="2" stroke-linecap="round" style="animation: lineShift 4s ease-in-out infinite; filter: url(#glow);" opacity="0.7"/>
+
+              <!-- Animated Dots on Line -->
+              <circle cx="100" cy="200" r="5" fill="#20c5b5" style="animation: dotFloat1 2.5s ease-in-out infinite;"/>
+              <circle cx="190" cy="130" r="5" fill="#0db8a1" style="animation: dotFloat2 2.8s ease-in-out infinite; animation-delay: 0.2s;"/>
+              <circle cx="280" cy="110" r="5" fill="#20c5b5" style="animation: dotFloat3 3s ease-in-out infinite; animation-delay: 0.4s;"/>
+              <circle cx="360" cy="150" r="5" fill="#0db8a1" style="animation: dotFloat4 2.6s ease-in-out infinite; animation-delay: 0.6s;"/>
+              <circle cx="460" cy="80" r="5" fill="#20c5b5" style="animation: dotFloat5 2.9s ease-in-out infinite; animation-delay: 0.8s;"/>
+
+              <!-- Floating Particles -->
+              <circle cx="150" cy="50" r="3" fill="#20c5b5" opacity="0.4" style="animation: particleFloat 4s ease-in infinite;"/>
+              <circle cx="350" cy="250" r="3" fill="#20c5b5" opacity="0.3" style="animation: particleFloat 3.5s ease-in infinite; animation-delay: 0.5s;"/>
+              <circle cx="500" cy="100" r="3" fill="#0db8a1" opacity="0.4" style="animation: particleFloat 4.5s ease-in infinite; animation-delay: 1s;"/>
+
+              <!-- Corner Accents -->
+              <rect x="10" y="10" width="30" height="2" fill="#20c5b5" opacity="0.5" style="animation: expandWidth 3s ease-in-out infinite;"/>
+              <rect x="560" y="280" width="30" height="2" fill="#20c5b5" opacity="0.5" style="animation: expandWidth 3s ease-in-out infinite; animation-delay: 1.5s;"/>
+            </svg>
+          </div>
+
+          <!-- Call to Action Buttons -->
+          <div style="margin-top: 50px; display: flex; gap: 25px; justify-content: center; flex-wrap: wrap; animation: slideInUp 0.8s ease-out 0.6s both;">
+            <button style="padding: 16px 45px; font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); color: white; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; letter-spacing: 1px; text-transform: uppercase;" 
+              onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 30px 70px rgba(32, 197, 181, 0.5)';" 
+              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(32, 197, 181, 0.2)';">
+              Start <span style="display: inline-block; animation: nowPulse 1s ease-in-out infinite; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.8);">Now</span> →
+            </button>
+            <button style="padding: 16px 45px; font-size: 16px; font-weight: 700; background: transparent; color: #20c5b5; border: 2px solid #20c5b5; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; text-transform: uppercase;"
+              onmouseover="this.style.background='rgba(32, 197, 181, 0.1)'; this.style.boxShadow='0 0 30px rgba(32, 197, 181, 0.3)';" 
+              onmouseout="this.style.background='transparent'; this.style.boxShadow='none';">
+              Learn More
+            </button>
+          </div>
+
+          <!-- Statistics Section -->
+          <div style="margin-top: 70px; display: flex; gap: 80px; justify-content: center; flex-wrap: wrap; animation: slideInUp 0.8s ease-out 0.7s both;">
+            <div style="text-align: center;">
+              <div style="font-size: 36px; font-weight: 800; color: #20c5b5; margin-bottom: 8px;">500+</div>
+              <div style="font-size: 13px; color: #999; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Projects Delivered</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 36px; font-weight: 800; color: #20c5b5; margin-bottom: 8px;">98%</div>
+              <div style="font-size: 13px; color: #999; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Client Satisfaction</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 36px; font-weight: 800; color: #20c5b5; margin-bottom: 8px;">24/7</div>
+              <div style="font-size: 13px; color: #999; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Expert Support</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- JavaScript for Advanced Animations -->
+        <script>
+          // Canvas Particle System
+          const canvas = document.getElementById('canvas-bg');
+          const ctx = canvas.getContext('2d');
+          let animationId;
+
+          function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+          }
+
+          resizeCanvas();
+          window.addEventListener('resize', resizeCanvas);
+
+          const particles = [];
+          
+          class Particle {
+            constructor() {
+              this.x = Math.random() * canvas.width;
+              this.y = Math.random() * canvas.height;
+              this.vx = (Math.random() - 0.5) * 0.5;
+              this.vy = (Math.random() - 0.5) * 0.5;
+              this.size = Math.random() * 2;
+              this.opacity = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+              this.x += this.vx;
+              this.y += this.vy;
+
+              if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+              if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+              this.opacity += (Math.random() - 0.5) * 0.02;
+              this.opacity = Math.max(0.1, Math.min(0.6, this.opacity));
+            }
+
+            draw(ctx) {
+              ctx.fillStyle = `rgba(32, 197, 181, ${this.opacity})`;
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+
+          // Initialize particles
+          for (let i = 0; i < 50; i++) {
+            particles.push(new Particle());
+          }
+
+          function animate() {
+            ctx.fillStyle = 'rgba(10, 14, 39, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(particle => {
+              particle.update();
+              particle.draw(ctx);
+            });
+
+            // Draw connections between nearby particles
+            for (let i = 0; i < particles.length; i++) {
+              for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 150) {
+                  ctx.strokeStyle = `rgba(32, 197, 181, ${0.1 * (1 - distance / 150)})`;
+                  ctx.lineWidth = 1;
+                  ctx.beginPath();
+                  ctx.moveTo(particles[i].x, particles[i].y);
+                  ctx.lineTo(particles[j].x, particles[j].y);
+                  ctx.stroke();
+                }
+              }
+            }
+
+            animationId = requestAnimationFrame(animate);
+          }
+
+          animate();
+
+          // Interactive 3D effect - REMOVED
+          // Instead: Add dynamic glow effect
+          const heroBox = document.getElementById('interactive-hero');
+          
+          // Create floating glow effect
+          document.addEventListener('mousemove', (e) => {
+            const rect = heroBox.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Calculate if mouse is near the box
+            if (x > 0 && x < rect.width && y > 0 && y < rect.height) {
+              heroBox.style.boxShadow = `0 0 50px rgba(32, 197, 181, 0.8), inset 0 0 30px rgba(32, 197, 181, 0.1)`;
+              heroBox.style.borderColor = 'rgba(32, 197, 181, 0.6)';
+            } else {
+              heroBox.style.boxShadow = 'none';
+              heroBox.style.borderColor = 'rgba(32, 197, 181, 0.2)';
+            }
+          });
+
+          // Add pulse animation to the box
+          heroBox.style.animation = 'boxPulse 3s ease-in-out infinite';
+          
+          // Add click effect with particles
+          heroBox.addEventListener('click', (e) => {
+            const rect = heroBox.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            for (let i = 0; i < 8; i++) {
+              const particle = document.createElement('div');
+              particle.style.position = 'absolute';
+              particle.style.width = '4px';
+              particle.style.height = '4px';
+              particle.style.background = '#20c5b5';
+              particle.style.borderRadius = '50%';
+              particle.style.pointerEvents = 'none';
+              particle.style.left = x + 'px';
+              particle.style.top = y + 'px';
+              particle.style.zIndex = '100';
+              
+              const angle = (i / 8) * Math.PI * 2;
+              const velocity = {
+                x: Math.cos(angle) * 3,
+                y: Math.sin(angle) * 3
+              };
+              
+              heroBox.appendChild(particle);
+              
+              let life = 1;
+              const interval = setInterval(() => {
+                life -= 0.05;
+                x += velocity.x;
+                y += velocity.y;
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.opacity = life;
+                
+                if (life <= 0) {
+                  clearInterval(interval);
+                  particle.remove();
+                }
+              }, 30);
+            }
+          });
+
+          // Pulse animation keyframes
+          const style = document.createElement('style');
+          style.textContent = `
+            @keyframes pulse {
+              0% { r: 100; opacity: 0.5; }
+              100% { r: 200; opacity: 0; }
+            }
+          `;
+          document.head.appendChild(style);
+        </script>
+      </section>
+
+      <!-- Features Section -->
+      <section style="background: white; position: relative; overflow: hidden;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
+          <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 42px; margin-bottom: 15px; color: #164069; animation: slideInDown 0.8s ease-out;">Why Choose Us</h2>
+            <div style="width: 60px; height: 4px; background: linear-gradient(135deg, #164069, #20c5b5); margin: 15px auto; border-radius: 2px; animation: slideInUp 0.8s ease-out 0.1s both;"></div>
+            <p style="font-size: 18px; color: #666; max-width: 600px; margin: 20px auto 0; animation: slideInUp 0.8s ease-out 0.2s both;">Experience cutting-edge web development with stunning design and powerful functionality</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+            <div class="card fade-in" data-animate style="border-left: 4px solid #20c5b5;">
+              <div style="font-size: 48px; margin-bottom: 15px;">🎨</div>
+              <h3 style="color: #164069; margin-bottom: 10px;">Beautiful Design</h3>
+              <p style="color: #666;">Modern, responsive designs that captivate your audience and drive engagement</p>
+            </div>
+
+            <div class="card fade-in" data-animate style="border-left: 4px solid #20c5b5;">
+              <div style="font-size: 48px; margin-bottom: 15px;">⚡</div>
+              <h3 style="color: #164069; margin-bottom: 10px;">Lightning Fast</h3>
+              <p style="color: #666;">Optimized performance with blazing-fast load times and smooth interactions</p>
+            </div>
+
+            <div class="card fade-in" data-animate style="border-left: 4px solid #164069;">
+              <div style="font-size: 48px; margin-bottom: 15px;">🔒</div>
+              <h3 style="color: #164069; margin-bottom: 10px;">Secure & Reliable</h3>
+              <p style="color: #666;">Enterprise-grade security with 99.9% uptime guarantee and regular backups</p>
+            </div>
+
+            <div class="card fade-in" data-animate style="border-left: 4px solid #20c5b5;">
+              <div style="font-size: 48px; margin-bottom: 15px;">📱</div>
+              <h3 style="color: #164069; margin-bottom: 10px;">Mobile First</h3>
+              <p style="color: #666;">Fully responsive design that works flawlessly on all devices and screen sizes</p>
+            </div>
+
+            <div class="card fade-in" data-animate style="border-left: 4px solid #20c5b5;">
+              <div style="font-size: 48px; margin-bottom: 15px;">🚀</div>
+              <h3 style="color: #164069; margin-bottom: 10px;">SEO Optimized</h3>
+              <p style="color: #666;">Built-in SEO optimization to help your business rank higher in search results</p>
+            </div>
+
+            <div class="card fade-in" data-animate style="border-left: 4px solid #164069;">
+              <div style="font-size: 48px; margin-bottom: 15px;">💬</div>
+              <h3 style="color: #164069; margin-bottom: 10px;">24/7 Support</h3>
+              <p style="color: #666;">Dedicated support team ready to help you succeed at any time</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services Section -->
+      <section id="services" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f1ff 100%); position: relative; overflow: hidden;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
+          <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 42px; margin-bottom: 15px; color: #164069; animation: slideInDown 0.8s ease-out;">Our Services</h2>
+            <div style="width: 60px; height: 4px; background: linear-gradient(135deg, #20c5b5, #164069); margin: 15px auto; border-radius: 2px; animation: slideInUp 0.8s ease-out 0.1s both;"></div>
+            <p style="font-size: 18px; color: #666; max-width: 600px; margin: 20px auto 0; animation: slideInUp 0.8s ease-out 0.2s both;">Comprehensive solutions for your digital transformation journey</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px;">
+            <div class="glass-card fade-in" data-animate>
+              <h3 style="color: #164069; margin-bottom: 15px; font-size: 24px;">Web Development</h3>
+              <p style="color: #666; margin-bottom: 20px;">Custom-built websites and web applications tailored to your business needs</p>
+              <div style="margin-top: 20px;">
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5; margin-right: 10px; margin-bottom: 10px;">React</span>
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5; margin-right: 10px; margin-bottom: 10px;">Node.js</span>
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5;">Next.js</span>
+              </div>
+            </div>
+
+            <div class="glass-card fade-in" data-animate>
+              <h3 style="color: #164069; margin-bottom: 15px; font-size: 24px;">UI/UX Design</h3>
+              <p style="color: #666; margin-bottom: 20px;">Intuitive and beautiful user interfaces that create memorable experiences</p>
+              <div style="margin-top: 20px;">
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5; margin-right: 10px; margin-bottom: 10px;">Figma</span>
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5; margin-right: 10px; margin-bottom: 10px;">Prototyping</span>
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5;">Animation</span>
+              </div>
+            </div>
+
+            <div class="glass-card fade-in" data-animate>
+              <h3 style="color: #164069; margin-bottom: 15px; font-size: 24px;">E-Commerce Solutions</h3>
+              <p style="color: #666; margin-bottom: 20px;">Powerful online stores that drive sales and provide seamless experiences</p>
+              <div style="margin-top: 20px;">
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5; margin-right: 10px; margin-bottom: 10px;">Shopify</span>
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5; margin-right: 10px; margin-bottom: 10px;">WooCommerce</span>
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5;">Custom</span>
+              </div>
+            </div>
+
+            <div class="glass-card fade-in" data-animate>
+              <h3 style="color: #164069; margin-bottom: 15px; font-size: 24px;">Digital Marketing</h3>
+              <p style="color: #666; margin-bottom: 20px;">Strategic marketing solutions that help your business reach its audience</p>
+              <div style="margin-top: 20px;">
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5; margin-right: 10px; margin-bottom: 10px;">SEO</span>
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5; margin-right: 10px; margin-bottom: 10px;">SEM</span>
+                <span style="display: inline-block; background: rgba(32, 197, 181, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #20c5b5;">Analytics</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Statistics Section -->
+      <section style="background: linear-gradient(135deg, #0a0e27 0%, #1a2847 100%); color: white; position: relative;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: center;">
+            <div class="fade-in" data-animate>
+              <h2 style="color: #20c5b5; font-size: 48px; margin-bottom: 10px; font-weight: 700;">500+</h2>
+              <p style="color: #ccc; font-size: 18px;">Projects Completed</p>
+            </div>
+            <div class="fade-in" data-animate>
+              <h2 style="color: #20c5b5; font-size: 48px; margin-bottom: 10px; font-weight: 700;">50+</h2>
+              <p style="color: #ccc; font-size: 18px;">Team Members</p>
+            </div>
+            <div class="fade-in" data-animate>
+              <h2 style="color: #20c5b5; font-size: 48px; margin-bottom: 10px; font-weight: 700;">98%</h2>
+              <p style="color: #ccc; font-size: 18px;">Client Satisfaction</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Plans Section -->
+      <section id="plans" style="background: white; position: relative; overflow: hidden;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
+          <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 42px; margin-bottom: 15px; color: #164069; animation: slideInDown 0.8s ease-out;">Our Plans & Pricing</h2>
+            <div style="width: 60px; height: 4px; background: linear-gradient(135deg, #164069, #20c5b5); margin: 15px auto; border-radius: 2px; animation: slideInUp 0.8s ease-out 0.1s both;"></div>
+            <p style="font-size: 18px; color: #666; max-width: 600px; margin: 20px auto 0; animation: slideInUp 0.8s ease-out 0.2s both;">Choose the perfect plan for your business needs</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+            <!-- Silver Plan -->
+            <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
+              <div style="text-align: center; margin-bottom: 30px;">
+                <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">🥈 SILVER PLAN</h3>
+                <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Starter / Small Businesses</p>
+                <p style="color: #666; font-size: 13px; margin: 0; margin-bottom: 15px;">Best for: Local shops, startups, personal brands</p>
+              </div>
+              <ul style="list-style: none; margin-bottom: 30px; padding: 0; font-size: 14px; flex-grow: 1;">
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ 1–3 Page Static Website</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Mobile Responsive Design</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Basic UI/UX Layout</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Contact Form Integration</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Basic SEO Setup</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Social Media Links</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Free SSL (Basic Security)</li>
+                <li style="padding: 10px 0; color: #666;">✅ 1 Month Free Support</li>
+              </ul>
+              <div style="text-align: center; margin-bottom: 20px;">
+                <p style="color: #20c5b5; font-weight: 600; margin-bottom: 8px; margin-top: 0;">Delivery: 5–7 Days</p>
+                <p style="color: #666; font-size: 12px; margin: 0;">Ideal for: Online presence & brand visibility</p>
+              </div>
+              <button class="btn btn-secondary" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
+            </div>
+
+            <!-- Gold Plan -->
+            <!-- Gold Plan -->
+            <div style="position: relative; display: flex; flex-direction: column;">
+              <div style="text-align: center; margin-bottom: 10px;">
+                <span style="display: inline-block; background: linear-gradient(135deg, #164069 0%, #20c5b5 100%); color: white; padding: 6px 20px; border-radius: 20px; font-size: 12px; font-weight: 700;">POPULAR</span>
+              </div>
+              <div class="glass-card fade-in" data-animate style="border: 2px solid #164069; position: relative; display: flex; flex-direction: column; flex-grow: 1;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                  <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">🥇 GOLD PLAN</h3>
+                  <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Growing Businesses</p>
+                  <p style="color: #666; font-size: 13px; margin: 0; margin-bottom: 15px;">Best for: Service-based businesses, startups, influencers</p>
+                </div>
+                <ul style="list-style: none; margin-bottom: 30px; padding: 0; font-size: 14px; flex-grow: 1;">
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ 5–7 Page Dynamic Website</li>
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Premium UI/UX Design</li>
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Mobile + Tablet Responsive</li>
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ SEO Optimization (On-page)</li>
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ WhatsApp Chat Integration</li>
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Google Maps Integration</li>
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Admin Panel (Basic CMS)</li>
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Speed Optimization</li>
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Free SSL + Security Setup</li>
+                  <li style="padding: 10px 0; color: #666;">✅ 3 Months Free Maintenance</li>
+                </ul>
+                <div style="text-align: center; margin-bottom: 20px;">
+                  <p style="color: #20c5b5; font-weight: 600; margin-bottom: 8px; margin-top: 0;">Delivery: 7–10 Days</p>
+                  <p style="color: #666; font-size: 12px; margin: 0;">Ideal for: Lead generation & credibility</p>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
+              </div>
+            </div>
+            <!-- Platinum Plan -->
+            <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
+              <div style="text-align: center; margin-bottom: 30px;">
+                <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">💎 PLATINUM PLAN</h3>
+                <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Advanced / Professional</p>
+                <p style="color: #666; font-size: 13px; margin: 0; margin-bottom: 15px;">Best for: Brands, companies, e-commerce, agencies</p>
+              </div>
+              <ul style="list-style: none; margin-bottom: 30px; padding: 0; font-size: 14px; flex-grow: 1;">
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ 10–15 Page Custom Website / E-commerce</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Fully Custom UI/UX (Brand-based)</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Advanced Animations & Effects</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Mobile, Tablet & Desktop Optimized</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Advanced SEO Setup</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Payment Gateway Integration</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Admin Dashboard (Full Control)</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Website Speed & Performance Optimization</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Security Hardening & Backup Setup</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">✅ Google Analytics & Search Console</li>
+                <li style="padding: 10px 0; color: #666;">✅ 6 Months Free Maintenance & Updates</li>
+              </ul>
+              <div style="text-align: center; margin-bottom: 20px;">
+                <p style="color: #20c5b5; font-weight: 600; margin-bottom: 8px; margin-top: 0;">Delivery: 10–15 Days</p>
+                <p style="color: #666; font-size: 12px; margin: 0;">Ideal for: Sales, automation & scalability</p>
+              </div>
+              <button class="btn btn-secondary" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Us Section -->
+      <section id="about" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f1ff 100%); position: relative; overflow: hidden;">
+        <div style="position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(32, 197, 181, 0.1) 0%, transparent 70%); border-radius: 50%; top: 10%; right: 5%; animation: float 20s ease-in-out infinite;"></div>
+        <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+            <!-- Left side -->
+            <div class="fade-in" data-animate style="animation: slideInLeft 0.8s ease-out;">
+              <h2 style="font-size: 42px; margin-bottom: 20px; color: #164069;">About Promote With Us</h2>
+              <p style="font-size: 18px; color: #666; line-height: 1.8; margin-bottom: 20px;">
+                We are a team of passionate digital experts dedicated to transforming businesses from offline to online. With over a decade of experience, we've helped hundreds of companies achieve their digital goals.
+              </p>
+              <p style="font-size: 18px; color: #666; line-height: 1.8; margin-bottom: 30px;">
+                Our mission is simple: create beautiful, functional digital solutions that drive real business growth. We believe in combining cutting-edge technology with strategic thinking to deliver results.
+              </p>
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div>
+                  <h4 style="color: #164069; font-size: 20px; margin-bottom: 5px;">500+</h4>
+                  <p style="color: #666; margin: 0;">Projects Completed</p>
+                </div>
+                <div>
+                  <h4 style="color: #20c5b5; font-size: 20px; margin-bottom: 5px;">98%</h4>
+                  <p style="color: #666; margin: 0;">Client Satisfaction</p>
+                </div>
+                <div>
+                  <h4 style="color: #20c5b5; font-size: 20px; margin-bottom: 5px;">50+</h4>
+                  <p style="color: #666; margin: 0;">Team Members</p>
+                </div>
+                <div>
+                  <h4 style="color: #164069; font-size: 20px; margin-bottom: 5px;">10+</h4>
+                  <p style="color: #666; margin: 0;">Years Experience</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right side - Values -->
+            <div style="animation: slideInRight 0.8s ease-out;">
+              <div class="card fade-in" data-animate style="border-left: 4px solid #164069; margin-bottom: 20px; animation: slideInUp 0.6s ease-out 0.1s both;">
+                <h3 style="color: #164069; margin-bottom: 10px; font-size: 20px;">💡 Our Vision</h3>
+                <p style="color: #666; margin: 0;">To be the leading digital transformation partner for businesses looking to thrive in the online world.</p>
+              </div>
+
+              <div class="card fade-in" data-animate style="border-left: 4px solid #20c5b5; margin-bottom: 20px; animation: slideInUp 0.6s ease-out 0.2s both;">
+                <h3 style="color: #164069; margin-bottom: 10px; font-size: 20px;">🎯 Our Values</h3>
+                <p style="color: #666; margin: 0;">Innovation, integrity, and customer success drive everything we do. We're committed to excellence in every project.</p>
+              </div>
+
+              <div class="card fade-in" data-animate style="border-left: 4px solid #20c5b5; animation: slideInUp 0.6s ease-out 0.3s both;">
+                <h3 style="color: #164069; margin-bottom: 10px; font-size: 20px;">✨ Our Promise</h3>
+                <p style="color: #666; margin: 0;">We deliver results that exceed expectations and build lasting partnerships with our clients.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section id="contact" style="background: linear-gradient(135deg, #164069 0%, #20c5b5 100%); position: relative; overflow: hidden;">
+        <!-- Animated background -->
+        <div style="position: absolute; width: 300px; height: 300px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; top: -50px; left: -50px; animation: float 25s ease-in-out infinite;"></div>
+        <div style="position: absolute; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; bottom: -80px; right: -80px; animation: float 20s ease-in-out infinite; animation-delay: -10s;"></div>
+        
+        <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px; text-align: center; position: relative; z-index: 10;">
+          <h2 style="font-size: 42px; margin-bottom: 20px; color: white; animation: slideInDown 0.8s ease-out;">Ready to Transform Your Business?</h2>
+          <p style="font-size: 18px; color: rgba(255, 255, 255, 0.95); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; animation: slideInUp 0.8s ease-out 0.1s both;">
+            Join hundreds of successful businesses that have transformed their online presence with our solutions.
+          </p>
+          <button class="btn btn-primary" style="padding: 16px 40px; font-size: 16px; cursor: pointer; animation: slideInUp 0.8s ease-out 0.2s both; display: inline-block;">Start Your Free Consultation</button>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer style="background: #0a0e27; color: white; padding: 60px 20px 20px; position: relative;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px;">
+            <div>
+              <h4 style="margin-bottom: 20px; font-size: 18px;">About Us</h4>
+              <p style="color: #aaa; line-height: 1.8;">We are passionate about creating beautiful, functional digital experiences that help businesses grow.</p>
+            </div>
+            <div>
+              <h4 style="margin-bottom: 20px; font-size: 18px;">Quick Links</h4>
+              <ul style="list-style: none;">
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Services</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Portfolio</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Blog</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="margin-bottom: 20px; font-size: 18px;">Connect</h4>
+              <ul style="list-style: none;">
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Twitter</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">LinkedIn</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">GitHub</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Facebook</a></li>
+              </ul>
+            </div>
+          </div>
+          <div style="border-top: 1px solid #333; padding-top: 20px; text-align: center; color: #aaa;">
+            <p>&copy; 2024 Promote With Us. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <!-- Initialize 3D Scene and Animations -->
+    <script src="js/enhanced-3d.js"></script>
+    <script>
+      function initializeEnhancements() {
+        if (document.getElementById('hero-3d') && typeof ThreeDScene !== 'undefined') {
+          new ThreeDScene('hero-3d');
+        }
+        
+        const observerOptions = {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && entry.target.hasAttribute('data-animate')) {
+              entry.target.classList.add('fade-in');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+        
+        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+      }
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeEnhancements);
+      } else {
+        initializeEnhancements();
+      }
+    </script>
+</body>
+</html>
