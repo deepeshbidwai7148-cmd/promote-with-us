@@ -101,15 +101,86 @@
   <script>
     const form = document.getElementById('leadForm');
     const msg = document.getElementById('msg');
+    
+    // Real-time validation for email field
+    const emailInput = form.email;
+    emailInput.addEventListener('blur', function() {
+      if (this.value && !isValidEmail(this.value)) {
+        msg.textContent = 'Please enter a valid email address.';
+        msg.style.color = '#ffb3b3';
+        this.style.borderColor = '#ffb3b3';
+      } else {
+        msg.textContent = '';
+        this.style.borderColor = 'rgba(255,255,255,0.08)';
+      }
+    });
+
+    // Real-time validation for phone field
+    const phoneInput = form.phone;
+    phoneInput.addEventListener('blur', function() {
+      if (this.value && !isValidPhone(this.value)) {
+        msg.textContent = 'Please enter a valid phone number (6-20 characters, numbers + - ( ) spaces allowed).';
+        msg.style.color = '#ffb3b3';
+        this.style.borderColor = '#ffb3b3';
+      } else {
+        msg.textContent = '';
+        this.style.borderColor = 'rgba(255,255,255,0.08)';
+      }
+    });
+
+    // Real-time validation for brand name
+    const brandInput = form.brandName;
+    brandInput.addEventListener('blur', function() {
+      if (this.value && this.value.length < 2) {
+        msg.textContent = 'Brand name must be at least 2 characters.';
+        msg.style.color = '#ffb3b3';
+        this.style.borderColor = '#ffb3b3';
+      } else {
+        msg.textContent = '';
+        this.style.borderColor = 'rgba(255,255,255,0.08)';
+      }
+    });
+
+    // Email validation function
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // Phone validation function
+    function isValidPhone(phone) {
+      const phoneRegex = /^[0-9+\-() ]{6,20}$/;
+      return phoneRegex.test(phone);
+    }
+
+    // Form submission handler
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       msg.textContent = '';
+      msg.style.color = '#ffb3b3';
+      
       const brandName = form.brandName.value.trim();
       const phone = form.phone.value.trim();
       const email = form.email.value.trim();
 
+      // Validation checks
       if (!brandName || !phone || !email) {
         msg.textContent = 'All fields are required.';
+        return;
+      }
+
+      if (brandName.length < 2) {
+        msg.textContent = 'Brand name must be at least 2 characters.';
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        msg.textContent = 'Please enter a valid email address.';
+        return;
+      }
+
+      if (!isValidPhone(phone)) {
+        msg.textContent = 'Please enter a valid phone number.';
         return;
       }
 

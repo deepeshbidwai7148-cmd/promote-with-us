@@ -1,0 +1,18 @@
+{
+  "leads": [
+    {
+      "id": 1,
+      "brand_name": "promotewithus",
+      "phone": "9922477583",
+      "email": "cmagrawal133@gmail.com",
+      "created_at": "2026-01-21T13:25:13.725Z"
+    },
+    {
+      "id": 2,
+      "brand_name": "promotewithus",
+      "phone": "992247783",
+      "email": "cmagrawalofficial23@gmail.com",
+      "created_at": "2026-01-21T13:34:26.585Z"
+    }
+  ]
+}
