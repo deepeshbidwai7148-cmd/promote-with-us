@@ -162,13 +162,24 @@
         }
         /* Staggered animations for pricing cards */
         section#plans .glass-card:nth-child(1) {
-            animation: slideInUp 0.6s ease-out 0.1s both !important;
+            animation: popUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards !important;
         }
-        section#plans .glass-card:nth-child(2) {
-            animation: scaleIn 0.6s ease-out 0.2s both !important;
+        section#plans > div > div > div:nth-child(2) {
+            animation: popUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards !important;
         }
         section#plans .glass-card:nth-child(3) {
-            animation: slideInUp 0.6s ease-out 0.3s both !important;
+            animation: popUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s forwards !important;
+        }
+
+        @keyframes popUp {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         /* Impressive hero animations */
@@ -838,7 +849,7 @@
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
             <!-- Silver Plan -->
-            <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
+            <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%; margin-top: 44px;">
               <div style="text-align: center; margin-bottom: 30px;">
                 <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">🥈 SILVER PLAN</h3>
                 <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Starter / Small Businesses</p>
@@ -861,12 +872,13 @@
               <button class="btn btn-secondary" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
             </div>
 
-            <!-- Gold Plan -->
-            <div style="position: relative;">
-              <div style="text-align: center; margin-bottom: 10px;">
+            <!-- Gold Plan Wrapper -->
+            <div style="display: flex; flex-direction: column; width: 100%;">
+              <div style="text-align: center; margin-bottom: 12px;">
                 <span style="display: inline-block; background: linear-gradient(135deg, #164069 0%, #20c5b5 100%); color: white; padding: 6px 20px; border-radius: 20px; font-size: 12px; font-weight: 700;">POPULAR</span>
               </div>
-              <div class="glass-card fade-in" data-animate style="border: 2px solid #164069; position: relative; display: flex; flex-direction: column; height: 100%;">
+              <!-- Gold Plan -->
+              <div class="glass-card fade-in" data-animate style="border: 2px solid #164069; position: relative; display: flex; flex-direction: column; height: 100%; flex-grow: 1;">
                 <div style="text-align: center; margin-bottom: 30px;">
                   <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">🥇 GOLD PLAN</h3>
                   <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Growing Businesses</p>
@@ -892,7 +904,7 @@
               </div>
             </div>
             <!-- Platinum Plan -->
-            <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
+            <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%; margin-top: 44px;">
               <div style="text-align: center; margin-bottom: 30px;">
                 <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">💎 PLATINUM PLAN</h3>
                 <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Advanced / Professional</p>
@@ -1050,10 +1062,37 @@
         document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
       }
       
+      // Replay animation when plans section comes into view
+      function initializePlansAnimation() {
+        const plansSection = document.querySelector('section#plans');
+        if (!plansSection) return;
+        
+        const plansObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              // Reset and replay animations
+              const cards = entry.target.querySelectorAll('.glass-card');
+              cards.forEach(card => {
+                card.style.animation = 'none';
+                setTimeout(() => {
+                  card.style.animation = '';
+                }, 10);
+              });
+            }
+          });
+        }, { threshold: 0.3 });
+        
+        plansObserver.observe(plansSection);
+      }
+      
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeEnhancements);
+        document.addEventListener('DOMContentLoaded', () => {
+          initializeEnhancements();
+          initializePlansAnimation();
+        });
       } else {
         initializeEnhancements();
+        initializePlansAnimation();
       }
     </script>
 </body>
