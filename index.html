@@ -390,6 +390,187 @@
                 color: #fff;
             }
         }
+
+  /* Tab panel layout: hide all panels by default, show only the active one */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Active nav link styling */
+  .nav-links a.active { color: #fff; font-weight: 800; }
+
+  /* Social buttons (larger, labeled) */
+  .social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(32,197,181,0.06);
+    border-radius: 10px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s;
+  }
+  .social-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .social-btn .social-label { color: #fff; font-weight:700; }
+  .social-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(32,197,181,0.16); background: rgba(32,197,181,0.12); }
+  
+  /* Plans: equal-height cards and hover styles */
+  section#plans > div > div {
+    /* ensure grid items stretch to same height */
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+  }
+
+  section#plans .glass-card {
+    background: #fff;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+    will-change: transform;
+    /* ensure a uniform minimum height so cards appear equal across rows */
+    min-height: 520px;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  /* stronger hover rules (use !important to override inline border styles) */
+  section#plans .glass-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 18px 40px rgba(22, 64, 105, 0.16) !important;
+    border: 2px solid #164069 !important;
+    background: linear-gradient(180deg, #ffffff 0%, #f6fbfb 100%) !important;
+    z-index: 2;
+  }
+
+  /* per-plan hover glows */
+  .plan-silver:hover {
+    background: linear-gradient(180deg,#fbfbfc,#f2f4f6) !important;
+    border: 2px solid #bfc6cb !important;
+    box-shadow: 0 18px 48px rgba(160,160,160,0.10) !important;
+  }
+
+  .plan-gold:hover {
+    background: linear-gradient(180deg,#fffaf0,#fff4e6) !important;
+    border: 2px solid #d4b06a !important;
+    box-shadow: 0 18px 48px rgba(212,160,80,0.12) !important;
+  }
+
+  .plan-platinum:hover {
+    background: linear-gradient(180deg,#f8f6ff,#f0ecff) !important;
+    border: 2px solid #b497ff !important;
+    box-shadow: 0 18px 48px rgba(140,110,255,0.12) !important;
+  }
+
+  /* Popular badge positioning */
+  .popular-badge {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: inline-block;
+    background: linear-gradient(135deg, #164069 0%, #20c5b5 100%);
+    color: white;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(22,64,105,0.12);
+  }
+
+  /* About: keep left column visible (disable hide-by-animation) and style social links */
+  section#about .about-left {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+
+  section#about .about-socials { display:flex; gap:12px; margin-top:18px; align-items:center; }
+  /* Larger, brand-colored social buttons specifically for the About column */
+  section#about .about-socials a.social-btn {
+    background: transparent;
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  }
+  section#about .about-socials a.social-btn svg { width: 28px; height: 28px; flex-shrink: 0; }
+  /* Force icons/paths to be white so they show over brand backgrounds */
+  section#about .about-socials a.social-btn svg * { fill: #fff !important; stroke: #fff !important; }
+
+  /* Per-network brand colors (About column only) */
+  section#about .about-socials a.social-btn.instagram { /* Instagram themed fallback */
+    background-image: url('images/instagram-gradient.png'), linear-gradient(45deg, #feda75 0%, #fa7e1e 25%, #d62976 50%, #962fbf 75%, #4f5bd5 100%);
+    background-size: cover, cover;
+    background-position: center, center;
+    background-repeat: no-repeat, no-repeat;
+    background-blend-mode: overlay;
+    color: #fff;
+  }
+
+  section#about .about-socials a.social-btn.youtube { background: linear-gradient(135deg, #FF0000 0%, #E60000 100%); }
+  section#about .about-socials a.social-btn.facebook { background: linear-gradient(135deg, #1877F2 0%, #165FDD 100%); }
+
+  section#about .about-socials a.social-btn:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.12); }
+
+  /* show the provided logo image inside the instagram anchor */
+  section#about .about-socials a.social-btn.instagram .social-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    background: rgba(255,255,255,0.04);
+    display: block;
+    overflow: hidden;
+  }
+  section#about .about-socials a.social-btn.instagram .social-label { color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,0.45); }
+  
+  /* Footer contact buttons: unified dark pill with colored icon box on left (matches attached theme) */
+  footer .contact-list { display:flex; flex-direction:column; gap:10px; }
+  footer .contact-list a.contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    color: #fff !important;
+    text-decoration: none !important;
+    box-shadow: 0 6px 20px rgba(2,6,23,0.6);
+    background: #071126; /* dark pill background */
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+  }
+
+  /* left icon square */
+  footer .contact-list a.contact-btn .contact-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.12);
+  }
+
+  footer .contact-list a.contact-btn .contact-label { color: #fff; font-weight: 800; }
+
+  /* Brand color accents for the small icon box */
+  footer .contact-list a.contact-btn.phone .contact-icon { background: linear-gradient(135deg,#164069 0%,#20c5b5 100%); }
+  footer .contact-list a.contact-btn.whatsapp .contact-icon { background: linear-gradient(135deg,#25D366 0%,#128C7E 100%); }
+  footer .contact-list a.contact-btn.email .contact-icon { background: linear-gradient(135deg,#4f5bd5 0%,#962fbf 100%); }
+
+  footer .contact-list a.contact-btn:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(2,6,23,0.6); }
+  footer .contact-list a.contact-btn .contact-icon svg { width:18px; height:18px; }
     </style>
 </head>
 
@@ -413,7 +594,7 @@
     <!-- Main Content -->
     <div id="root">
       <!-- Hero Section with Canvas & SVG Animations -->
-      <section id="home" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: linear-gradient(135deg, #0a0e27 0%, #1a2847 100%);">
+  <section id="home" class="tab-panel active" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: linear-gradient(135deg, #0a0e27 0%, #1a2847 100%);">
         
         <!-- Canvas Background for Particle Animation -->
         <canvas id="canvas-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
@@ -526,9 +707,7 @@
 
           <!-- Call to Action Buttons -->
           <div style="margin-top: 50px; display: flex; gap: 25px; justify-content: center; flex-wrap: wrap; animation: slideInUp 0.8s ease-out 0.6s both;">
-            <button style="padding: 16px 45px; font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); color: white; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; letter-spacing: 1px; text-transform: uppercase;" 
-              onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 30px 70px rgba(32, 197, 181, 0.5)';" 
-              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(32, 197, 181, 0.2)';">
+            <button id="open-lead-modal" type="button" class="start-now" style="display:inline-block; padding: 16px 45px; font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); color: white; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; letter-spacing: 1px; text-transform: uppercase;">
               Start <span style="display: inline-block; animation: nowPulse 1s ease-in-out infinite; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.8);">Now</span> →
             </button>
             <button style="padding: 16px 45px; font-size: 16px; font-weight: 700; background: transparent; color: #20c5b5; border: 2px solid #20c5b5; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; text-transform: uppercase;"
@@ -541,7 +720,7 @@
           <!-- Statistics Section -->
           <div style="margin-top: 70px; display: flex; gap: 80px; justify-content: center; flex-wrap: wrap; animation: slideInUp 0.8s ease-out 0.7s both;">
             <div style="text-align: center;">
-              <div style="font-size: 36px; font-weight: 800; color: #20c5b5; margin-bottom: 8px;">500+</div>
+              <div style="font-size: 36px; font-weight: 800; color: #20c5b5; margin-bottom: 8px;">100+</div>
               <div style="font-size: 13px; color: #999; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Projects Delivered</div>
             </div>
             <div style="text-align: center;">
@@ -636,7 +815,25 @@
             animationId = requestAnimationFrame(animate);
           }
 
-          animate();
+          // Helper to start/stop the canvas animation loop. Browsers throttle or pause
+          // requestAnimationFrame when the tab is hidden; explicitly control the loop so
+          // we can restart it when the user returns to the tab or navigates to a specific
+          // section (like the Plans tab).
+          function startCanvasAnimation() {
+            if (!animationId) {
+              animationId = requestAnimationFrame(animate);
+            }
+          }
+
+          function stopCanvasAnimation() {
+            if (animationId) {
+              cancelAnimationFrame(animationId);
+              animationId = null;
+            }
+          }
+
+          // Start initially
+          startCanvasAnimation();
 
           // Interactive 3D effect - REMOVED
           // Instead: Add dynamic glow effect
@@ -717,7 +914,7 @@
       </section>
 
       <!-- Features Section -->
-      <section style="background: white; position: relative; overflow: hidden;">
+  <section id="features" class="tab-panel" style="background: white; position: relative; overflow: hidden;">
         <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
           <div style="text-align: center; margin-bottom: 60px;">
             <h2 style="font-size: 42px; margin-bottom: 15px; color: #164069; animation: slideInDown 0.8s ease-out;">Why Choose Us</h2>
@@ -766,7 +963,7 @@
       </section>
 
       <!-- Services Section -->
-      <section id="services" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f1ff 100%); position: relative; overflow: hidden;">
+  <section id="services" class="tab-panel" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f1ff 100%); position: relative; overflow: hidden;">
         <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
           <div style="text-align: center; margin-bottom: 60px;">
             <h2 style="font-size: 42px; margin-bottom: 15px; color: #164069; animation: slideInDown 0.8s ease-out;">Our Services</h2>
@@ -819,11 +1016,11 @@
       </section>
 
       <!-- Statistics Section -->
-      <section style="background: linear-gradient(135deg, #0a0e27 0%, #1a2847 100%); color: white; position: relative;">
+  <section id="statistics" class="tab-panel" style="background: linear-gradient(135deg, #0a0e27 0%, #1a2847 100%); color: white; position: relative;">
         <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: center;">
             <div class="fade-in" data-animate>
-              <h2 style="color: #20c5b5; font-size: 48px; margin-bottom: 10px; font-weight: 700;">500+</h2>
+              <h2 style="color: #20c5b5; font-size: 48px; margin-bottom: 10px; font-weight: 700;">100+</h2>
               <p style="color: #ccc; font-size: 18px;">Projects Completed</p>
             </div>
             <div class="fade-in" data-animate>
@@ -839,7 +1036,7 @@
       </section>
 
       <!-- Plans Section -->
-      <section id="plans" style="background: white; position: relative; overflow: hidden;">
+  <section id="plans" class="tab-panel" style="background: white; position: relative; overflow: hidden;">
         <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
           <div style="text-align: center; margin-bottom: 60px;">
             <h2 style="font-size: 42px; margin-bottom: 15px; color: #164069; animation: slideInDown 0.8s ease-out;">Our Plans & Pricing</h2>
@@ -847,9 +1044,9 @@
             <p style="font-size: 18px; color: #666; max-width: 600px; margin: 20px auto 0; animation: slideInUp 0.8s ease-out 0.2s both;">Choose the perfect plan for your business needs</p>
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; align-items: stretch; grid-auto-rows: 1fr;">
             <!-- Silver Plan -->
-            <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%; margin-top: 44px;">
+            <div class="glass-card fade-in plan-silver" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
               <div style="text-align: center; margin-bottom: 30px;">
                 <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">🥈 SILVER PLAN</h3>
                 <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Starter / Small Businesses</p>
@@ -873,12 +1070,10 @@
             </div>
 
             <!-- Gold Plan Wrapper -->
-            <div style="display: flex; flex-direction: column; width: 100%;">
-              <div style="text-align: center; margin-bottom: 12px;">
-                <span style="display: inline-block; background: linear-gradient(135deg, #164069 0%, #20c5b5 100%); color: white; padding: 6px 20px; border-radius: 20px; font-size: 12px; font-weight: 700;">POPULAR</span>
-              </div>
+            <div style="display: flex; flex-direction: column; width: 100%; height: 100%; position: relative;">
+              <span class="popular-badge">POPULAR</span>
               <!-- Gold Plan -->
-              <div class="glass-card fade-in" data-animate style="border: 2px solid #164069; position: relative; display: flex; flex-direction: column; height: 100%; flex-grow: 1;">
+              <div class="glass-card fade-in plan-gold" data-animate style="border: 2px solid #164069; position: relative; display: flex; flex-direction: column; height: 100%; flex-grow: 1;">
                 <div style="text-align: center; margin-bottom: 30px;">
                   <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">🥇 GOLD PLAN</h3>
                   <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Growing Businesses</p>
@@ -904,7 +1099,7 @@
               </div>
             </div>
             <!-- Platinum Plan -->
-            <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%; margin-top: 44px;">
+            <div class="glass-card fade-in plan-platinum" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
               <div style="text-align: center; margin-bottom: 30px;">
                 <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">💎 PLATINUM PLAN</h3>
                 <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Advanced / Professional</p>
@@ -934,12 +1129,12 @@
       </section>
 
       <!-- About Us Section -->
-      <section id="about" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f1ff 100%); position: relative; overflow: hidden;">
+  <section id="about" class="tab-panel" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f1ff 100%); position: relative; overflow: hidden;">
         <div style="position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(32, 197, 181, 0.1) 0%, transparent 70%); border-radius: 50%; top: 10%; right: 5%; animation: float 20s ease-in-out infinite;"></div>
         <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
             <!-- Left side -->
-            <div class="fade-in" data-animate style="animation: slideInLeft 0.8s ease-out;">
+            <div class="fade-in about-left" data-animate style="animation: slideInLeft 0.8s ease-out;">
               <h2 style="font-size: 42px; margin-bottom: 20px; color: #164069;">About Promote With Us</h2>
               <p style="font-size: 18px; color: #666; line-height: 1.8; margin-bottom: 20px;">
                 We are a team of passionate digital experts dedicated to transforming businesses from offline to online. With over a decade of experience, we've helped hundreds of companies achieve their digital goals.
@@ -949,7 +1144,7 @@
               </p>
               <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                 <div>
-                  <h4 style="color: #164069; font-size: 20px; margin-bottom: 5px;">500+</h4>
+                  <h4 style="color: #164069; font-size: 20px; margin-bottom: 5px;">100+</h4>
                   <p style="color: #666; margin: 0;">Projects Completed</p>
                 </div>
                 <div>
@@ -964,6 +1159,26 @@
                   <h4 style="color: #164069; font-size: 20px; margin-bottom: 5px;">10+</h4>
                   <p style="color: #666; margin: 0;">Years Experience</p>
                 </div>
+              </div>
+              <!-- Socials in About -->
+              <div class="about-socials">
+                  <a class="social-btn instagram" href="https://www.instagram.com/promote_with_uss?igsh=MXY2aWhheHRwZjJlbA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                    <img class="social-icon" src="images/insta.jpg" alt="Instagram logo" />
+                    <span class="social-label">Follow</span>
+                  </a>
+                <a class="social-btn youtube" href="https://youtube.com/@promotewith_us?si=q6Iv5qiIX0EztSeu" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <!-- circular border/background for the play icon -->
+                    <circle cx="12" cy="12" r="9" fill="none" stroke="#ffffff" stroke-width="1.6" opacity="0.95" />
+                    <!-- play triangle -->
+                    <path d="M10 15l5-3-5-3v6z" fill="#fff"/>
+                  </svg>
+                  <span class="social-label">Subscribe</span>
+                </a>
+                <a class="social-btn facebook" href="https://www.facebook.com/share/1C2jThgTvP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 12.1C22 6.6 17.5 2 12 2S2 6.6 2 12.1c0 5 3.7 9.1 8.5 9.9v-7h-2.6v-2.9H10.5V9.2c0-2.6 1.5-4 3.8-4 1.1 0 2.3 0.2 2.3 0.2v2.5h-1.3c-1.3 0-1.7 0.8-1.7 1.6v1.9h2.9l-0.5 2.9h-2.4v7C18.3 21.2 22 17.1 22 12.1z" fill="#3b5998"/></svg>
+                  <span class="social-label">Like</span>
+                </a>
               </div>
             </div>
 
@@ -989,7 +1204,7 @@
       </section>
 
       <!-- CTA Section -->
-      <section id="contact" style="background: linear-gradient(135deg, #164069 0%, #20c5b5 100%); position: relative; overflow: hidden;">
+  <section id="contact" class="tab-panel" style="background: linear-gradient(135deg, #164069 0%, #20c5b5 100%); position: relative; overflow: hidden;">
         <!-- Animated background -->
         <div style="position: absolute; width: 300px; height: 300px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; top: -50px; left: -50px; animation: float 25s ease-in-out infinite;"></div>
         <div style="position: absolute; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; bottom: -80px; right: -80px; animation: float 20s ease-in-out infinite; animation-delay: -10s;"></div>
@@ -1012,22 +1227,56 @@
               <p style="color: #aaa; line-height: 1.8;">We are passionate about creating beautiful, functional digital experiences that help businesses grow.</p>
             </div>
             <div>
-              <h4 style="margin-bottom: 20px; font-size: 18px;">Quick Links</h4>
-              <ul style="list-style: none;">
-                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Services</a></li>
-                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Portfolio</a></li>
-                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Blog</a></li>
-                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Contact</a></li>
+              <h4 style="margin-bottom: 20px; font-size: 18px;">Contact Us</h4>
+              <ul class="contact-list" style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 10px;">
+                  <a class="contact-btn phone" href="tel:+918485037148">
+                    <span class="contact-icon" aria-hidden="true">
+                      <!-- phone icon (simple svg) -->
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.6 10.2c1.2 2.4 3 4.2 5.4 5.4l1.8-1.8c0.2-0.2 0.6-0.3 0.9-0.1 1 0.4 2 0.6 3.2 0.6 0.5 0 0.9 0.4 0.9 0.9v2.4c0 0.5-0.4 0.9-0.9 0.9C9.5 20.4 3.6 14.5 3.6 7.8c0-0.5 0.4-0.9 0.9-0.9h2.4c0.5 0 0.9 0.4 0.9 0.9 0 1.2 0.2 2.2 0.6 3.2 0.2 0.3 0.1 0.7-0.1 0.9L6.6 10.2z" fill="#fff"/></svg>
+                    </span>
+                    <span class="contact-label">+91 84850 37148</span>
+                  </a>
+                </li>
+                <li style="margin-bottom: 10px;">
+                  <a class="contact-btn whatsapp" href="https://wa.me/918485037148" target="_blank" rel="noopener noreferrer">
+                    <span class="contact-icon" aria-hidden="true">
+                      <!-- whatsapp icon -->
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 3.5C18.6 1.6 15.9 0.6 13 0.6 6.8 0.6 1.6 5.9 1.6 12.1c0 2 0.5 3.9 1.4 5.6L0.6 23.4l5.8-2.5c1.6 0.9 3.5 1.4 5.6 1.4 6.2 0 11.4-5.2 11.4-11.4 0-2.9-1-5.6-2.9-7.5z" fill="#fff"/></svg>
+                    </span>
+                    <span class="contact-label">WhatsApp</span>
+                  </a>
+                </li>
+                <li style="margin-bottom: 10px;">
+                  <a class="contact-btn email" href="mailto:promotewithus6@gmail.com">
+                    <span class="contact-icon" aria-hidden="true">
+                      <!-- mail icon -->
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 0.9-2 2v12c0 1.1 0.9 2 2 2h16c1.1 0 2-0.9 2-2V6c0-1.1-0.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#fff"/></svg>
+                    </span>
+                    <span class="contact-label">promotewithus6@gmail.com</span>
+                  </a>
+                </li>
+                <!-- Instagram removed from Contact Us per request -->
               </ul>
             </div>
             <div>
               <h4 style="margin-bottom: 20px; font-size: 18px;">Connect</h4>
-              <ul style="list-style: none;">
-                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Twitter</a></li>
-                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">LinkedIn</a></li>
-                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">GitHub</a></li>
-                <li style="margin-bottom: 10px;"><a href="#" style="color: #aaa; text-decoration: none;">Facebook</a></li>
-              </ul>
+              <div style="display:flex; gap:12px; align-items:center;">
+                <a class="social-btn" href="https://www.instagram.com/promote_with_uss?igsh=MXY2aWhheHRwZjJlbA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" stroke="#20c5b5" stroke-width="1.2"/><circle cx="12" cy="12" r="3.2" stroke="#20c5b5" stroke-width="1.2" fill="none" /><circle cx="17.5" cy="6.5" r="0.6" fill="#20c5b5" /></svg>
+                  <span class="social-label">Follow</span>
+                </a>
+
+                <a class="social-btn" href="https://youtube.com/@promotewith_us?si=q6Iv5qiIX0EztSeu" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22 7.2c0 0-0.2-1.6-0.8-2.3-0.7-0.9-1.5-0.9-1.9-1C16.6 3.6 12 3.6 12 3.6s-4.6 0-7.3 0.3c-0.4 0.1-1.2 0.1-1.9 1C2.2 5.6 2 7.2 2 7.2S1.6 9.1 1.6 11v2c0 1.9 0.4 3.8 0.4 3.8s0.2 1.6 0.8 2.3c0.7 0.9 1.7 0.9 2.2 1 1.6 0.2 6.9 0.3 6.9 0.3s4.6 0 7.3-0.3c0.4-0.1 1.2-0.1 1.9-1 0.6-0.7 0.8-2.3 0.8-2.3s0.4-1.9 0.4-3.8v-2c0-1.9-0.4-3.8-0.4-3.8z" stroke="#164069" stroke-width="0.2" fill="#20c5b5" /><path d="M10 15l5-3-5-3v6z" fill="#fff"/></svg>
+                  <span class="social-label">Subscribe</span>
+                </a>
+
+                <a class="social-btn" href="https://www.facebook.com/share/1C2jThgTvP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22 12.1C22 6.6 17.5 2 12 2S2 6.6 2 12.1c0 5 3.7 9.1 8.5 9.9v-7h-2.6v-2.9H10.5V9.2c0-2.6 1.5-4 3.8-4 1.1 0 2.3 0.2 2.3 0.2v2.5h-1.3c-1.3 0-1.7 0.8-1.7 1.6v1.9h2.9l-0.5 2.9h-2.4v7C18.3 21.2 22 17.1 22 12.1z" fill="#3b5998"/></svg>
+                  <span class="social-label">Like</span>
+                </a>
+              </div>
             </div>
           </div>
           <div style="border-top: 1px solid #333; padding-top: 20px; text-align: center; color: #aaa;">
@@ -1084,6 +1333,52 @@
         
         plansObserver.observe(plansSection);
       }
+
+      // Replay plans animations on navigation (hash change / nav clicks) and when
+      // the document becomes visible again. This covers cases where the plans
+      // tab/content was hidden (for example in a tabbed UI) or the browser tab
+      // was backgrounded.
+      function replayPlansAnimations() {
+        const plansSection = document.querySelector('section#plans');
+        if (!plansSection) return;
+        const cards = plansSection.querySelectorAll('.glass-card');
+        cards.forEach(card => {
+          // force reflow + restart animation
+          card.style.animation = 'none';
+          // small timeout to allow browser to pick up change
+          setTimeout(() => { card.style.animation = ''; }, 20);
+        });
+      }
+
+      // When tab visibility changes, restart canvas animation and replay plans
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          // Restart canvas loop
+          try { startCanvasAnimation(); } catch (e) { /* ignore */ }
+          // If user is on #plans, ensure the plans animations play
+          if (location.hash === '#plans') replayPlansAnimations();
+        } else {
+          // Stop canvas loop while hidden to reduce CPU
+          try { stopCanvasAnimation(); } catch (e) { /* ignore */ }
+        }
+      });
+
+      // When the hash changes (user navigates to #plans) or nav links are clicked,
+      // replay the plans animations so they appear when the tab becomes active.
+      window.addEventListener('hashchange', () => {
+        if (location.hash === '#plans') replayPlansAnimations();
+      });
+
+      // Delegate click on nav-links to detect navigation to the plans section
+      document.querySelectorAll('.nav-links a').forEach(a => {
+        a.addEventListener('click', (e) => {
+          // Wait a tick for the browser to scroll / show the section
+          const href = a.getAttribute('href');
+          setTimeout(() => {
+            if (href === '#plans' || location.hash === '#plans') replayPlansAnimations();
+          }, 200);
+        });
+      });
       
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
@@ -1094,6 +1389,196 @@
         initializeEnhancements();
         initializePlansAnimation();
       }
+    </script>
+  <!-- Lead capture modal (opens on Home) -->
+  <div id="lead-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="lead-modal-title" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); z-index:2000;">
+      <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:22px; border-radius:10px; width:380px; max-width:92%; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+        <button id="lead-modal-close" aria-label="Close" style="position:absolute; right:12px; top:10px; background:transparent; border:none; color:#fff; font-size:22px; cursor:pointer">&times;</button>
+        <h3 id="lead-modal-title" style="color:#20c5b5; margin:0 0 8px 0; font-size:18px">Start Your Project</h3>
+        <p style="color:#9fbfc6; margin:0 0 12px 0; font-size:13px">Quick form — we'll contact you shortly.</p>
+        <form id="leadModalForm">
+          <label for="m_brandName" style="display:block; margin-top:10px; color:#cfd8df; font-size:13px">Brand / Business Name *</label>
+          <input id="m_brandName" name="brandName" required style="width:100%; padding:8px 10px; margin-top:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color:#fff" />
+
+          <label for="m_phone" style="display:block; margin-top:10px; color:#cfd8df; font-size:13px">Contact Number *</label>
+          <input id="m_phone" name="phone" required pattern="[0-9+\-() ]{6,20}" placeholder="e.g. +9198xxxxxxx" style="width:100%; padding:8px 10px; margin-top:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color:#fff" />
+
+          <label for="m_email" style="display:block; margin-top:10px; color:#cfd8df; font-size:13px">Email Address *</label>
+          <input id="m_email" name="email" type="email" required placeholder="you@company.com" style="width:100%; padding:8px 10px; margin-top:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color:#fff" />
+
+          <button type="submit" style="margin-top:14px; width:100%; background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:10px; border-radius:8px; color:#042; font-weight:700; cursor:pointer">Submit</button>
+          <div id="leadModalMsg" style="color:#ffb3b3; font-size:13px; margin-top:10px; min-height:18px"></div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        const openBtn = document.getElementById('open-lead-modal');
+        const modal = document.getElementById('lead-modal');
+        const closeBtn = document.getElementById('lead-modal-close');
+        const form = document.getElementById('leadModalForm');
+        const msg = document.getElementById('leadModalMsg');
+
+        function openModal(){
+          modal.classList.remove('hidden');
+          modal.style.display = 'flex';
+          modal.setAttribute('aria-hidden','false');
+          // focus first field
+          setTimeout(()=> document.getElementById('m_brandName').focus(),50);
+        }
+
+        function closeModal(){
+          modal.classList.add('hidden');
+          modal.style.display = 'none';
+          modal.setAttribute('aria-hidden','true');
+          msg.textContent = '';
+          form.reset();
+        }
+
+        openBtn && openBtn.addEventListener('click', openModal);
+        closeBtn && closeBtn.addEventListener('click', closeModal);
+
+        // close on overlay click
+        modal && modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal();
+        });
+
+        // close on escape
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) closeModal();
+        });
+
+        form && form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          msg.textContent = '';
+          const brandName = form.brandName.value.trim();
+          const phone = form.phone.value.trim();
+          const email = form.email.value.trim();
+          if (!brandName || !phone || !email) { msg.textContent = 'All fields are required.'; return; }
+
+          try {
+            const res = await fetch('/api/lead', {
+              method: 'POST', headers: {'Content-Type':'application/json'},
+              body: JSON.stringify({ brandName, phone, email })
+            });
+
+            let data = null;
+            let text = null;
+            const ctype = (res.headers.get('content-type') || '').toLowerCase();
+            if (ctype.includes('application/json')) {
+              try {
+                data = await res.json();
+              } catch (parseErr) {
+                console.error('Failed to parse JSON response:', parseErr);
+              }
+            } else {
+              // non-json response (could be HTML error page) — read as text for diagnostics
+              try { text = await res.text(); } catch (tErr) { console.error('Failed to read text response', tErr); }
+              console.warn('Non-JSON response from /api/lead:', text);
+            }
+
+            if (res.ok && data && data.success) {
+              // show success message inside modal
+              msg.style.color = '#9fbfc6';
+              msg.textContent = 'Thanks — we received your details.';
+              setTimeout(closeModal, 1400);
+            } else {
+              msg.style.color = '#ffb3b3';
+              const serverMsg = (data && data.message) ? data.message : (text ? text : 'Submission failed. Try again.');
+              msg.textContent = serverMsg;
+            }
+          } catch (err) {
+            console.error('Lead submit error:', err);
+            msg.style.color = '#ffb3b3';
+            msg.textContent = 'Network error. Could not reach the backend. Make sure the server is running (run `npm install` then `npm start` in the project folder). Error: ' + (err.message || err);
+          }
+        });
+      })();
+    </script>
+    <script>
+      // Tab navigation: show/hide panels and hook into animations
+      (function() {
+  const panels = document.querySelectorAll('.tab-panel');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const canvasBg = document.getElementById('canvas-bg');
+  const homeSvg = document.querySelector('#home svg');
+  const interactiveHero = document.getElementById('interactive-hero');
+
+        function revealPanelElements(panel) {
+          if (!panel) return;
+          panel.querySelectorAll('[data-animate]').forEach(el => {
+            // ensure the element animates when panel becomes visible
+            el.classList.add('fade-in');
+          });
+        }
+
+        function setActiveTab(hash) {
+          const id = (hash && hash.startsWith('#')) ? hash.slice(1) : (hash || 'home');
+
+          panels.forEach(p => {
+            p.classList.toggle('active', p.id === id);
+            // Hide inactive panels by setting inline display to 'none' so any
+            // inline styles (display:flex etc.) won't force them to remain visible.
+            if (p.id === id) {
+              // clear the inline display so original styles apply (flex/block)
+              p.style.display = '';
+            } else {
+              p.style.display = 'none';
+            }
+          });
+
+          navLinks.forEach(a => {
+            const href = a.getAttribute('href') || '#home';
+            a.classList.toggle('active', href === ('#' + id));
+          });
+
+          // Start/stop canvas depending on whether Home is visible, and hide the
+          // hero elements on non-home tabs so they don't bleed through backgrounds.
+          try {
+            if (id === 'home') {
+              if (canvasBg) canvasBg.style.display = 'block';
+              if (homeSvg) homeSvg.style.display = 'block';
+              if (interactiveHero) interactiveHero.style.display = 'block';
+              startCanvasAnimation();
+            } else {
+              if (canvasBg) canvasBg.style.display = 'none';
+              if (homeSvg) homeSvg.style.display = 'none';
+              if (interactiveHero) interactiveHero.style.display = 'none';
+              stopCanvasAnimation();
+            }
+          } catch (e) { /* ignore if functions not available yet */ }
+
+          // Reveal animated elements in the panel
+          const panel = document.getElementById(id);
+          revealPanelElements(panel);
+
+          // Special-case: replay plans animations when Plans tab opens
+          if (id === 'plans') {
+            try { replayPlansAnimations(); } catch (e) { /* ignore */ }
+          }
+
+          // Update hash without scrolling if needed
+          if (location.hash !== ('#' + id)) history.replaceState(null, '', '#' + id);
+        }
+
+        // Attach nav click handlers
+        navLinks.forEach(a => {
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const href = a.getAttribute('href') || '#home';
+            setActiveTab(href);
+          });
+        });
+
+        // Respond to manual hash changes
+        window.addEventListener('hashchange', () => setActiveTab(location.hash || '#home'));
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => setActiveTab(location.hash || '#home'));
+        // If DOM already loaded
+        if (document.readyState !== 'loading') setActiveTab(location.hash || '#home');
+      })();
     </script>
 </body>
 </html>
