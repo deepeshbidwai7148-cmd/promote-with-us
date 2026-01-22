@@ -345,6 +345,41 @@ app.delete('/api/plans/:id', basicAuth, (req, res) => {
   }
 });
 
+// API endpoint to edit a plan (protected by basic auth)
+app.put('/api/plans/:id', basicAuth, (req, res) => {
+  const planId = parseInt(req.params.id);
+  const { category, tier, name, price, description } = req.body;
+  
+  if (!category || !tier || !name || !price) {
+    return res.status(400).json({ success: false, message: 'All required fields must be provided' });
+  }
+
+  try {
+    let plans = loadPlans();
+    const planIndex = plans.findIndex(p => p.id === planId);
+    
+    if (planIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Plan not found' });
+    }
+    
+    plans[planIndex] = {
+      ...plans[planIndex],
+      category: category,
+      tier: tier,
+      name: name,
+      price: price,
+      description: description || '',
+      updated_at: new Date().toISOString()
+    };
+    
+    savePlans(plans);
+    return res.json({ success: true, plan: plans[planIndex] });
+  } catch (err) {
+    console.error('Error updating plan:', err);
+    return res.status(500).json({ success: false, message: 'Database error' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
