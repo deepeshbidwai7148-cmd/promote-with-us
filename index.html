@@ -1337,226 +1337,13 @@
           </div>
           <div style="border-top: 1px solid #333; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
             <p style="margin: 0; color: #aaa;">&copy; 2024 Promote With Us. All rights reserved.</p>
-            <button id="loginBtn" onclick="openLoginModal()" title="Admin Login" style="background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 22px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(32, 197, 181, 0.3);">
-              👤
-            </button>
+            <a href="admin-login.html" style="background: linear-gradient(135deg, #20c5b5, #0db8a1); color: #042; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 12px; text-decoration: none; transition: all 0.3s ease; display: inline-block;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(32, 197, 181, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">🔐 Admin</a>
           </div>
         </div>
       </footer>
     </div>
+    </div>
     
-    <!-- Login Modal -->
-    <div id="login-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="login-modal-title" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:3000;">
-      <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:40px; border-radius:15px; width:400px; max-width:92%; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.8);">
-        <button id="login-modal-close" aria-label="Close" style="position:absolute; right:15px; top:15px; background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px;">&times;</button>
-        <h3 id="login-modal-title" style="color:#20c5b5; margin:0 0 10px 0; font-size:22px; font-weight:700; text-align:center;">Admin Login</h3>
-        <p style="color:#9fbfc6; margin:0 0 25px 0; font-size:14px; text-align:center;">Access your dashboard</p>
-        
-        <form id="loginForm">
-          <label for="login_username" style="display:block; margin-bottom:10px; color:#cfd8df; font-size:14px; font-weight:600;">Username</label>
-          <input id="login_username" name="username" required autocomplete="username" placeholder="Enter username" style="width:100%; padding:11px 12px; margin-bottom:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit;" />
-          
-          <label for="login_password" style="display:block; margin-bottom:10px; color:#cfd8df; font-size:14px; font-weight:600;">Password</label>
-          <input id="login_password" name="password" type="password" required autocomplete="current-password" placeholder="Enter password" style="width:100%; padding:11px 12px; margin-bottom:20px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit;" />
-          
-          <button type="submit" style="width:100%; background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:12px; border-radius:8px; color:#042; font-weight:700; cursor:pointer; font-size:15px; transition:all 0.3s ease;">Login</button>
-          <div id="loginMsg" style="color:#ffb3b3; font-size:13px; margin-top:15px; text-align:center; min-height:18px;"></div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Dashboard Modal (shows after login) -->
-    <div id="dashboard-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="dashboard-modal-title" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:3000; overflow-y:auto;">
-      <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:30px; border-radius:15px; width:90%; max-width:900px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.8); margin:20px auto;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-          <h3 id="dashboard-modal-title" style="color:#20c5b5; margin:0; font-size:22px; font-weight:700;">Dashboard - <span id="dashboardUsername" style="color:#fff;">User</span></h3>
-          <button id="dashboard-close" aria-label="Close" style="background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px;">&times;</button>
-        </div>
-        
-        <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
-          <button id="dashboardTabLeads" onclick="showDashboardTab('leads')" style="background:#20c5b5; color:#042; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">📋 Leads</button>
-          <button id="dashboardTabPlans" onclick="showDashboardTab('plans')" style="background:#0db8a1; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">➕ Plans</button>
-          <button id="dashboardTabLogout" onclick="logoutUser()" style="background:#ff6b6b; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">Logout</button>
-        </div>
-
-        <!-- Leads Tab Content -->
-        <div id="leadsTab" style="display:block;">
-          <div id="leadsContainer" style="background:rgba(255,255,255,0.05); padding:20px; border-radius:8px; border:1px solid rgba(32,197,181,0.2); max-height:500px; overflow-y:auto;">
-            <table style="width:100%; color:#cfd8df; font-size:13px; border-collapse:collapse;">
-              <thead>
-                <tr style="border-bottom:1px solid rgba(32,197,181,0.3);">
-                  <th style="padding:10px; text-align:left; color:#20c5b5;">Company</th>
-                  <th style="padding:10px; text-align:left; color:#20c5b5;">Phone</th>
-                  <th style="padding:10px; text-align:left; color:#20c5b5;">Email</th>
-                  <th style="padding:10px; text-align:left; color:#20c5b5;">Plan</th>
-                  <th style="padding:10px; text-align:left; color:#20c5b5;">Requirements</th>
-                  <th style="padding:10px; text-align:left; color:#20c5b5;">Submitted At</th>
-                </tr>
-              </thead>
-              <tbody id="leadsTableBody">
-                <tr><td colspan="5" style="padding:20px; text-align:center; color:#9fbfc6;">Loading leads...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Plans Tab Content -->
-        <div id="plansTab" style="display:none;">
-          <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:8px; border:1px solid rgba(32,197,181,0.2); margin-bottom:20px;">
-            <h4 style="color:#20c5b5; margin:0 0 15px 0; font-size:16px; font-weight:600;">Add New Plan</h4>
-            <form id="addPlanForm" style="display:grid; gap:12px;">
-              <div>
-                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan Category *</label>
-                <select id="planCategory" required style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
-                  <option value="">-- Select Category --</option>
-                  <option value="Website">Website</option>
-                  <option value="Social Media">Social Media</option>
-                  <option value="App">App</option>
-                  <option value="E-commerce">E-commerce</option>
-                  <option value="Digital Marketing">Digital Marketing</option>
-                  <option value="Branding">Branding</option>
-                </select>
-              </div>
-              
-              <div>
-                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan Tier *</label>
-                <select id="planTier" required style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
-                  <option value="">-- Select Tier --</option>
-                  <option value="Silver">🥈 Silver</option>
-                  <option value="Gold">🥇 Gold</option>
-                  <option value="Platinum">💎 Platinum</option>
-                </select>
-              </div>
-              
-              <div>
-                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan Name *</label>
-                <input id="planName" type="text" required placeholder="e.g., Basic Website" style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
-              </div>
-              
-              <div>
-                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Price *</label>
-                <input id="planPrice" type="text" required placeholder="e.g., ₹15,000" style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
-              </div>
-              
-              <div>
-                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Description</label>
-                <input id="planDesc" type="text" placeholder="Brief description" style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
-              </div>
-              
-              <button type="submit" style="background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:10px; border-radius:6px; color:#042; font-weight:700; cursor:pointer; font-size:14px;">Add Plan</button>
-              <div id="addPlanMsg" style="color:#ffb3b3; font-size:12px; text-align:center; min-height:18px;"></div>
-            </form>
-          </div>
-
-          <div id="plansListContainer" style="background:rgba(255,255,255,0.05); padding:20px; border-radius:8px; border:1px solid rgba(32,197,181,0.2); max-height:500px; overflow-y:auto;">
-            <h4 style="color:#20c5b5; margin:0 0 15px 0; font-size:16px; font-weight:600;">Added Plans</h4>
-            <div id="plansList">
-              <p style="color:#9fbfc6; text-align:center;">Loading plans...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Edit Plan Modal -->
-    <div id="edit-plan-modal" class="modal hidden" role="dialog" aria-hidden="true" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:3100; overflow-y:auto;">
-      <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:30px; border-radius:15px; width:90%; max-width:500px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.8); margin:20px auto;">
-        <button id="edit-plan-modal-close" aria-label="Close" style="position:absolute; right:15px; top:12px; background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px; display:flex; align-items:center; justify-content:center;">&times;</button>
-        
-        <h3 style="color:#20c5b5; margin:0 0 25px 0; font-size:20px; font-weight:700;">Edit Plan</h3>
-        
-        <form id="editPlanForm" style="display:grid; gap:12px;">
-          <input id="editPlanId" type="hidden" />
-          
-          <div>
-            <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Category *</label>
-            <select id="editPlanCategory" required style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
-              <option value="">-- Select Category --</option>
-              <option value="Website">Website</option>
-              <option value="Social Media">Social Media</option>
-              <option value="App">App</option>
-              <option value="E-commerce">E-commerce</option>
-              <option value="Digital Marketing">Digital Marketing</option>
-              <option value="Branding">Branding</option>
-            </select>
-          </div>
-          
-          <div>
-            <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Tier *</label>
-            <select id="editPlanTier" required style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
-              <option value="">-- Select Tier --</option>
-              <option value="Silver">🥈 Silver</option>
-              <option value="Gold">🥇 Gold</option>
-              <option value="Platinum">💎 Platinum</option>
-            </select>
-          </div>
-          
-          <div>
-            <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan Name *</label>
-            <input id="editPlanName" type="text" required style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
-          </div>
-          
-          <div>
-            <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Price *</label>
-            <input id="editPlanPrice" type="text" required style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
-          </div>
-          
-          <div>
-            <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Description</label>
-            <input id="editPlanDesc" type="text" style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
-          </div>
-          
-          <button type="submit" style="background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:10px; border-radius:6px; color:#042; font-weight:700; cursor:pointer; font-size:14px;">Save Changes</button>
-          <div id="editPlanMsg" style="color:#ffb3b3; font-size:12px; text-align:center; min-height:18px;"></div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Lead Detail Modal -->
-    <div id="lead-detail-modal" class="modal hidden" role="dialog" aria-hidden="true" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:3100; overflow-y:auto;">
-      <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:30px; border-radius:15px; width:90%; max-width:700px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.8); margin:20px auto;">
-        <button id="detail-modal-close" aria-label="Close" style="position:absolute; right:15px; top:12px; background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px; display:flex; align-items:center; justify-content:center;">&times;</button>
-        
-        <h3 style="color:#20c5b5; margin:0 0 25px 0; font-size:20px; font-weight:700;">Lead Details</h3>
-        
-        <div style="background:rgba(255,255,255,0.02); padding:20px; border-radius:10px; border:1px solid rgba(32,197,181,0.2);">
-          <div style="margin-bottom:20px;">
-            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Company Name</label>
-            <p id="detail-company" style="color:#cfd8df; font-size:16px; margin:8px 0 0 0; word-break:break-word;"></p>
-          </div>
-          
-          <div style="margin-bottom:20px;">
-            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Contact Information</label>
-            <p style="color:#cfd8df; font-size:14px; margin:8px 0 0 0;">
-              <span style="color:#20c5b5; font-weight:600;">Phone:</span>
-              <a id="detail-phone" href="" style="color:#0db8a1; text-decoration:none; cursor:pointer; transition:color 0.2s;"></a>
-            </p>
-            <p style="color:#cfd8df; font-size:14px; margin:8px 0 0 0;">
-              <span style="color:#20c5b5; font-weight:600;">Email:</span>
-              <a id="detail-email" href="" style="color:#0db8a1; text-decoration:none; cursor:pointer; transition:color 0.2s;"></a>
-            </p>
-          </div>
-          
-          <div style="margin-bottom:20px;">
-            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Selected Plan</label>
-            <p id="detail-plan" style="color:#cfd8df; font-size:16px; margin:8px 0 0 0; word-break:break-word;"></p>
-          </div>
-          
-          <div style="margin-bottom:20px;">
-            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Requirements / Additional Notes</label>
-            <div id="detail-requirements" style="color:#cfd8df; font-size:14px; margin:8px 0 0 0; background:rgba(255,255,255,0.04); padding:12px; border-radius:6px; border-left:3px solid #20c5b5; min-height:60px; max-height:150px; overflow-y:auto; white-space:pre-wrap; word-break:break-word;"></div>
-          </div>
-          
-          <div style="margin-bottom:0;">
-            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Submitted At</label>
-            <p id="detail-time" style="color:#cfd8df; font-size:14px; margin:8px 0 0 0;"></p>
-          </div>
-        </div>
-        
-        <button onclick="closeDetailModal()" style="margin-top:25px; width:100%; background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:12px; border-radius:8px; color:#042; font-weight:700; cursor:pointer; font-size:15px; transition:all 0.3s ease;">Close</button>
-      </div>
-    </div>
-
     <!-- Initialize 3D Scene and Animations -->
     <script src="js/enhanced-3d.js"></script>
     <script>
@@ -1856,6 +1643,44 @@
       document.addEventListener('DOMContentLoaded', () => {
         const addPlanForm = document.getElementById('addPlanForm');
         if (addPlanForm) {
+          // Add Feature button handler
+          document.getElementById('addFeatureBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            const container = document.getElementById('featuresContainer');
+            const newFeature = document.createElement('div');
+            newFeature.style.cssText = 'display:flex; gap:8px;';
+            newFeature.innerHTML = `
+              <input type="text" class="feature-input" placeholder="✅ Feature" style="flex:1; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
+              <button type="button" class="remove-feature-btn" style="background:rgba(255,100,100,0.2); border:1px solid rgba(255,100,100,0.5); color:#ff6464; padding:10px 15px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px;">Remove</button>
+            `;
+            container.appendChild(newFeature);
+            
+            // Add event listener to remove button
+            newFeature.querySelector('.remove-feature-btn').addEventListener('click', (e) => {
+              e.preventDefault();
+              newFeature.remove();
+              updateRemoveButtonsVisibility();
+            });
+            
+            updateRemoveButtonsVisibility();
+          });
+          
+          // Update visibility of remove buttons
+          function updateRemoveButtonsVisibility() {
+            const container = document.getElementById('featuresContainer');
+            const features = container.querySelectorAll('div');
+            features.forEach((feature, index) => {
+              const removeBtn = feature.querySelector('.remove-feature-btn');
+              if (removeBtn) {
+                removeBtn.style.display = features.length > 1 ? 'block' : 'none';
+              }
+            });
+          }
+          
+          // Initial visibility check
+          updateRemoveButtonsVisibility();
+          
+          // Add Plan form submission
           addPlanForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const msg = document.getElementById('addPlanMsg');
@@ -1866,6 +1691,13 @@
             const name = document.getElementById('planName').value.trim();
             const price = document.getElementById('planPrice').value.trim();
             const description = document.getElementById('planDesc').value.trim();
+            const deliveryTime = document.getElementById('planDeliveryTime').value.trim();
+            const idealFor = document.getElementById('planIdealFor').value.trim();
+            
+            // Collect features
+            const features = Array.from(document.querySelectorAll('.feature-input'))
+              .map(input => input.value.trim())
+              .filter(value => value.length > 0);
 
             if (!category || !tier || !name || !price) {
               msg.style.color = '#ffb3b3';
@@ -1873,11 +1705,17 @@
               return;
             }
 
+            if (features.length === 0) {
+              msg.style.color = '#ffb3b3';
+              msg.textContent = 'Please add at least one feature';
+              return;
+            }
+
             try {
               const res = await fetch('/api/plans', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ category, tier, name, price, description, features: [] })
+                body: JSON.stringify({ category, tier, name, price, description, features, deliveryTime, idealFor })
               });
 
               const data = await res.json();
@@ -1886,7 +1724,15 @@
                 msg.style.color = '#9fbfc6';
                 msg.textContent = '✅ Plan added successfully!';
                 addPlanForm.reset();
-                setTimeout(() => loadPlansList(), 500);
+                // Reset features to one empty input
+                document.getElementById('featuresContainer').innerHTML = `
+                  <div style="display:flex; gap:8px;">
+                    <input type="text" class="feature-input" placeholder="✅ Feature 1" style="flex:1; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
+                    <button type="button" class="remove-feature-btn" style="background:rgba(255,100,100,0.2); border:1px solid rgba(255,100,100,0.5); color:#ff6464; padding:10px 15px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; display:none;">Remove</button>
+                  </div>
+                `;
+                updateRemoveButtonsVisibility();
+                setTimeout(() => loadCustomPlans(), 500);
               } else {
                 msg.style.color = '#ffb3b3';
                 msg.textContent = 'Error: ' + (data.message || 'Failed to add plan');
@@ -2502,14 +2348,22 @@
 
                 categoryPlans.forEach(plan => {
                   const tierEmoji = plan.tier === 'Silver' ? '🥈' : plan.tier === 'Gold' ? '🥇' : '💎';
+                  const featuresList = plan.features ? plan.features.map(f => `<li style="text-align: left; margin-bottom: 8px; color: #333; font-size: 13px;">${escapeHtml(f)}</li>`).join('') : '';
+                  
                   html += `
                     <div class="glass-card fade-in" data-animate data-plan-id="${plan.id}" style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
-                      <div style="text-align: center; margin-bottom: 30px;">
+                      <div style="text-align: center; margin-bottom: 20px;">
                         <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">${tierEmoji} ${plan.tier.toUpperCase()} PLAN</h3>
-                        <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">${escapeHtml(plan.description || '')}</p>
-                        <p style="color: #666; font-size: 13px; margin: 0; margin-bottom: 15px;">${escapeHtml(plan.name)}</p>
+                        <p style="color: #666; font-size: 13px; font-weight: 500; margin: 0; margin-bottom: 10px;">${escapeHtml(plan.description || '')}</p>
                       </div>
-                      <div style="text-align: center; margin-bottom: 20px; flex-grow: 1;">
+                      <div style="text-align: left; margin-bottom: 20px; flex-grow: 1;">
+                        <ul style="list-style: none; padding: 0; margin: 0; margin-bottom: 15px;">
+                          ${featuresList}
+                        </ul>
+                        ${plan.deliveryTime ? `<p style="color: #20c5b5; font-size: 12px; font-weight: 600; margin: 10px 0 5px 0; text-align: left;">⏱️ Delivery: ${escapeHtml(plan.deliveryTime)}</p>` : ''}
+                        ${plan.idealFor ? `<p style="color: #666; font-size: 12px; margin: 0; text-align: left;">💡 ${escapeHtml(plan.idealFor)}</p>` : ''}
+                      </div>
+                      <div style="text-align: center; margin-bottom: 20px;">
                         <p style="color: #20c5b5; font-weight: 600; margin: 0; font-size: 18px;">${escapeHtml(plan.price)}</p>
                       </div>
                       <div class="plan-button-container" style="width: 100%; display: flex; gap: 4%; justify-content: center;">

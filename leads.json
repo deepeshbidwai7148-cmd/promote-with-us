@@ -65,6 +65,15 @@
       "plan": "Gold Plan",
       "requirements": "HI I AM ANKUR PAL",
       "created_at": "2026-01-22T05:13:37.692Z"
+    },
+    {
+      "id": 9,
+      "brand_name": "CHETAN",
+      "phone": "8485037148",
+      "email": "promotewithus94@gmail.com",
+      "plan": "Gold Plan",
+      "requirements": "",
+      "created_at": "2026-01-22T05:52:15.317Z"
     }
   ]
 }

@@ -214,25 +214,31 @@ app.post('/api/lead', (req, res) => {
 function basicAuth(req, res, next) {
   const auth = req.headers['authorization'];
   const adminUser = process.env.ADMIN_USER || 'admin';
-  const adminPass = process.env.ADMIN_PASS || 'password';
+  const adminPass = process.env.ADMIN_PASS || 'ACDS@123';
 
   if (!auth) {
-    res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
-    return res.status(401).send('Authentication required');
+    return res.status(401).json({ authenticated: false, message: 'Authentication required' });
   }
 
   const parts = auth.split(' ');
   if (parts.length !== 2 || parts[0] !== 'Basic') {
-    return res.status(400).send('Bad authorization header');
+    return res.status(400).json({ authenticated: false, message: 'Bad authorization header' });
   }
 
   const decoded = Buffer.from(parts[1], 'base64').toString();
   const [user, pass] = decoded.split(':');
+  
+  console.log('Auth attempt - User:', user, 'Expected:', adminUser, 'Pass match:', pass === adminPass);
+  
   if (user === adminUser && pass === adminPass) return next();
 
-  res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
-  return res.status(401).send('Invalid credentials');
+  return res.status(401).json({ authenticated: false, message: 'Invalid credentials' });
 }
+
+// Authentication endpoint (protected by basic auth)
+app.get('/api/auth/check', basicAuth, (req, res) => {
+  res.json({ authenticated: true, message: 'Authentication successful' });
+});
 
 // Admin interface to view leads (protected by basic auth)
 app.get('/admin', basicAuth, (req, res) => {
@@ -279,7 +285,7 @@ app.get('/api/leads', (req, res) => {
 
 // API endpoint to add a new plan (protected by basic auth)
 app.post('/api/plans', basicAuth, (req, res) => {
-  const { category, tier, name, price, description, features } = req.body;
+  const { category, tier, name, price, description, features, deliveryTime, idealFor } = req.body;
   
   if (!category || !tier || !name || !price) {
     return res.status(400).json({ success: false, message: 'category, tier, name, and price are required' });
@@ -295,6 +301,8 @@ app.post('/api/plans', basicAuth, (req, res) => {
       price: price,
       description: description || '',
       features: features || [],
+      deliveryTime: deliveryTime || '',
+      idealFor: idealFor || '',
       created_at: new Date().toISOString()
     };
     
@@ -348,7 +356,7 @@ app.delete('/api/plans/:id', basicAuth, (req, res) => {
 // API endpoint to edit a plan (protected by basic auth)
 app.put('/api/plans/:id', basicAuth, (req, res) => {
   const planId = parseInt(req.params.id);
-  const { category, tier, name, price, description } = req.body;
+  const { category, tier, name, price, description, features, deliveryTime, idealFor } = req.body;
   
   if (!category || !tier || !name || !price) {
     return res.status(400).json({ success: false, message: 'All required fields must be provided' });
@@ -369,6 +377,9 @@ app.put('/api/plans/:id', basicAuth, (req, res) => {
       name: name,
       price: price,
       description: description || '',
+      features: features || plans[planIndex].features || [],
+      deliveryTime: deliveryTime || plans[planIndex].deliveryTime || '',
+      idealFor: idealFor || plans[planIndex].idealFor || '',
       updated_at: new Date().toISOString()
     };
     

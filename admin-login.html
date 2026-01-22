@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Promote With Us</title>
+    <meta name="description" content="Admin dashboard for Promote With Us management panel">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #164069;
+            --secondary: #20c5b5;
+            --accent: #20c5b5;
+            --light: #f8f9ff;
+            --dark: #0a0e27;
+            --gradient-main: linear-gradient(135deg, #164069 0%, #20c5b5 100%);
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #164069 50%, #0db8a1 100%);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; position: relative; z-index: 10; }
+        .dashboard-page { display: none; padding: 20px; }
+        
+        .login-page.active { display: flex; }
+        .dashboard-page.active { display: block; }
+        
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            animation: slideInUp 0.6s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .login-header h1 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(32, 197, 181, 0.1);
+        }
+        
+        .form-group input::placeholder {
+            color: #999;
+        }
+        
+        .login-btn, .dashboard-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient-main);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .login-btn:hover, .dashboard-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(32, 197, 181, 0.3);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .form-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center;
+            min-height: 20px;
+            display: none;
+        }
+        
+        .form-message.error {
+            display: block;
+            background: rgba(255, 107, 107, 0.1);
+            color: #e53935;
+            border: 1px solid rgba(229, 57, 53, 0.3);
+        }
+        
+        .form-message.success {
+            display: block;
+            background: rgba(76, 175, 80, 0.1);
+            color: #388e3c;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .login-info {
+            background: rgba(32, 197, 181, 0.05);
+            border: 1px solid rgba(32, 197, 181, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #0f1630 0%, #14213a 100%);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(32, 197, 181, 0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .dashboard-header h1 {
+            color: #20c5b5;
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .dashboard-header p {
+            color: #9fbfc6;
+            margin: 5px 0 0 0;
+            font-size: 13px;
+        }
+        
+        .dashboard-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            background: rgba(32, 197, 181, 0.2);
+            border: 1px solid rgba(32, 197, 181, 0.5);
+            color: #20c5b5;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            background: #20c5b5;
+            color: #042;
+            border-color: #20c5b5;
+        }
+        
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .section-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(32, 197, 181, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            color: #20c5b5;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #cfd8df;
+            font-size: 13px;
+        }
+        
+        table thead {
+            border-bottom: 1px solid rgba(32, 197, 181, 0.3);
+        }
+        
+        table th {
+            padding: 10px;
+            text-align: left;
+            color: #20c5b5;
+            font-weight: 600;
+        }
+        
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(32, 197, 181, 0.1);
+        }
+        
+        .scroll-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .logout-btn {
+            background: #ff6b6b !important;
+            color: #fff !important;
+            border-color: #ff6b6b !important;
+        }
+        
+        .logout-btn:hover {
+            background: #ff5252 !important;
+        }
+        
+        select {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+        
+        option {
+            background: #164069;
+            color: #fff;
+        }
+        
+        @media (max-width: 600px) {
+            .login-card {
+                padding: 30px 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 24px;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            table th, table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1>👤 Admin Login</h1>
+                    <p>Enter your credentials to access the admin dashboard</p>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input 
+                            id="username" 
+                            type="text" 
+                            placeholder="Enter your username" 
+                            required
+                            autocomplete="username"
+                        />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input 
+                            id="password" 
+                            type="password" 
+                            placeholder="Enter your password" 
+                            required
+                            autocomplete="current-password"
+                        />
+                    </div>
+                    
+                    <button type="submit" class="login-btn" id="loginSubmitBtn">
+                        Sign In
+                    </button>
+                    
+                    <div class="form-message" id="loginMessage"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="dashboard-page">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div class="dashboard-header">
+                <div>
+                    <h1>📊 Admin Dashboard</h1>
+                    <p id="dashboardUser">Welcome, Admin</p>
+                </div>
+                <button id="logoutBtn" class="tab-btn logout-btn" style="margin: 0;">🚪 Logout</button>
+            </div>
+            
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" onclick="switchTab('leads')">📋 Leads</button>
+                <button class="tab-btn" onclick="switchTab('plans')">➕ Plans</button>
+            </div>
+            
+            <!-- Leads Tab -->
+            <div id="leadsTab" class="tab-content active">
+                <div class="section-box">
+                    <div class="section-title">Submitted Leads</div>
+                    <div class="scroll-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Plan</th>
+                                    <th>Submitted At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leadsTableBody">
+                                <tr><td colspan="5" style="text-align: center; color: #9fbfc6;">Loading leads...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Plans Tab -->
+            <div id="plansTab" class="tab-content">
+                <div class="section-box">
+                    <div class="section-title">Add New Plan</div>
+                    <form id="addPlanForm" style="display: grid; gap: 12px; max-height: 600px; overflow-y: auto;">
+                        <div>
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Plan Category *</label>
+                            <select id="planCategory" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); font-size: 13px; font-family: inherit; cursor: pointer;">
+                                <option value="">-- Select Category --</option>
+                                <option value="Website">Website</option>
+                                <option value="Social Media">Social Media</option>
+                                <option value="App">App</option>
+                                <option value="E-commerce">E-commerce</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                                <option value="Branding">Branding</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Plan Tier *</label>
+                            <select id="planTier" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); font-size: 13px; font-family: inherit; cursor: pointer;">
+                                <option value="">-- Select Tier --</option>
+                                <option value="Silver">🥈 Silver</option>
+                                <option value="Gold">🥇 Gold</option>
+                                <option value="Platinum">💎 Platinum</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Plan Name *</label>
+                            <input id="planName" type="text" required placeholder="e.g., Basic Website" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Price *</label>
+                            <input id="planPrice" type="text" required placeholder="e.g., ₹15,000" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Description</label>
+                            <input id="planDesc" type="text" placeholder="Brief description" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Delivery Days (e.g., 5-7)</label>
+                            <input id="planDeliveryTime" type="text" placeholder="e.g., 5-7 Days" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Ideal For</label>
+                            <input id="planIdealFor" type="text" placeholder="e.g., Online presence & brand visibility" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Key Points / Features</label>
+                            <div id="featuresContainer" style="display: grid; gap: 8px; margin-bottom: 8px;">
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="text" class="feature-input" placeholder="✅ Feature 1" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                                    <button type="button" class="remove-feature-btn" style="background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.5); color: #ff6464; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; display: none;">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" id="addFeatureBtn" style="background: rgba(32,197,181,0.2); border: 1px solid rgba(32,197,181,0.5); color: #20c5b5; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; width: 100%;">+ Add Another Feature</button>
+                        </div>
+                        
+                        <button type="submit" style="background: linear-gradient(135deg, #20c5b5, #0db8a1); border: none; padding: 10px; border-radius: 6px; color: #042; font-weight: 700; cursor: pointer; font-size: 14px;">Add Plan</button>
+                        <div id="addPlanMsg" style="color: #ffb3b3; font-size: 12px; text-align: center; min-height: 18px;"></div>
+                    </form>
+                </div>
+                
+                <div class="section-box">
+                    <div class="section-title">Added Plans</div>
+                    <div class="scroll-container">
+                        <div id="plansList">
+                            <p style="color: #9fbfc6; text-align: center;">Loading plans...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginMessage = document.getElementById('loginMessage');
+        const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+        const loginPage = document.getElementById('loginPage');
+        const dashboardPage = document.getElementById('dashboardPage');
+        
+        // Check if already logged in
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('isAdmin') === 'true') {
+                showDashboard();
+            }
+        });
+        
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (!username || !password) {
+                showMessage('Please enter both username and password', 'error');
+                return;
+            }
+            
+            loginSubmitBtn.disabled = true;
+            loginSubmitBtn.textContent = 'Signing In...';
+            
+            try {
+                const auth = btoa(`${username}:${password}`);
+                
+                const response = await fetch('/api/auth/check', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Basic ${auth}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (response.status === 401) {
+                    showMessage('❌ Invalid username or password', 'error');
+                    loginSubmitBtn.disabled = false;
+                    loginSubmitBtn.textContent = 'Sign In';
+                } else if (response.ok) {
+                    localStorage.setItem('isAdmin', 'true');
+                    localStorage.setItem('adminAuth', auth);
+                    localStorage.setItem('adminUsername', username);
+                    document.getElementById('dashboardUser').textContent = `Welcome, ${username}`;
+                    showMessage('✅ Login successful!', 'success');
+                    setTimeout(() => showDashboard(), 500);
+                } else {
+                    showMessage('❌ Login failed. Please try again.', 'error');
+                    loginSubmitBtn.disabled = false;
+                    loginSubmitBtn.textContent = 'Sign In';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('❌ Network error. Make sure server is running.', 'error');
+                loginSubmitBtn.disabled = false;
+                loginSubmitBtn.textContent = 'Sign In';
+            }
+        });
+        
+        function showMessage(message, type) {
+            loginMessage.className = `form-message ${type}`;
+            loginMessage.textContent = message;
+        }
+        
+        function showDashboard() {
+            loginPage.classList.remove('active');
+            dashboardPage.classList.add('active');
+            const username = localStorage.getItem('adminUsername') || 'Admin';
+            document.getElementById('dashboardUser').textContent = `Welcome, ${username}`;
+            loadLeads();
+            loadCustomPlans();
+        }
+        
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('isAdmin');
+            localStorage.removeItem('adminAuth');
+            localStorage.removeItem('adminUsername');
+            loginPage.classList.add('active');
+            dashboardPage.classList.remove('active');
+            document.getElementById('loginForm').reset();
+        });
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+        }
+        
+        // Load leads
+        async function loadLeads() {
+            try {
+                const response = await fetch('/api/leads');
+                const data = await response.json();
+                const tbody = document.getElementById('leadsTableBody');
+                
+                if (data.leads && data.leads.length > 0) {
+                    tbody.innerHTML = data.leads.map(lead => `
+                        <tr>
+                            <td>${lead.brandName || lead.brand_name || 'N/A'}</td>
+                            <td>${lead.phone || 'N/A'}</td>
+                            <td>${lead.email || 'N/A'}</td>
+                            <td>${lead.plan || 'Not specified'}</td>
+                            <td>${new Date(lead.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #9fbfc6;">No leads yet</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading leads:', error);
+                const tbody = document.getElementById('leadsTableBody');
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #ff6464;">Error loading leads</td></tr>';
+            }
+        }
+        
+        // Load and display plans
+        async function loadCustomPlans() {
+            try {
+                const response = await fetch('/api/plans');
+                const data = await response.json();
+                const plansContainer = document.getElementById('plansList');
+                
+                const groupedPlans = data.plans || {};
+                let html = '';
+                
+                Object.entries(groupedPlans).forEach(([category, plans]) => {
+                    if (plans && plans.length > 0) {
+                        html += `<h3 style="color: #20c5b5; margin: 20px 0 10px 0; font-size: 14px;">${category} Plans</h3>`;
+                        html += `<div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; margin-bottom: 15px;">`;
+                        
+                        plans.forEach(plan => {
+                            html += `
+                                <div style="background: rgba(32,197,181,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #20c5b5;">
+                                    <strong style="color: #20c5b5;">${plan.name}</strong> - ${plan.price}<br>
+                                    <span style="color: #9fbfc6; font-size: 12px;">${plan.description}</span>
+                                </div>
+                            `;
+                        });
+                        
+                        html += '</div>';
+                    }
+                });
+                
+                plansContainer.innerHTML = html || '<p style="color: #9fbfc6; text-align: center;">No plans yet</p>';
+            } catch (error) {
+                console.error('Error loading plans:', error);
+            }
+        }
+        
+        // Add plan form handler
+        document.getElementById('addPlanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('addPlanMsg');
+            msg.textContent = '';
+            
+            const category = document.getElementById('planCategory').value.trim();
+            const tier = document.getElementById('planTier').value.trim();
+            const name = document.getElementById('planName').value.trim();
+            const price = document.getElementById('planPrice').value.trim();
+            const description = document.getElementById('planDesc').value.trim();
+            const deliveryTime = document.getElementById('planDeliveryTime').value.trim();
+            const idealFor = document.getElementById('planIdealFor').value.trim();
+            const features = Array.from(document.querySelectorAll('.feature-input'))
+                .map(input => input.value.trim())
+                .filter(value => value.length > 0);
+            
+            if (!category || !tier || !name || !price) {
+                msg.style.color = '#ffb3b3';
+                msg.textContent = 'All required fields must be filled';
+                return;
+            }
+            
+            if (features.length === 0) {
+                msg.style.color = '#ffb3b3';
+                msg.textContent = 'Please add at least one feature';
+                return;
+            }
+            
+            try {
+                const auth = localStorage.getItem('adminAuth');
+                const res = await fetch('/api/plans', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Basic ${auth}`
+                    },
+                    body: JSON.stringify({ category, tier, name, price, description, features, deliveryTime, idealFor })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok && data.success) {
+                    msg.style.color = '#9fbfc6';
+                    msg.textContent = '✅ Plan added successfully!';
+                    document.getElementById('addPlanForm').reset();
+                    document.getElementById('featuresContainer').innerHTML = `
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" class="feature-input" placeholder="✅ Feature 1" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                            <button type="button" class="remove-feature-btn" style="background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.5); color: #ff6464; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; display: none;">Remove</button>
+                        </div>
+                    `;
+                    setTimeout(() => loadCustomPlans(), 500);
+                } else {
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = 'Error: ' + (data.message || 'Failed to add plan');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                msg.style.color = '#ffb3b3';
+                msg.textContent = 'Network error';
+            }
+        });
+        
+        // Add feature button
+        document.getElementById('addFeatureBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            const container = document.getElementById('featuresContainer');
+            const newFeature = document.createElement('div');
+            newFeature.style.display = 'flex';
+            newFeature.style.gap = '8px';
+            newFeature.innerHTML = `
+                <input type="text" class="feature-input" placeholder="✅ Feature" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                <button type="button" class="remove-feature-btn" style="background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.5); color: #ff6464; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;">Remove</button>
+            `;
+            container.appendChild(newFeature);
+            
+            newFeature.querySelector('.remove-feature-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                newFeature.remove();
+            });
+        });
+    </script>
+</body>
+</html>

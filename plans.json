@@ -5,27 +5,72 @@
       "category": "Website",
       "tier": "Silver",
       "name": "SILVER PLAN",
-      "price": "Custom Pricing",
-      "description": "Starter / Small Businesses",
-      "created_at": "2026-01-22T05:34:19.466Z"
+      "price": "7999/-",
+      "description": "Best for: Local shops, startups, personal brands",
+      "features": [
+        "✅ 1–3 Page Static Website",
+        "✅ Mobile Responsive Design",
+        "✅ Basic UI/UX Layout",
+        "✅ Contact Form Integration",
+        "✅ Basic SEO Setup",
+        "✅ Social Media Links",
+        "✅ Free SSL (Basic Security)",
+        "✅ 1 Month Free Support"
+      ],
+      "deliveryTime": "5–7 Days",
+      "idealFor": "Online presence & brand visibility",
+      "created_at": "2026-01-22T05:34:19.466Z",
+      "updated_at": "2026-01-22T05:39:06.328Z"
     },
     {
       "id": 2,
       "category": "Website",
       "tier": "Gold",
       "name": "GOLD PLAN",
-      "price": "Custom Pricing",
-      "description": "Growing Businesses",
-      "created_at": "2026-01-22T05:34:19.472Z"
+      "price": "14999/-",
+      "description": "Best for: Service-based businesses, startups, influencers",
+      "features": [
+        "✅ 5–7 Page Dynamic Website",
+        "✅ Premium UI/UX Design",
+        "✅ Mobile + Tablet Responsive",
+        "✅ SEO Optimization (On-page)",
+        "✅ WhatsApp Chat Integration",
+        "✅ Google Maps Integration",
+        "✅ Admin Panel (Basic CMS)",
+        "✅ Speed Optimization",
+        "✅ Free SSL + Security Setup",
+        "✅ 3 Months Free Maintenance"
+      ],
+      "deliveryTime": "7–10 Days",
+      "idealFor": "Lead generation & credibility",
+      "created_at": "2026-01-22T05:34:19.472Z",
+      "updated_at": "2026-01-22T05:55:28.880Z"
     },
     {
       "id": 3,
       "category": "Website",
       "tier": "Platinum",
       "name": "PLATINUM PLAN",
-      "price": "Custom Pricing",
-      "description": "Advanced / Professional",
-      "created_at": "2026-01-22T05:34:19.472Z"
+      "price": "19999/-",
+      "description": "Best for: E-commerce, SaaS platforms, enterprises",
+      "features": [
+        "✅ Unlimited Pages (Dynamic Website)",
+        "✅ Advanced UI/UX Design with Animations",
+        "✅ Full Mobile Responsiveness",
+        "✅ Advanced SEO + Technical SEO",
+        "✅ Payment Gateway Integration",
+        "✅ Admin Panel (Full CMS + Dashboard)",
+        "✅ User Authentication System",
+        "✅ Email Marketing Integration",
+        "✅ Analytics & Reporting Setup",
+        "✅ Advanced Security Features",
+        "✅ 24/7 Priority Support",
+        "✅ 6 Months Free Maintenance & Updates"
+      ],
+      "deliveryTime": "15–30 Days",
+      "idealFor": "High-performing, scalable solutions",
+      "created_at": "2026-01-22T05:34:19.472Z",
+      "updated_at": "2026-01-22T05:59:43.868Z"
     }
   ]
 }
