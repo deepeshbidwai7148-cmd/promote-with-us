@@ -259,10 +259,109 @@ app.get('/api/leads', (req, res) => {
     email: r.email,
     plan: r.plan || 'Not specified',
     requirements: r.requirements || '',
+    remark: r.remark || 'Pending',
+    username: r.username || null,
+    password: r.password || null,
     created_at: r.created_at
   })).reverse();
   
   res.json({ leads });
+});
+
+// API endpoint to update lead remark status
+app.put('/api/lead/:id/remark', (req, res) => {
+  const leadId = parseInt(req.params.id);
+  const { remark, approvedBy } = req.body;
+
+  if (!remark || !['Pending', 'Approved', 'Rejected'].includes(remark)) {
+    return res.status(400).json({ success: false, message: 'Invalid remark. Must be Pending, Approved, or Rejected.' });
+  }
+
+  try {
+    const leads = loadLeads();
+    let leadIndex = leads.findIndex(l => l.id === leadId);
+
+    if (leadIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+
+    // If rejecting, remove the lead
+    if (remark === 'Rejected') {
+      leads.splice(leadIndex, 1);
+    } else {
+      // Otherwise, update the remark
+      leads[leadIndex].remark = remark;
+      // Store admin username if approving
+      if (remark === 'Approved' && approvedBy) {
+        leads[leadIndex].approvedBy = approvedBy;
+      }
+    }
+
+    saveLeads(leads);
+    return res.json({ success: true, message: `Lead marked as ${remark}` });
+  } catch (err) {
+    console.error('Error updating lead remark:', err);
+    return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
+  }
+});
+
+// API endpoint to generate and store credentials for approved leads
+app.post('/api/lead/:id/credentials', (req, res) => {
+  const leadId = parseInt(req.params.id);
+  const { username, password, email } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: 'Username and password are required' });
+  }
+
+  try {
+    const leads = loadLeads();
+    const lead = leads.find(l => l.id === leadId);
+
+    if (!lead) {
+      return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+
+    if (lead.remark !== 'Approved') {
+      return res.status(400).json({ success: false, message: 'Can only generate credentials for approved leads' });
+    }
+
+    // Store credentials
+    lead.username = username;
+    lead.password = password;
+
+    saveLeads(leads);
+    
+    // Optionally send credentials via email
+    if (email) {
+      const mailOptions = {
+        from: process.env.GMAIL_USER || '',
+        to: email,
+        subject: '🎉 Your Account Credentials - Promote With Us',
+        html: `
+          <h2>Welcome!</h2>
+          <p>Your account has been approved. Here are your login credentials:</p>
+          <p><strong>Username:</strong> ${username}</p>
+          <p><strong>Password:</strong> ${password}</p>
+          <p>Please keep these credentials safe and change your password after first login.</p>
+          <br>
+          <p>Best regards,<br>Promote With Us Team</p>
+        `
+      };
+      
+      if (process.env.GMAIL_USER && process.env.GMAIL_PASSWORD) {
+        transporter.sendMail(mailOptions, (err, info) => {
+          if (err) console.error('Error sending credentials email:', err);
+          else console.log('Credentials email sent:', info.response);
+        });
+      }
+    }
+
+    return res.json({ success: true, message: 'Credentials generated and stored', username, password });
+  } catch (err) {
+    console.error('Error generating credentials:', err);
+    return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
+  }
 });
 
 // API endpoint to add a new plan (frontend auth is handled by login page)

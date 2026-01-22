@@ -964,44 +964,51 @@
           // Add pulse animation to the box
           heroBox.style.animation = 'boxPulse 3s ease-in-out infinite';
           
-          // Add click effect with particles
+          // Add click effect with bubble particles
           heroBox.addEventListener('click', (e) => {
             const rect = heroBox.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             
-            for (let i = 0; i < 8; i++) {
-              const particle = document.createElement('div');
-              particle.style.position = 'absolute';
-              particle.style.width = '4px';
-              particle.style.height = '4px';
-              particle.style.background = '#20c5b5';
-              particle.style.borderRadius = '50%';
-              particle.style.pointerEvents = 'none';
-              particle.style.left = x + 'px';
-              particle.style.top = y + 'px';
-              particle.style.zIndex = '100';
+            // Create multiple bubbles
+            for (let i = 0; i < 6; i++) {
+              const bubble = document.createElement('div');
+              bubble.style.position = 'absolute';
+              bubble.style.width = (20 + Math.random() * 20) + 'px';
+              bubble.style.height = bubble.style.width;
+              bubble.style.borderRadius = '50%';
+              bubble.style.background = 'radial-gradient(circle at 30% 30%, rgba(32, 197, 181, 0.8), rgba(13, 184, 161, 0.4))';
+              bubble.style.border = '2px solid rgba(32, 197, 181, 0.6)';
+              bubble.style.pointerEvents = 'none';
+              bubble.style.zIndex = '100';
+              bubble.style.left = (x - 20) + 'px';
+              bubble.style.top = (y - 20) + 'px';
+              bubble.style.boxShadow = '0 0 10px rgba(32, 197, 181, 0.6)';
               
-              const angle = (i / 8) * Math.PI * 2;
+              // Random velocity for bubble dispersion
+              const angle = (i / 6) * Math.PI * 2;
               const velocity = {
-                x: Math.cos(angle) * 3,
-                y: Math.sin(angle) * 3
+                x: Math.cos(angle) * (2 + Math.random() * 3),
+                y: Math.sin(angle) * (2 + Math.random() * 3)
               };
               
-              heroBox.appendChild(particle);
+              heroBox.appendChild(bubble);
               
-              let life = 1;
-              const interval = setInterval(() => {
-                life -= 0.05;
-                x += velocity.x;
-                y += velocity.y;
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                particle.style.opacity = life;
+              let lifetime = 2.5;
+              let px = x, py = y;
+              const bubbleInterval = setInterval(() => {
+                lifetime -= 0.03;
+                px += velocity.x;
+                py += velocity.y;
+                velocity.y += 0.15; // Gravity effect
                 
-                if (life <= 0) {
-                  clearInterval(interval);
-                  particle.remove();
+                bubble.style.left = (px - parseInt(bubble.style.width)/2) + 'px';
+                bubble.style.top = (py - parseInt(bubble.style.height)/2) + 'px';
+                bubble.style.opacity = lifetime / 2.5;
+                
+                if (lifetime <= 0) {
+                  clearInterval(bubbleInterval);
+                  bubble.remove();
                 }
               }, 30);
             }
@@ -1393,7 +1400,10 @@
           </div>
           <div style="border-top: 1px solid #333; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
             <p style="margin: 0; color: #aaa;">&copy; 2024 Promote With Us. All rights reserved.</p>
-            <a href="admin-login.html" style="background: linear-gradient(135deg, #20c5b5, #0db8a1); color: #042; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 12px; text-decoration: none; transition: all 0.3s ease; display: inline-block;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(32, 197, 181, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">🔐 Admin</a>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <button id="userLoginBtn" style="background: linear-gradient(135deg, #20c5b5, #0db8a1); color: #042; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 12px; border: none; text-decoration: none; transition: all 0.3s ease; display: inline-block; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(32, 197, 181, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">👤 User Login</button>
+              <a href="admin-login.html" style="background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 12px; text-decoration: none; transition: all 0.3s ease; display: inline-block;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">🔐 Admin</a>
+            </div>
           </div>
         </div>
       </footer>
@@ -1916,9 +1926,9 @@
     </script>
   
   <!-- Plan Selection Modal -->
-  <div id="plan-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="plan-modal-title" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); z-index:2000;">
-    <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:30px; border-radius:15px; width:450px; max-width:92%; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
-      <button id="plan-modal-close" aria-label="Close" style="position:absolute; right:15px; top:12px; background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px; display:flex; align-items:center; justify-content:center;">&times;</button>
+  <div id="plan-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="plan-modal-title" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); z-index:2000; padding:20px;">
+    <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:30px; border-radius:15px; width:450px; max-width:92%; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.6); max-height:90vh; overflow-y:auto;">
+      <button id="plan-modal-close" aria-label="Close" style="position:absolute; right:15px; top:12px; background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px; display:flex; align-items:center; justify-content:center; z-index:10;">&times;</button>
       <h3 id="plan-modal-title" style="color:#20c5b5; margin:0 0 8px 0; font-size:20px; font-weight:700;">Get Started with Your Plan</h3>
       <p style="color:#9fbfc6; margin:0 0 20px 0; font-size:14px;">Fill in your details and select your plan</p>
       
@@ -1931,20 +1941,6 @@
         
         <label for="plan_email" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Email Address *</label>
         <input id="plan_email" name="email" type="email" required placeholder="you@company.com" style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:14px; font-family:inherit;" />
-        
-        <label for="plan_category" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Select Category (Optional)</label>
-        <select id="plan_category" name="category" style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:14px; font-family:inherit; cursor:pointer;">
-          <option value="">-- Choose a Category --</option>
-          <option value="Website">Website</option>
-        </select>
-        
-        <label for="plan_selection" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Select Your Plan (Optional)</label>
-        <select id="plan_selection" name="plan" style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:14px; font-family:inherit; cursor:pointer;">
-          <option value="">-- Choose a Plan --</option>
-          <option value="Silver Plan">🥈 Silver Plan (1–3 Pages)</option>
-          <option value="Gold Plan">🥇 Gold Plan (5–7 Pages)</option>
-          <option value="Platinum Plan">💎 Platinum Plan (10–15 Pages)</option>
-        </select>
         
         <div style="display:block; margin-top:15px;">
           <label style="display:flex; align-items:center; color:#cfd8df; font-size:14px; font-weight:600; cursor:pointer; gap:10px;">
@@ -1964,6 +1960,13 @@
           <div id="combined_plans_dropdowns" style="display:flex; flex-direction:column; gap:20px;"></div>
         </div>
         
+        <div id="single_plan_section" style="display:block;">
+          <label for="plan_selection" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Select Your Plan</label>
+          <select id="plan_selection" name="plan" style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:14px; font-family:inherit; cursor:pointer;">
+            <option value="">-- Choose a Plan --</option>
+          </select>
+        </div>
+        
         <label for="plan_requirements" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Your Requirements (Optional)</label>
         <textarea id="plan_requirements" name="requirements" placeholder="Tell us about your project, features you need, design preferences, etc." style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:14px; font-family:inherit; resize:vertical; min-height:80px; max-height:150px;"></textarea>
         
@@ -1981,7 +1984,12 @@
       try {
         const response = await fetch('/api/plans');
         const data = await response.json();
-        allPlans = data.plans || [];
+        // The API returns either a flat array or an object with allPlans array
+        allPlans = data.allPlans || data.plans || [];
+        // If plans is an object (grouped by category), convert to array
+        if (typeof allPlans === 'object' && !Array.isArray(allPlans)) {
+          allPlans = Object.values(allPlans).flat();
+        }
         populateCategoryDropdown();
         populatePlanDropdown();
       } catch (error) {
@@ -1990,49 +1998,28 @@
     }
     
     function populateCategoryDropdown() {
-      const categorySelect = document.getElementById('plan_category');
-      const categories = [...new Set(allPlans.map(p => p.category))];
+      // This function is no longer needed as we removed the category filter section
+      // Categories are now only used in the combined plans section
+    }
+    
+    function filterPlansBySelectedCategories() {
+      // This function is no longer needed as we removed the category filter section
+      const planSelect = document.getElementById('plan_selection');
+      planSelect.innerHTML = '<option value="">-- Choose a Plan --</option>';
       
-      // Remove duplicates - keep only the default option and add new ones
-      const existingOptions = Array.from(categorySelect.options).map(o => o.value);
-      
-      categories.forEach(category => {
-        if (!existingOptions.includes(category)) {
-          const option = document.createElement('option');
-          option.value = category;
-          option.textContent = category;
-          categorySelect.appendChild(option);
-        }
-      });
-      
-      // Also populate combined plans checkboxes
-      const checkboxesContainer = document.getElementById('category_checkboxes');
-      checkboxesContainer.innerHTML = '';
-      categories.forEach(category => {
-        const label = document.createElement('label');
-        label.style.cssText = 'display:flex; align-items:center; color:#cfd8df; font-size:13px; cursor:pointer; gap:8px;';
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.value = category;
-        checkbox.style.cssText = 'width:16px; height:16px; cursor:pointer; accent-color:#20c5b5;';
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(category));
-        checkboxesContainer.appendChild(label);
+      // Show all plans
+      allPlans.forEach(plan => {
+        const option = document.createElement('option');
+        option.value = plan.name;
+        option.textContent = `${plan.tier} - ${plan.category} (${plan.price})`;
+        planSelect.appendChild(option);
       });
     }
     
     function populatePlanDropdown() {
-      const planSelect = document.getElementById('plan_selection');
-      const existingOptions = Array.from(planSelect.options).map(o => o.value);
-      
-      allPlans.forEach(plan => {
-        if (!existingOptions.includes(plan.name)) {
-          const option = document.createElement('option');
-          option.value = plan.name;
-          option.textContent = `${plan.tier} (${plan.category})`;
-          planSelect.appendChild(option);
-        }
-      });
+      // This function is now handled by filterPlansBySelectedCategories()
+      // Initially populate all plans
+      filterPlansBySelectedCategories();
     }
     
     function openPlanModal(planName) {
@@ -2046,9 +2033,12 @@
       // Reset form
       combineToggle.checked = false;
       document.getElementById('combined_plans_section').style.display = 'none';
-      document.getElementById('plan_selection').style.display = 'block';
-      document.querySelector('label[for="plan_selection"]').style.display = 'block';
-      document.getElementById('category_checkboxes').querySelectorAll('input').forEach(cb => cb.checked = false);
+      document.getElementById('single_plan_section').style.display = 'block';
+      document.getElementById('plan_count_select').value = '';
+      document.getElementById('combined_plans_dropdowns').innerHTML = '';
+      
+      // Populate all plans in single plan select
+      filterPlansBySelectedCategories();
       
       // Pre-select the plan only if provided
       if (planName) {
@@ -2067,15 +2057,13 @@
       
       const combineToggle = document.getElementById('combine_plans_toggle');
       const combinedSection = document.getElementById('combined_plans_section');
-      const planSelection = document.getElementById('plan_selection');
-      const planSelectionLabel = document.querySelector('label[for="plan_selection"]');
+      const singlePlanSection = document.getElementById('single_plan_section');
       const planCountSelect = document.getElementById('plan_count_select');
       
       if (combineToggle) {
         combineToggle.addEventListener('change', function() {
           combinedSection.style.display = this.checked ? 'block' : 'none';
-          planSelection.style.display = this.checked ? 'none' : 'block';
-          planSelectionLabel.style.display = this.checked ? 'none' : 'block';
+          singlePlanSection.style.display = this.checked ? 'none' : 'block';
           planCountSelect.value = '';
           document.getElementById('combined_plans_dropdowns').innerHTML = '';
         });
@@ -2092,6 +2080,9 @@
     function generateCombinedPlanDropdowns(count) {
       const container = document.getElementById('combined_plans_dropdowns');
       container.innerHTML = '';
+      
+      // Get all unique categories
+      const allCategories = [...new Set(allPlans.map(p => p.category))];
 
       for (let i = 1; i <= count; i++) {
         const planGroup = document.createElement('div');
@@ -2102,18 +2093,12 @@
           <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Category</label>
           <select id="combined_category_${i}" style="width:100%; padding:8px 10px; margin-bottom:12px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
             <option value="">-- Choose Category --</option>
-            ${allPlans.map((plan, idx) => {
-              if (idx === 0 || (idx > 0 && allPlans[idx-1].category !== plan.category)) {
-                return `<option value="${plan.category}">${plan.category}</option>`;
-              }
-              return '';
-            }).join('')}
+            ${allCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('')}
           </select>
 
           <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan</label>
           <select id="combined_plan_${i}" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
             <option value="">-- Choose Plan --</option>
-            ${allPlans.map(plan => `<option value="${plan.name}">${plan.tier} (${plan.category})</option>`).join('')}
           </select>
         `;
 
@@ -2126,6 +2111,42 @@
         categorySelect.addEventListener('change', function() {
           const selectedCategory = this.value;
           filterPlansByCategory(planSelect, selectedCategory);
+          // Update all category dropdowns to hide already selected categories
+          updateCategoryDropdowns(count);
+        });
+      }
+      
+      // Initial update to disable any pre-selected categories
+      updateCategoryDropdowns(count);
+    }
+    
+    function updateCategoryDropdowns(count) {
+      const allCategories = [...new Set(allPlans.map(p => p.category))];
+      
+      for (let i = 1; i <= count; i++) {
+        const categorySelect = document.getElementById(`combined_category_${i}`);
+        if (!categorySelect) continue;
+        
+        // Get all currently selected categories (except current one)
+        const selectedCategories = new Set();
+        for (let j = 1; j <= count; j++) {
+          if (i !== j) {
+            const otherSelect = document.getElementById(`combined_category_${j}`);
+            if (otherSelect && otherSelect.value) {
+              selectedCategories.add(otherSelect.value);
+            }
+          }
+        }
+        
+        const currentValue = categorySelect.value;
+        
+        // Update options in this dropdown
+        const options = categorySelect.querySelectorAll('option');
+        options.forEach(option => {
+          if (option.value === '') return; // Keep the placeholder
+          
+          // Disable option if it's selected in another dropdown
+          option.disabled = selectedCategories.has(option.value) && option.value !== currentValue;
         });
       }
     }
@@ -2140,7 +2161,7 @@
         filteredPlans.forEach(plan => {
           const option = document.createElement('option');
           option.value = plan.name;
-          option.textContent = `${plan.tier} (${plan.category})`;
+          option.textContent = `${plan.tier} - ${plan.price}`;
           planSelect.appendChild(option);
         });
       } else {
@@ -2148,7 +2169,7 @@
         allPlans.forEach(plan => {
           const option = document.createElement('option');
           option.value = plan.name;
-          option.textContent = `${plan.tier} (${plan.category})`;
+          option.textContent = `${plan.tier} - ${plan.price}`;
           planSelect.appendChild(option);
         });
       }
@@ -2519,6 +2540,121 @@
           loadCustomPlans();
         }
       });
+      
+      // User Login Modal Handler
+      const userLoginBtn = document.getElementById('userLoginBtn');
+      if (userLoginBtn) {
+        userLoginBtn.addEventListener('click', showUserLoginModal);
+      }
+      
+      function showUserLoginModal() {
+        const modal = document.getElementById('userLoginModal');
+        if (modal) {
+          modal.style.display = 'flex';
+        }
+      }
+      
+      function closeUserLoginModal() {
+        const modal = document.getElementById('userLoginModal');
+        if (modal) {
+          modal.style.display = 'none';
+        }
+      }
+      
+      // Toggle password visibility
+      function togglePasswordVisibility(event) {
+        event.preventDefault();
+        const passwordInput = document.getElementById('userPassword');
+        const eyeOpen = document.getElementById('eyeOpen');
+        const eyeClosed = document.getElementById('eyeClosed');
+        
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          eyeOpen.style.display = 'none';
+          eyeClosed.style.display = 'block';
+        } else {
+          passwordInput.type = 'password';
+          eyeOpen.style.display = 'block';
+          eyeClosed.style.display = 'none';
+        }
+      }
+      
+      // Close modal when clicking outside
+      document.addEventListener('click', function(event) {
+        const modal = document.getElementById('userLoginModal');
+        if (event.target === modal) {
+          closeUserLoginModal();
+        }
+      });
+    </script>
+    
+    <!-- User Login Modal -->
+    <div id="userLoginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
+      <div style="background: linear-gradient(135deg, #0f1630 0%, #14213a 100%); border: 1px solid rgba(32, 197, 181, 0.3); border-radius: 15px; padding: 40px; width: 90%; max-width: 400px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); position: relative;">
+        <button onclick="closeUserLoginModal()" style="position: absolute; top: 15px; right: 15px; background: rgba(255, 100, 100, 0.2); border: 1px solid rgba(255, 100, 100, 0.5); color: #ff6464; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 18px; font-weight: 600; transition: all 0.2s;">✕</button>
+        
+        <h2 style="color: #20c5b5; margin-bottom: 30px; font-size: 24px; font-weight: 700;">👤 User Login</h2>
+        
+        <form id="userLoginForm" onsubmit="handleUserLogin(event)" style="display: grid; gap: 18px;">
+          <div>
+            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Username</label>
+            <input id="userUsername" type="text" placeholder="Enter your username" required style="width: 100%; padding: 12px 14px; border-radius: 6px; border: 1px solid rgba(32, 197, 181, 0.5); background: rgba(32, 197, 181, 0.1); color: #fff; font-size: 14px; font-family: inherit; transition: all 0.2s;" onfocus="this.style.borderColor='rgba(32, 197, 181, 0.8)'; this.style.background='rgba(32, 197, 181, 0.15)'" onblur="this.style.borderColor='rgba(32, 197, 181, 0.5)'; this.style.background='rgba(32, 197, 181, 0.1)'" />
+          </div>
+          
+          <div>
+            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Password</label>
+            <div style="position: relative; display: flex; align-items: center;">
+              <input id="userPassword" type="password" placeholder="Enter your password" required style="width: 100%; padding: 12px 14px; border-radius: 6px; border: 1px solid rgba(32, 197, 181, 0.5); background: rgba(32, 197, 181, 0.1); color: #fff; font-size: 14px; font-family: inherit; transition: all 0.2s; padding-right: 45px;" onfocus="this.style.borderColor='rgba(32, 197, 181, 0.8)'; this.style.background='rgba(32, 197, 181, 0.15)'" onblur="this.style.borderColor='rgba(32, 197, 181, 0.5)'; this.style.background='rgba(32, 197, 181, 0.1)'" />
+              <button type="button" id="passwordToggle" style="position: absolute; right: 12px; background: none; border: none; cursor: pointer; padding: 5px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px;" onclick="togglePasswordVisibility(event)" title="Toggle password visibility">
+                <svg id="eyeOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#20c5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3" fill="#20c5b5"></circle>
+                </svg>
+                <svg id="eyeClosed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#20c5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <button type="submit" style="background: linear-gradient(135deg, #20c5b5, #0db8a1); border: none; color: #042; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 14px; margin-top: 10px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(32, 197, 181, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">🔓 Login</button>
+          
+          <div id="userLoginMessage" style="color: #ffb3b3; font-size: 13px; text-align: center; min-height: 18px; display: none;"></div>
+        </form>
+        
+        <div style="border-top: 1px solid rgba(32, 197, 181, 0.2); margin-top: 25px; padding-top: 20px; display: flex; justify-content: flex-end;">
+          <a href="admin-login.html" style="background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 12px; text-decoration: none; transition: all 0.3s ease; display: inline-block;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">🔐 Admin Login →</a>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      function handleUserLogin(event) {
+        event.preventDefault();
+        const username = document.getElementById('userUsername').value.trim();
+        const password = document.getElementById('userPassword').value.trim();
+        const messageDiv = document.getElementById('userLoginMessage');
+        
+        if (!username || !password) {
+          messageDiv.style.display = 'block';
+          messageDiv.textContent = '❌ Please enter both username and password';
+          return;
+        }
+        
+        // Show success message
+        messageDiv.style.display = 'block';
+        messageDiv.style.color = '#4caf50';
+        messageDiv.textContent = '✅ Login successful!';
+        
+        setTimeout(() => {
+          // Store user session
+          localStorage.setItem('userLoggedIn', 'true');
+          localStorage.setItem('username', username);
+          // Redirect to user dashboard
+          window.location.href = 'user-dashboard.html';
+        }, 1500);
+      }
     </script>
 </body>
 </html>

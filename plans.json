@@ -71,6 +71,49 @@
       "idealFor": "High-performing, scalable solutions",
       "created_at": "2026-01-22T05:34:19.472Z",
       "updated_at": "2026-01-22T13:05:19.539Z"
+    },
+    {
+      "id": 4,
+      "category": "App",
+      "tier": "Gold",
+      "name": "🥇  BASIC APP PLAN",
+      "price": "24,999/-",
+      "description": "Small businesses, internal apps, offline usage",
+      "features": [
+        "✅ Android App Development",
+        "✅ SQLite / Room Database (Data stored on the same device)",
+        "✅ Clean & Simple UI/UX",
+        "✅ User Login (Device-based)",
+        "✅ Basic Validation & Error Handling",
+        "✅ App Performance Optimization",
+        "✅ APK Build File",
+        "✅ 1 Month Free Support",
+        "✅ Play Store Deployment Support"
+      ],
+      "created_at": "2026-01-22T15:44:10.265Z",
+      "deliveryTime": "",
+      "idealFor": "",
+      "updated_at": "2026-01-22T15:51:36.532Z"
+    },
+    {
+      "id": 5,
+      "category": "App",
+      "tier": "Platinum",
+      "name": "💎 ADVANCED APP PLAN",
+      "price": "39,999/-",
+      "description": "Startups, Scalable apps, Online Businesses",
+      "features": [
+        "✅ Android/iOS App Development",
+        "✅ Firebase Firestore / Realtime Database (Cloud‑based)",
+        "✅ Premium UI/UX Design",
+        "✅ Online & Real‑Time Data Sync",
+        "✅ Firebase Authentication (Email / Phone / Google)",
+        "✅ Cloud Database (Secure & Scalable)",
+        "✅ Push Notifications",
+        "✅ User Roles (Admin / User)",
+        "✅ Play Store Deployment Support"
+      ],
+      "created_at": "2026-01-22T15:54:05.596Z"
     }
   ]
 }

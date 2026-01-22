@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Promote With Us</title>
+    <meta name="description" content="User dashboard for Promote With Us">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #164069;
+            --secondary: #20c5b5;
+            --accent: #20c5b5;
+            --light: #f8f9ff;
+            --dark: #0a0e27;
+            --gradient-main: linear-gradient(135deg, #164069 0%, #20c5b5 100%);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #164069 50%, #0db8a1 100%);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #0f1630 0%, #14213a 100%);
+            border-bottom: 1px solid rgba(32, 197, 181, 0.2);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar h1 {
+            color: #20c5b5;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar .username {
+            color: #cfd8df;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .navbar .logout-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .navbar .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, #0f1630 0%, #14213a 100%);
+            border: 1px solid rgba(32, 197, 181, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .welcome-section h2 {
+            color: #20c5b5;
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .welcome-section p {
+            color: #cfd8df;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .content {
+            background: linear-gradient(135deg, #0f1630 0%, #14213a 100%);
+            border: 1px solid rgba(32, 197, 181, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            min-height: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .content-placeholder {
+            color: #9fbfc6;
+            font-size: 16px;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .content-placeholder svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .navbar .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .welcome-section,
+            .content {
+                padding: 25px;
+            }
+
+            .welcome-section h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h1>👤 User Dashboard</h1>
+        <div class="user-info">
+            <span class="username" id="userDisplay">User</span>
+            <button class="logout-btn" onclick="handleUserLogout()">🚪 Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h2>Welcome to Your Dashboard</h2>
+            <p>This is your personal user dashboard. More features coming soon!</p>
+        </div>
+
+        <!-- Content Section -->
+        <div class="content">
+            <div class="content-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" fill="#20c5b5" opacity="0.5"/>
+                </svg>
+                <p>Your dashboard is ready to explore!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        window.addEventListener('load', () => {
+            const userLoggedIn = localStorage.getItem('userLoggedIn');
+            const username = localStorage.getItem('username');
+
+            if (!userLoggedIn) {
+                // Redirect to home if not logged in
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Display username
+            if (username) {
+                document.getElementById('userDisplay').textContent = `👤 ${username}`;
+            }
+        });
+
+        // Handle user logout
+        function handleUserLogout() {
+            const confirmed = confirm('Are you sure you want to logout?');
+            if (confirmed) {
+                localStorage.removeItem('userLoggedIn');
+                localStorage.removeItem('username');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
