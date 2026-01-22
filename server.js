@@ -234,18 +234,6 @@ function basicAuth(req, res, next) {
   return res.status(401).send('Invalid credentials');
 }
 
-// Admin interface to view leads (protected by basic auth)
-app.get('/admin', basicAuth, (req, res) => {
-  const rows = loadLeads();
-
-  let html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Leads - Admin</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:Arial,Helvetica,sans-serif;padding:20px;background:#f6f8fb}table{border-collapse:collapse;width:100%;background:#fff}th,td{padding:10px;border:1px solid #e6e9ef;text-align:left}th{background:#164069;color:#fff}h1{color:#164069}</style></head><body><h1>Leads</h1><p>Showing latest ${rows.length} leads</p><table><thead><tr><th>ID</th><th>Brand</th><th>Phone</th><th>Email</th><th>Created At</th></tr></thead><tbody>`;
-  rows.reverse().slice(0, 1000).forEach(r => {
-    html += `<tr><td>${r.id}</td><td>${escapeHtml(r.brand_name)}</td><td>${escapeHtml(r.phone)}</td><td>${escapeHtml(r.email)}</td><td>${r.created_at}</td></tr>`;
-  });
-  html += `</tbody></table></body></html>`;
-  res.send(html);
-});
-
 // JSON endpoint for leads (also protected)
 app.get('/admin/leads.json', basicAuth, (req, res) => {
   const rows = loadLeads();
