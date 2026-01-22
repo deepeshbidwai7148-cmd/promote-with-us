@@ -728,9 +728,17 @@
                         
                         plans.forEach(plan => {
                             html += `
-                                <div style="background: rgba(32,197,181,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #20c5b5;">
-                                    <strong style="color: #20c5b5;">${plan.name}</strong> - ${plan.price}<br>
-                                    <span style="color: #9fbfc6; font-size: 12px;">${plan.description}</span>
+                                <div style="background: rgba(32,197,181,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #20c5b5;" data-plan-id="${plan.id}">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
+                                        <div style="flex: 1;">
+                                            <strong style="color: #20c5b5;">${plan.name}</strong> - ${plan.price}<br>
+                                            <span style="color: #9fbfc6; font-size: 12px;">${plan.description}</span>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button onclick="editPlanAdmin('${plan.id}', ${JSON.stringify(plan).replace(/'/g, "&apos;")})" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">✏️ Edit</button>
+                                            <button onclick="deletePlanAdmin('${plan.id}')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(245, 87, 108, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">🗑️ Delete</button>
+                                        </div>
+                                    </div>
                                 </div>
                             `;
                         });
@@ -890,6 +898,192 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeDetailModal();
+            }
+        });
+
+        // Edit Plan Function
+        async function editPlanAdmin(planId, planData) {
+            // Parse planData if it's a string
+            if (typeof planData === 'string') {
+                try {
+                    planData = JSON.parse(planData);
+                } catch (e) {
+                    console.error('Error parsing plan data:', e);
+                    alert('Error loading plan data');
+                    return;
+                }
+            }
+            
+            // Populate form fields with existing plan data
+            document.getElementById('planCategory').value = planData.category || '';
+            document.getElementById('planTier').value = planData.tier || '';
+            document.getElementById('planName').value = planData.name || '';
+            document.getElementById('planPrice').value = planData.price || '';
+            document.getElementById('planDesc').value = planData.description || '';
+            document.getElementById('planDeliveryTime').value = planData.deliveryTime || '';
+            document.getElementById('planIdealFor').value = planData.idealFor || '';
+            
+            // Populate features
+            const featuresContainer = document.getElementById('featuresContainer');
+            featuresContainer.innerHTML = '';
+            const features = planData.features || [];
+            
+            features.forEach((feature, index) => {
+                const div = document.createElement('div');
+                div.style.cssText = 'display: flex; gap: 8px;';
+                div.innerHTML = `
+                    <input type="text" class="feature-input" value="${feature.replace(/"/g, '&quot;')}" placeholder="✅ Feature" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                    <button type="button" class="remove-feature-btn" style="background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.5); color: #ff6464; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; ${features.length > 1 ? '' : 'display: none;'}">Remove</button>
+                `;
+                const removeBtn = div.querySelector('.remove-feature-btn');
+                removeBtn.onclick = function() {
+                    div.remove();
+                };
+                featuresContainer.appendChild(div);
+            });
+            
+            // Add empty feature slot
+            const emptyDiv = document.createElement('div');
+            emptyDiv.style.cssText = 'display: flex; gap: 8px;';
+            emptyDiv.innerHTML = `
+                <input type="text" class="feature-input" placeholder="✅ Feature" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                <button type="button" class="remove-feature-btn" style="background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.5); color: #ff6464; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; display: none;">Remove</button>
+            `;
+            const removeBtn = emptyDiv.querySelector('.remove-feature-btn');
+            removeBtn.onclick = function() {
+                emptyDiv.remove();
+            };
+            featuresContainer.appendChild(emptyDiv);
+            
+            // Store planId for update
+            document.getElementById('addPlanForm').dataset.planId = planId;
+            document.getElementById('addPlanForm').dataset.planEditMode = 'true';
+            
+            // Change button text and styling to "Update Plan"
+            const submitBtn = document.querySelector('#addPlanForm button[type="submit"]');
+            submitBtn.textContent = '✅ Update Plan';
+            submitBtn.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+            
+            // Add visual highlight to form
+            const form = document.getElementById('addPlanForm');
+            form.style.border = '2px solid #667eea';
+            form.style.borderRadius = '8px';
+            form.style.padding = '15px';
+            form.style.background = 'rgba(102, 126, 234, 0.05)';
+            
+            // Scroll to form
+            document.getElementById('plansTab').scrollIntoView({ behavior: 'smooth' });
+            
+            // Show notification
+            const msg = document.getElementById('addPlanMsg');
+            msg.style.color = '#667eea';
+            msg.textContent = '✏️ Edit mode: Make your changes and click "Update Plan"';
+            setTimeout(() => {
+                msg.textContent = '';
+            }, 3000);
+        }
+
+        // Delete Plan Function
+        async function deletePlanAdmin(planId) {
+            if (!confirm('Are you sure you want to delete this plan? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const res = await fetch(`/api/plans/${planId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok && data.success) {
+                    alert('✅ Plan deleted successfully!');
+                    loadCustomPlans();
+                } else {
+                    alert('❌ Error deleting plan: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error deleting plan:', error);
+                alert('❌ Error deleting plan: ' + error.message);
+            }
+        }
+
+        // Modify form submission to handle both add and update
+        const originalFormSubmit = document.getElementById('addPlanForm').onsubmit;
+        document.getElementById('addPlanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('addPlanMsg');
+            msg.textContent = '';
+            
+            const planId = document.getElementById('addPlanForm').dataset.planId;
+            const category = document.getElementById('planCategory').value.trim();
+            const tier = document.getElementById('planTier').value.trim();
+            const name = document.getElementById('planName').value.trim();
+            const price = document.getElementById('planPrice').value.trim();
+            const description = document.getElementById('planDesc').value.trim();
+            const deliveryTime = document.getElementById('planDeliveryTime').value.trim();
+            const idealFor = document.getElementById('planIdealFor').value.trim();
+            const features = Array.from(document.querySelectorAll('.feature-input'))
+                .map(input => input.value.trim())
+                .filter(value => value.length > 0);
+            
+            if (!category || !tier || !name || !price) {
+                msg.style.color = '#ffb3b3';
+                msg.textContent = 'All required fields must be filled';
+                return;
+            }
+            
+            if (features.length === 0) {
+                msg.style.color = '#ffb3b3';
+                msg.textContent = 'Please add at least one feature';
+                return;
+            }
+            
+            try {
+                const method = planId ? 'PUT' : 'POST';
+                const url = planId ? `/api/plans/${planId}` : '/api/plans';
+                
+                const res = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ category, tier, name, price, description, features, deliveryTime, idealFor })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok && data.success) {
+                    msg.style.color = '#9fbfc6';
+                    msg.textContent = planId ? '✅ Plan updated successfully!' : '✅ Plan added successfully!';
+                    document.getElementById('addPlanForm').reset();
+                    delete document.getElementById('addPlanForm').dataset.planId;
+                    delete document.getElementById('addPlanForm').dataset.planEditMode;
+                    
+                    // Reset form styling
+                    const form = document.getElementById('addPlanForm');
+                    form.style.border = 'none';
+                    form.style.background = 'transparent';
+                    form.style.padding = '0';
+                    
+                    const submitBtn = document.querySelector('#addPlanForm button[type="submit"]');
+                    submitBtn.textContent = 'Add Plan';
+                    submitBtn.style.background = 'linear-gradient(135deg, #20c5b5, #0db8a1)';
+                    
+                    document.getElementById('featuresContainer').innerHTML = `
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" class="feature-input" placeholder="✅ Feature 1" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                            <button type="button" class="remove-feature-btn" style="background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.5); color: #ff6464; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; display: none;">Remove</button>
+                        </div>
+                    `;
+                    setTimeout(() => loadCustomPlans(), 500);
+                } else {
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = '❌ ' + (data.message || 'Error saving plan');
+                }
+            } catch (error) {
+                msg.style.color = '#ffb3b3';
+                msg.textContent = '❌ Error: ' + error.message;
             }
         });
     </script>
