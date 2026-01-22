@@ -8,13 +8,17 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Setup data storage (JSON file in project root)
+// Setup data storage (JSON files in project root)
 const dataFile = path.join(__dirname, 'leads.json');
+const plansFile = path.join(__dirname, 'plans.json');
 
-// Initialize leads file if it doesn't exist
+// Initialize data files if they don't exist
 function initializeDataFile() {
   if (!fs.existsSync(dataFile)) {
     fs.writeFileSync(dataFile, JSON.stringify({ leads: [] }, null, 2));
+  }
+  if (!fs.existsSync(plansFile)) {
+    fs.writeFileSync(plansFile, JSON.stringify({ plans: [] }, null, 2));
   }
 }
 
@@ -40,6 +44,26 @@ function saveLeads(leads) {
   }
 }
 
+// Load plans from file
+function loadPlans() {
+  try {
+    const data = fs.readFileSync(plansFile, 'utf-8');
+    return JSON.parse(data).plans || [];
+  } catch (err) {
+    console.error('Error reading plans file:', err);
+    return [];
+  }
+}
+
+// Save plans to file
+function savePlans(plans) {
+  try {
+    fs.writeFileSync(plansFile, JSON.stringify({ plans }, null, 2));
+  } catch (err) {
+    console.error('Error writing plans file:', err);
+  }
+}
+
 // Setup Nodemailer transporter for Gmail
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -54,18 +78,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
+// CORS middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
 // Simple health check
 app.get('/health', (req, res) => res.json({ ok: true }));
 
 // Function to send email
-async function sendEmailNotification(brandName, phone, email) {
+async function sendEmailNotification(brandName, phone, email, plan = '', requirements = '') {
   try {
     if (!process.env.GMAIL_USER || !process.env.GMAIL_PASSWORD) {
       console.warn('Email credentials not configured. Skipping email notification.');
       return true;
     }
 
-    const mailOptions = {
+    // Email to company
+    const companyMailOptions = {
       from: process.env.GMAIL_USER,
       to: 'promotewithus6@gmail.com',
       subject: 'New Lead Submission - Promote With Us',
@@ -74,12 +108,45 @@ async function sendEmailNotification(brandName, phone, email) {
         <p><strong>Brand/Business Name:</strong> ${escapeHtml(brandName)}</p>
         <p><strong>Contact Number:</strong> ${escapeHtml(phone)}</p>
         <p><strong>Email Address:</strong> ${escapeHtml(email)}</p>
+        ${plan ? `<p><strong>Selected Plan:</strong> ${escapeHtml(plan)}</p>` : ''}
+        ${requirements ? `<p><strong>Requirements/Notes:</strong></p><p>${escapeHtml(requirements).replace(/\n/g, '<br>')}</p>` : ''}
         <p><strong>Submitted At:</strong> ${new Date().toLocaleString()}</p>
       `
     };
 
-    await transporter.sendMail(mailOptions);
+    // Email to user (confirmation)
+    const userMailOptions = {
+      from: process.env.GMAIL_USER,
+      to: email,
+      subject: 'Thank You! We Received Your Request - Promote With Us',
+      html: `
+        <h2>Thank You for Your Interest! 🎉</h2>
+        <p>Hi <strong>${escapeHtml(brandName)}</strong>,</p>
+        <p>We have successfully received your inquiry and will get back to you shortly.</p>
+        <h3>Your Details:</h3>
+        <p><strong>Company Name:</strong> ${escapeHtml(brandName)}</p>
+        <p><strong>Contact Number:</strong> ${escapeHtml(phone)}</p>
+        <p><strong>Email Address:</strong> ${escapeHtml(email)}</p>
+        ${plan ? `<p><strong>Selected Plan:</strong> ${escapeHtml(plan)}</p>` : ''}
+        ${requirements ? `<p><strong>Your Requirements:</strong></p><p>${escapeHtml(requirements).replace(/\n/g, '<br>')}</p>` : ''}
+        <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+        <p>Our team will contact you within 24 hours to discuss your project and provide a detailed quote.</p>
+        <p>If you have any immediate questions, feel free to reply to this email or call us.</p>
+        <p style="margin-top: 30px; color: #666; font-size: 12px;">
+          <strong>Promote With Us</strong><br>
+          Transforming businesses from offline to online<br>
+          <a href="https://promotewithus.com" style="color: #20c5b5; text-decoration: none;">Visit our website</a>
+        </p>
+      `
+    };
+
+    await transporter.sendMail(companyMailOptions);
     console.log(`Email sent successfully to promotewithus6@gmail.com for lead: ${brandName}`);
+    
+    await transporter.sendMail(userMailOptions);
+    console.log(`Confirmation email sent successfully to ${email}`);
+    
     return true;
   } catch (error) {
     console.error('Error sending email:', error);
@@ -101,7 +168,7 @@ function escapeHtml(str) {
 
 // API endpoint to receive leads
 app.post('/api/lead', (req, res) => {
-  const { brandName, phone, email } = req.body;
+  const { brandName, phone, email, plan, requirements } = req.body;
   if (!brandName || !phone || !email) {
     return res.status(400).json({ success: false, message: 'brandName, phone and email are required' });
   }
@@ -125,14 +192,16 @@ app.post('/api/lead', (req, res) => {
       brand_name: brandName,
       phone: phone,
       email: email,
+      plan: plan || 'Not specified',
+      requirements: requirements || '',
       created_at: new Date().toISOString()
     };
     
     leads.push(newLead);
     saveLeads(leads);
     
-    // Send email notification
-    sendEmailNotification(brandName, phone, email);
+    // Send email notifications to both company and user
+    sendEmailNotification(brandName, phone, email, plan, requirements);
     
     return res.json({ success: true, id: newLead.id });
   } catch (err) {
@@ -185,10 +254,95 @@ app.get('/admin/leads.json', basicAuth, (req, res) => {
     brandName: r.brand_name,
     phone: r.phone,
     email: r.email,
+    plan: r.plan || 'Not specified',
     created_at: r.created_at
   })).reverse();
   
   res.json({ leads });
+});
+
+// Public leads endpoint (for dashboard - no auth required)
+app.get('/api/leads', (req, res) => {
+  const rows = loadLeads();
+  const leads = rows.map(r => ({
+    id: r.id,
+    brandName: r.brand_name,
+    phone: r.phone,
+    email: r.email,
+    plan: r.plan || 'Not specified',
+    requirements: r.requirements || '',
+    created_at: r.created_at
+  })).reverse();
+  
+  res.json({ leads });
+});
+
+// API endpoint to add a new plan (protected by basic auth)
+app.post('/api/plans', basicAuth, (req, res) => {
+  const { category, tier, name, price, description, features } = req.body;
+  
+  if (!category || !tier || !name || !price) {
+    return res.status(400).json({ success: false, message: 'category, tier, name, and price are required' });
+  }
+
+  try {
+    const plans = loadPlans();
+    const newPlan = {
+      id: plans.length + 1,
+      category: category,
+      tier: tier,
+      name: name,
+      price: price,
+      description: description || '',
+      features: features || [],
+      created_at: new Date().toISOString()
+    };
+    
+    plans.push(newPlan);
+    savePlans(plans);
+    
+    return res.json({ success: true, id: newPlan.id, plan: newPlan });
+  } catch (err) {
+    console.error('Error saving plan:', err);
+    return res.status(500).json({ success: false, message: 'Database error' });
+  }
+});
+
+// API endpoint to get all plans (public)
+app.get('/api/plans', (req, res) => {
+  const plans = loadPlans();
+  
+  // Group plans by category
+  const groupedPlans = {};
+  plans.forEach(plan => {
+    if (!groupedPlans[plan.category]) {
+      groupedPlans[plan.category] = [];
+    }
+    groupedPlans[plan.category].push(plan);
+  });
+  
+  res.json({ plans: groupedPlans, allPlans: plans });
+});
+
+// API endpoint to delete a plan (protected by basic auth)
+app.delete('/api/plans/:id', basicAuth, (req, res) => {
+  const planId = parseInt(req.params.id);
+  
+  try {
+    let plans = loadPlans();
+    const initialLength = plans.length;
+    plans = plans.filter(p => p.id !== planId);
+    
+    if (plans.length === initialLength) {
+      return res.status(404).json({ success: false, message: 'Plan not found' });
+    }
+    
+    savePlans(plans);
+    return res.json({ success: true, message: 'Plan deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting plan:', err);
+    return res.status(500).json({ success: false, message: 'Database error' });
+  }
 });
 
 // Start server

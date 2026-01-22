@@ -101,9 +101,89 @@
         .nav-links a:hover::after {
             width: 100%;
         }
-        
-        #root {
-            padding-top: 70px;
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Mobile Navigation */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #0db8a1 0%, #164069 100%);
+                flex-direction: column;
+                gap: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+                border-bottom: 1px solid rgba(32, 197, 181, 0.3);
+            }
+
+            .nav-links.active {
+                max-height: 300px;
+            }
+
+            .nav-links li {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 15px 20px;
+                color: #fff;
+                text-decoration: none;
+                font-weight: 500;
+                transition: background 0.3s ease;
+            }
+
+            .nav-links a:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+
+            .nav-links a::after {
+                display: none;
+            }
+
+            .logo img {
+                width: 150px !important;
+            }
+
+            nav .nav-container {
+                padding: 0 15px;
+            }
         }
 
         /* Staggered animations for feature cards */
@@ -514,7 +594,29 @@
     color: #fff;
   }
 
-  section#about .about-socials a.social-btn.youtube { background: linear-gradient(135deg, #FF0000 0%, #E60000 100%); }
+  section#about .about-socials a.social-btn.youtube { 
+    background: #fff; 
+    border: 2px solid #FF0000 !important;
+    color: #FF0000 !important;
+  }
+  
+  section#about .about-socials a.social-btn.youtube .social-label {
+    color: #FF0000 !important;
+  }
+  
+  section#about .about-socials a.social-btn.youtube:hover { 
+    background: #FF0000 !important; 
+    color: #fff !important;
+  }
+  
+  section#about .about-socials a.social-btn.youtube:hover .social-label {
+    color: #fff !important;
+  }
+  
+  section#about .about-socials a.social-btn.youtube:hover svg * { 
+    fill: #fff !important; 
+    stroke: #fff !important; 
+  }
   section#about .about-socials a.social-btn.facebook { background: linear-gradient(135deg, #1877F2 0%, #165FDD 100%); }
 
   section#about .about-socials a.social-btn:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.12); }
@@ -588,6 +690,11 @@
                 <li><a href="#about">About Us</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
@@ -707,13 +814,12 @@
 
           <!-- Call to Action Buttons -->
           <div style="margin-top: 50px; display: flex; gap: 25px; justify-content: center; flex-wrap: wrap; animation: slideInUp 0.8s ease-out 0.6s both;">
-            <button id="open-lead-modal" type="button" class="start-now" style="display:inline-block; padding: 16px 45px; font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); color: white; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; letter-spacing: 1px; text-transform: uppercase;">
+            <button onclick="openPlanModal()" type="button" class="start-now" style="display:inline-block; padding: 16px 45px; font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); color: white; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; letter-spacing: 1px; text-transform: uppercase;">
               Start <span style="display: inline-block; animation: nowPulse 1s ease-in-out infinite; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.8);">Now</span> →
             </button>
-            <button style="padding: 16px 45px; font-size: 16px; font-weight: 700; background: transparent; color: #20c5b5; border: 2px solid #20c5b5; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; text-transform: uppercase;"
-              onmouseover="this.style.background='rgba(32, 197, 181, 0.1)'; this.style.boxShadow='0 0 30px rgba(32, 197, 181, 0.3)';" 
-              onmouseout="this.style.background='transparent'; this.style.boxShadow='none';">
-              Learn More
+            <button class="learn-more-btn" onclick="switchTab('plans'); document.getElementById('plans').scrollIntoView({ behavior: 'smooth' });" style="padding: 16px 45px; font-size: 16px; font-weight: 700; background: transparent; color: #20c5b5; border: 2px solid #20c5b5; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; text-transform: uppercase; position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 8px;">
+              <span class="learn-more-text">Learn More</span>
+              <span class="learn-more-icon">→</span>
             </button>
           </div>
 
@@ -1024,7 +1130,7 @@
               <p style="color: #ccc; font-size: 18px;">Projects Completed</p>
             </div>
             <div class="fade-in" data-animate>
-              <h2 style="color: #20c5b5; font-size: 48px; margin-bottom: 10px; font-weight: 700;">50+</h2>
+              <h2 style="color: #20c5b5; font-size: 48px; margin-bottom: 10px; font-weight: 700;">10+</h2>
               <p style="color: #ccc; font-size: 18px;">Team Members</p>
             </div>
             <div class="fade-in" data-animate>
@@ -1044,7 +1150,9 @@
             <p style="font-size: 18px; color: #666; max-width: 600px; margin: 20px auto 0; animation: slideInUp 0.8s ease-out 0.2s both;">Choose the perfect plan for your business needs</p>
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; align-items: stretch; grid-auto-rows: 1fr;">
+          <!-- Default Plans (Website Category) -->
+          <h3 id="defaultPlansHeading" style="font-size: 28px; margin: 40px 0 30px 0; color: #164069; animation: slideInDown 0.8s ease-out;">Website Plans</h3>
+          <div id="defaultPlansContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; align-items: stretch; grid-auto-rows: 1fr;">
             <!-- Silver Plan -->
             <div class="glass-card fade-in plan-silver" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
               <div style="text-align: center; margin-bottom: 30px;">
@@ -1066,7 +1174,7 @@
                 <p style="color: #20c5b5; font-weight: 600; margin-bottom: 8px; margin-top: 0;">Delivery: 5–7 Days</p>
                 <p style="color: #666; font-size: 12px; margin: 0;">Ideal for: Online presence & brand visibility</p>
               </div>
-              <button class="btn btn-secondary" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
+              <button class="btn btn-secondary" onclick="openPlanModal('Silver Plan')" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
             </div>
 
             <!-- Gold Plan Wrapper -->
@@ -1095,9 +1203,10 @@
                   <p style="color: #20c5b5; font-weight: 600; margin-bottom: 8px; margin-top: 0;">Delivery: 7–10 Days</p>
                   <p style="color: #666; font-size: 12px; margin: 0;">Ideal for: Lead generation & credibility</p>
                 </div>
-                <button class="btn btn-primary" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
+                <button class="btn btn-primary" onclick="openPlanModal('Gold Plan')" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
               </div>
             </div>
+
             <!-- Platinum Plan -->
             <div class="glass-card fade-in plan-platinum" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
               <div style="text-align: center; margin-bottom: 30px;">
@@ -1122,13 +1231,14 @@
                 <p style="color: #20c5b5; font-weight: 600; margin-bottom: 8px; margin-top: 0;">Delivery: 10–15 Days</p>
                 <p style="color: #666; font-size: 12px; margin: 0;">Ideal for: Sales, automation & scalability</p>
               </div>
-              <button class="btn btn-secondary" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
+              <button class="btn btn-secondary" onclick="openPlanModal('Platinum Plan')" style="width: 100%; padding: 12px; cursor: pointer; margin-top: auto;">Get Started</button>
             </div>
           </div>
+
+          <!-- Dynamic Plans Container (added by admin) -->
+          <div id="dynamicPlansContainer" style="margin-top: 60px;"></div>
         </div>
       </section>
-
-      <!-- About Us Section -->
   <section id="about" class="tab-panel" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f1ff 100%); position: relative; overflow: hidden;">
         <div style="position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(32, 197, 181, 0.1) 0%, transparent 70%); border-radius: 50%; top: 10%; right: 5%; animation: float 20s ease-in-out infinite;"></div>
         <div style="max-width: 1200px; margin: 0 auto; padding: 80px 20px;">
@@ -1152,11 +1262,11 @@
                   <p style="color: #666; margin: 0;">Client Satisfaction</p>
                 </div>
                 <div>
-                  <h4 style="color: #20c5b5; font-size: 20px; margin-bottom: 5px;">50+</h4>
+                  <h4 style="color: #20c5b5; font-size: 20px; margin-bottom: 5px;">10+</h4>
                   <p style="color: #666; margin: 0;">Team Members</p>
                 </div>
                 <div>
-                  <h4 style="color: #164069; font-size: 20px; margin-bottom: 5px;">10+</h4>
+                  <h4 style="color: #164069; font-size: 20px; margin-bottom: 5px;">5+</h4>
                   <p style="color: #666; margin: 0;">Years Experience</p>
                 </div>
               </div>
@@ -1167,12 +1277,7 @@
                     <span class="social-label">Follow</span>
                   </a>
                 <a class="social-btn youtube" href="https://youtube.com/@promotewith_us?si=q6Iv5qiIX0EztSeu" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <!-- circular border/background for the play icon -->
-                    <circle cx="12" cy="12" r="9" fill="none" stroke="#ffffff" stroke-width="1.6" opacity="0.95" />
-                    <!-- play triangle -->
-                    <path d="M10 15l5-3-5-3v6z" fill="#fff"/>
-                  </svg>
+                  <img class="social-icon" src="images/download.png" alt="YouTube download" style="width: 24px; height: 24px;" />
                   <span class="social-label">Subscribe</span>
                 </a>
                 <a class="social-btn facebook" href="https://www.facebook.com/share/1C2jThgTvP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
@@ -1279,15 +1384,542 @@
               </div>
             </div>
           </div>
-          <div style="border-top: 1px solid #333; padding-top: 20px; text-align: center; color: #aaa;">
-            <p>&copy; 2024 Promote With Us. All rights reserved.</p>
+          <div style="border-top: 1px solid #333; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <p style="margin: 0; color: #aaa;">&copy; 2024 Promote With Us. All rights reserved.</p>
+            <button id="loginBtn" onclick="openLoginModal()" title="Admin Login" style="background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 22px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(32, 197, 181, 0.3);">
+              👤
+            </button>
           </div>
         </div>
       </footer>
     </div>
     
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="login-modal-title" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:3000;">
+      <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:40px; border-radius:15px; width:400px; max-width:92%; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.8);">
+        <button id="login-modal-close" aria-label="Close" style="position:absolute; right:15px; top:15px; background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px;">&times;</button>
+        <h3 id="login-modal-title" style="color:#20c5b5; margin:0 0 10px 0; font-size:22px; font-weight:700; text-align:center;">Admin Login</h3>
+        <p style="color:#9fbfc6; margin:0 0 25px 0; font-size:14px; text-align:center;">Access your dashboard</p>
+        
+        <form id="loginForm">
+          <label for="login_username" style="display:block; margin-bottom:10px; color:#cfd8df; font-size:14px; font-weight:600;">Username</label>
+          <input id="login_username" name="username" required autocomplete="username" placeholder="Enter username" style="width:100%; padding:11px 12px; margin-bottom:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit;" />
+          
+          <label for="login_password" style="display:block; margin-bottom:10px; color:#cfd8df; font-size:14px; font-weight:600;">Password</label>
+          <input id="login_password" name="password" type="password" required autocomplete="current-password" placeholder="Enter password" style="width:100%; padding:11px 12px; margin-bottom:20px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit;" />
+          
+          <button type="submit" style="width:100%; background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:12px; border-radius:8px; color:#042; font-weight:700; cursor:pointer; font-size:15px; transition:all 0.3s ease;">Login</button>
+          <div id="loginMsg" style="color:#ffb3b3; font-size:13px; margin-top:15px; text-align:center; min-height:18px;"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Dashboard Modal (shows after login) -->
+    <div id="dashboard-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="dashboard-modal-title" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:3000; overflow-y:auto;">
+      <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:30px; border-radius:15px; width:90%; max-width:900px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.8); margin:20px auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+          <h3 id="dashboard-modal-title" style="color:#20c5b5; margin:0; font-size:22px; font-weight:700;">Dashboard - <span id="dashboardUsername" style="color:#fff;">User</span></h3>
+          <button id="dashboard-close" aria-label="Close" style="background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px;">&times;</button>
+        </div>
+        
+        <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+          <button id="dashboardTabLeads" onclick="showDashboardTab('leads')" style="background:#20c5b5; color:#042; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">📋 Leads</button>
+          <button id="dashboardTabPlans" onclick="showDashboardTab('plans')" style="background:#0db8a1; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">➕ Plans</button>
+          <button id="dashboardTabLogout" onclick="logoutUser()" style="background:#ff6b6b; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">Logout</button>
+        </div>
+
+        <!-- Leads Tab Content -->
+        <div id="leadsTab" style="display:block;">
+          <div id="leadsContainer" style="background:rgba(255,255,255,0.05); padding:20px; border-radius:8px; border:1px solid rgba(32,197,181,0.2); max-height:500px; overflow-y:auto;">
+            <table style="width:100%; color:#cfd8df; font-size:13px; border-collapse:collapse;">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(32,197,181,0.3);">
+                  <th style="padding:10px; text-align:left; color:#20c5b5;">Company</th>
+                  <th style="padding:10px; text-align:left; color:#20c5b5;">Phone</th>
+                  <th style="padding:10px; text-align:left; color:#20c5b5;">Email</th>
+                  <th style="padding:10px; text-align:left; color:#20c5b5;">Plan</th>
+                  <th style="padding:10px; text-align:left; color:#20c5b5;">Requirements</th>
+                  <th style="padding:10px; text-align:left; color:#20c5b5;">Submitted At</th>
+                </tr>
+              </thead>
+              <tbody id="leadsTableBody">
+                <tr><td colspan="5" style="padding:20px; text-align:center; color:#9fbfc6;">Loading leads...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Plans Tab Content -->
+        <div id="plansTab" style="display:none;">
+          <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:8px; border:1px solid rgba(32,197,181,0.2); margin-bottom:20px;">
+            <h4 style="color:#20c5b5; margin:0 0 15px 0; font-size:16px; font-weight:600;">Add New Plan</h4>
+            <form id="addPlanForm" style="display:grid; gap:12px;">
+              <div>
+                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan Category *</label>
+                <select id="planCategory" required style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
+                  <option value="">-- Select Category --</option>
+                  <option value="Website">Website</option>
+                  <option value="Social Media">Social Media</option>
+                  <option value="App">App</option>
+                  <option value="E-commerce">E-commerce</option>
+                  <option value="Digital Marketing">Digital Marketing</option>
+                  <option value="Branding">Branding</option>
+                </select>
+              </div>
+              
+              <div>
+                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan Tier *</label>
+                <select id="planTier" required style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
+                  <option value="">-- Select Tier --</option>
+                  <option value="Silver">🥈 Silver</option>
+                  <option value="Gold">🥇 Gold</option>
+                  <option value="Platinum">💎 Platinum</option>
+                </select>
+              </div>
+              
+              <div>
+                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan Name *</label>
+                <input id="planName" type="text" required placeholder="e.g., Basic Website" style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
+              </div>
+              
+              <div>
+                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Price *</label>
+                <input id="planPrice" type="text" required placeholder="e.g., ₹15,000" style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
+              </div>
+              
+              <div>
+                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Description</label>
+                <input id="planDesc" type="text" placeholder="Brief description" style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
+              </div>
+              
+              <button type="submit" style="background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:10px; border-radius:6px; color:#042; font-weight:700; cursor:pointer; font-size:14px;">Add Plan</button>
+              <div id="addPlanMsg" style="color:#ffb3b3; font-size:12px; text-align:center; min-height:18px;"></div>
+            </form>
+          </div>
+
+          <div id="plansListContainer" style="background:rgba(255,255,255,0.05); padding:20px; border-radius:8px; border:1px solid rgba(32,197,181,0.2); max-height:500px; overflow-y:auto;">
+            <h4 style="color:#20c5b5; margin:0 0 15px 0; font-size:16px; font-weight:600;">Added Plans</h4>
+            <div id="plansList">
+              <p style="color:#9fbfc6; text-align:center;">Loading plans...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lead Detail Modal -->
+    <div id="lead-detail-modal" class="modal hidden" role="dialog" aria-hidden="true" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:3100; overflow-y:auto;">
+      <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:30px; border-radius:15px; width:90%; max-width:700px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.8); margin:20px auto;">
+        <button id="detail-modal-close" aria-label="Close" style="position:absolute; right:15px; top:12px; background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px; display:flex; align-items:center; justify-content:center;">&times;</button>
+        
+        <h3 style="color:#20c5b5; margin:0 0 25px 0; font-size:20px; font-weight:700;">Lead Details</h3>
+        
+        <div style="background:rgba(255,255,255,0.02); padding:20px; border-radius:10px; border:1px solid rgba(32,197,181,0.2);">
+          <div style="margin-bottom:20px;">
+            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Company Name</label>
+            <p id="detail-company" style="color:#cfd8df; font-size:16px; margin:8px 0 0 0; word-break:break-word;"></p>
+          </div>
+          
+          <div style="margin-bottom:20px;">
+            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Contact Information</label>
+            <p style="color:#cfd8df; font-size:14px; margin:8px 0 0 0;">
+              <span style="color:#20c5b5; font-weight:600;">Phone:</span>
+              <a id="detail-phone" href="" style="color:#0db8a1; text-decoration:none; cursor:pointer; transition:color 0.2s;"></a>
+            </p>
+            <p style="color:#cfd8df; font-size:14px; margin:8px 0 0 0;">
+              <span style="color:#20c5b5; font-weight:600;">Email:</span>
+              <a id="detail-email" href="" style="color:#0db8a1; text-decoration:none; cursor:pointer; transition:color 0.2s;"></a>
+            </p>
+          </div>
+          
+          <div style="margin-bottom:20px;">
+            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Selected Plan</label>
+            <p id="detail-plan" style="color:#cfd8df; font-size:16px; margin:8px 0 0 0; word-break:break-word;"></p>
+          </div>
+          
+          <div style="margin-bottom:20px;">
+            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Requirements / Additional Notes</label>
+            <div id="detail-requirements" style="color:#cfd8df; font-size:14px; margin:8px 0 0 0; background:rgba(255,255,255,0.04); padding:12px; border-radius:6px; border-left:3px solid #20c5b5; min-height:60px; max-height:150px; overflow-y:auto; white-space:pre-wrap; word-break:break-word;"></div>
+          </div>
+          
+          <div style="margin-bottom:0;">
+            <label style="color:#20c5b5; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Submitted At</label>
+            <p id="detail-time" style="color:#cfd8df; font-size:14px; margin:8px 0 0 0;"></p>
+          </div>
+        </div>
+        
+        <button onclick="closeDetailModal()" style="margin-top:25px; width:100%; background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:12px; border-radius:8px; color:#042; font-weight:700; cursor:pointer; font-size:15px; transition:all 0.3s ease;">Close</button>
+      </div>
+    </div>
+
     <!-- Initialize 3D Scene and Animations -->
     <script src="js/enhanced-3d.js"></script>
+    <script>
+      // User credentials
+      const validUsers = {
+        'chetan': 'ACDS@123',
+        'aarshin': 'ACDS@123',
+        'deepesh': 'ACDS@123',
+        'sameer': 'ACDS@123',
+        'jayesh': 'ACDS@123'
+      };
+
+      function openLoginModal() {
+        const modal = document.getElementById('login-modal');
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
+        setTimeout(() => document.getElementById('login_username').focus(), 50);
+      }
+
+      function closeLoginModal() {
+        const modal = document.getElementById('login-modal');
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+        document.getElementById('loginMsg').textContent = '';
+        document.getElementById('loginForm').reset();
+      }
+
+      function openDashboardModal(username) {
+        const modal = document.getElementById('dashboard-modal');
+        const loginModal = document.getElementById('login-modal');
+        document.getElementById('dashboardUsername').textContent = username;
+        
+        loginModal.classList.add('hidden');
+        loginModal.style.display = 'none';
+        
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
+        
+        localStorage.setItem('currentUser', username);
+        loadLeads();
+      }
+
+      function closeDashboardModal() {
+        const modal = document.getElementById('dashboard-modal');
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      function showDashboardTab(tab) {
+        const leadsTab = document.getElementById('leadsTab');
+        const plansTab = document.getElementById('plansTab');
+        const leadsBtn = document.getElementById('dashboardTabLeads');
+        const plansBtn = document.getElementById('dashboardTabPlans');
+        
+        if (tab === 'leads') {
+          leadsTab.style.display = 'block';
+          plansTab.style.display = 'none';
+          leadsBtn.style.background = '#20c5b5';
+          leadsBtn.style.color = '#042';
+          plansBtn.style.background = '#0db8a1';
+          plansBtn.style.color = '#fff';
+          loadLeads();
+        } else if (tab === 'plans') {
+          leadsTab.style.display = 'none';
+          plansTab.style.display = 'block';
+          leadsBtn.style.background = '#0db8a1';
+          leadsBtn.style.color = '#fff';
+          plansBtn.style.background = '#20c5b5';
+          plansBtn.style.color = '#042';
+          loadPlansList();
+        }
+      }
+
+      function logoutUser() {
+        localStorage.removeItem('currentUser');
+        closeDashboardModal();
+        closeLoginModal();
+        document.getElementById('loginForm').reset();
+      }
+
+      function loadLeads() {
+        fetch('/api/leads')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById('leadsTableBody');
+          tbody.innerHTML = '';
+          
+          if (data.leads && data.leads.length > 0) {
+            data.leads.forEach(lead => {
+              const row = tbody.insertRow();
+              row.style.borderBottom = '1px solid rgba(32,197,181,0.1)';
+              row.style.cursor = 'pointer';
+              row.style.transition = 'background-color 0.2s ease';
+              row.onmouseover = () => row.style.backgroundColor = 'rgba(32,197,181,0.1)';
+              row.onmouseout = () => row.style.backgroundColor = '';
+              
+              const createdDate = new Date(lead.created_at);
+              const formattedTime = createdDate.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+              });
+              const requirementText = lead.requirements ? escapeHtml(lead.requirements).substring(0, 50) + (lead.requirements.length > 50 ? '...' : '') : '—';
+              
+              row.innerHTML = `
+                <td style="padding:10px;">${escapeHtml(lead.brandName)}</td>
+                <td style="padding:10px;"><a href="tel:${encodeURIComponent(lead.phone)}" style="color:#0db8a1; text-decoration:none; cursor:pointer;" onclick="event.stopPropagation();">${escapeHtml(lead.phone)}</a></td>
+                <td style="padding:10px;"><a href="mailto:${encodeURIComponent(lead.email)}" style="color:#0db8a1; text-decoration:none; cursor:pointer;" onclick="event.stopPropagation();">${escapeHtml(lead.email)}</a></td>
+                <td style="padding:10px;">${escapeHtml(lead.plan || 'N/A')}</td>
+                <td style="padding:10px; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(lead.requirements || '')}">${requirementText}</td>
+                <td style="padding:10px; font-size:12px; color:#20c5b5;">${formattedTime}</td>
+              `;
+              
+              // Click handler to show details
+              row.onclick = () => showLeadDetail(lead);
+            });
+          } else {
+            tbody.innerHTML = '<tr><td colspan="6" style="padding:20px; text-align:center; color:#9fbfc6;">No leads yet</td></tr>';
+          }
+        })
+        .catch(err => {
+          document.getElementById('leadsTableBody').innerHTML = '<tr><td colspan="5" style="padding:20px; text-align:center; color:#ffb3b3;">Error loading leads</td></tr>';
+          console.error('Error loading leads:', err);
+        });
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function showLeadDetail(lead) {
+        const modal = document.getElementById('lead-detail-modal');
+        
+        // Populate detail fields
+        document.getElementById('detail-company').textContent = lead.brandName || 'N/A';
+        
+        // Phone with WhatsApp link
+        const phone = lead.phone || 'N/A';
+        const phoneLink = document.getElementById('detail-phone');
+        phoneLink.textContent = phone;
+        phoneLink.href = `https://wa.me/${phone.replace(/[^\d+]/g, '')}`;
+        phoneLink.target = '_blank';
+        phoneLink.onclick = (e) => { e.preventDefault(); window.open(phoneLink.href, '_blank'); };
+        
+        // Email with mailto link
+        const email = lead.email || 'N/A';
+        const emailLink = document.getElementById('detail-email');
+        emailLink.textContent = email;
+        emailLink.href = `mailto:${email}`;
+        emailLink.onclick = (e) => { e.preventDefault(); window.location.href = emailLink.href; };
+        
+        // Plan
+        document.getElementById('detail-plan').textContent = lead.plan || 'Not specified';
+        
+        // Requirements
+        document.getElementById('detail-requirements').textContent = lead.requirements || 'No requirements specified';
+        
+        // Time
+        const createdDate = new Date(lead.created_at);
+        const formattedTime = createdDate.toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        });
+        document.getElementById('detail-time').textContent = formattedTime;
+        
+        // Show modal
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeDetailModal() {
+        const modal = document.getElementById('lead-detail-modal');
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      // Plans management functions
+      function loadPlansList() {
+        fetch('/api/plans')
+          .then(res => res.json())
+          .then(data => {
+            const plansList = document.getElementById('plansList');
+            const allPlans = data.allPlans || [];
+            
+            if (allPlans.length === 0) {
+              plansList.innerHTML = '<p style="color:#9fbfc6; text-align:center;">No plans added yet</p>';
+              return;
+            }
+
+            // Group plans by category
+            const grouped = {};
+            allPlans.forEach(plan => {
+              if (!grouped[plan.category]) grouped[plan.category] = [];
+              grouped[plan.category].push(plan);
+            });
+
+            let html = '';
+            Object.entries(grouped).forEach(([category, plans]) => {
+              html += `<h5 style="color:#20c5b5; margin:15px 0 10px 0; font-size:14px; font-weight:600;">${category}</h5>`;
+              plans.forEach(plan => {
+                html += `
+                  <div style="background:rgba(32,197,181,0.1); padding:12px; margin-bottom:10px; border-radius:6px; border-left:3px solid #20c5b5; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                      <p style="color:#cfd8df; margin:0 0 4px 0; font-weight:600;"><strong>${escapeHtml(plan.tier)}</strong> - ${escapeHtml(plan.name)}</p>
+                      <p style="color:#9fbfc6; margin:0; font-size:12px;">${escapeHtml(plan.price)}</p>
+                    </div>
+                    <button onclick="deletePlan(${plan.id})" style="background:#ff6b6b; border:none; color:#fff; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600;">Delete</button>
+                  </div>
+                `;
+              });
+            });
+            plansList.innerHTML = html;
+          })
+          .catch(err => {
+            document.getElementById('plansList').innerHTML = '<p style="color:#ffb3b3; text-align:center;">Error loading plans</p>';
+            console.error('Error loading plans:', err);
+          });
+      }
+
+      function deletePlan(planId) {
+        if (!confirm('Are you sure you want to delete this plan?')) return;
+        
+        fetch(`/api/plans/${planId}`, { method: 'DELETE' })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              loadPlansList();
+            } else {
+              alert('Error deleting plan: ' + data.message);
+            }
+          })
+          .catch(err => {
+            alert('Error deleting plan');
+            console.error('Error:', err);
+          });
+      }
+
+      // Add plan form handler
+      document.addEventListener('DOMContentLoaded', () => {
+        const addPlanForm = document.getElementById('addPlanForm');
+        if (addPlanForm) {
+          addPlanForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('addPlanMsg');
+            msg.textContent = '';
+
+            const category = document.getElementById('planCategory').value.trim();
+            const tier = document.getElementById('planTier').value.trim();
+            const name = document.getElementById('planName').value.trim();
+            const price = document.getElementById('planPrice').value.trim();
+            const description = document.getElementById('planDesc').value.trim();
+
+            if (!category || !tier || !name || !price) {
+              msg.style.color = '#ffb3b3';
+              msg.textContent = 'All required fields must be filled';
+              return;
+            }
+
+            try {
+              const res = await fetch('/api/plans', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category, tier, name, price, description, features: [] })
+              });
+
+              const data = await res.json();
+
+              if (res.ok && data.success) {
+                msg.style.color = '#9fbfc6';
+                msg.textContent = '✅ Plan added successfully!';
+                addPlanForm.reset();
+                setTimeout(() => loadPlansList(), 500);
+              } else {
+                msg.style.color = '#ffb3b3';
+                msg.textContent = 'Error: ' + (data.message || 'Failed to add plan');
+              }
+            } catch (err) {
+              console.error('Error adding plan:', err);
+              msg.style.color = '#ffb3b3';
+              msg.textContent = 'Network error. Make sure server is running.';
+            }
+          });
+        }
+      });
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      // Login form handler
+      document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('login_username').value.trim().toLowerCase();
+        const password = document.getElementById('login_password').value.trim();
+        const msg = document.getElementById('loginMsg');
+        msg.textContent = '';
+
+        if (!username || !password) {
+          msg.style.color = '#ffb3b3';
+          msg.textContent = 'Please enter username and password';
+          return;
+        }
+
+        if (validUsers[username] && validUsers[username] === password) {
+          msg.style.color = '#9fbfc6';
+          msg.textContent = '✅ Login successful...';
+          setTimeout(() => openDashboardModal(username), 800);
+        } else {
+          msg.style.color = '#ffb3b3';
+          msg.textContent = '❌ Invalid username or password';
+        }
+      });
+
+      // Modal close handlers
+      document.getElementById('login-modal-close').addEventListener('click', closeLoginModal);
+      document.getElementById('dashboard-close').addEventListener('click', closeDashboardModal);
+      document.getElementById('detail-modal-close').addEventListener('click', closeDetailModal);
+
+      // Close on overlay click
+      document.getElementById('login-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('login-modal')) closeLoginModal();
+      });
+
+      document.getElementById('dashboard-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('dashboard-modal')) closeDashboardModal();
+      });
+
+      document.getElementById('lead-detail-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('lead-detail-modal')) closeDetailModal();
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeLoginModal();
+          closeDashboardModal();
+          closeDetailModal();
+        }
+      });
+    </script>
+    
     <script>
       function initializeEnhancements() {
         if (document.getElementById('hero-3d') && typeof ThreeDScene !== 'undefined') {
@@ -1390,6 +2022,136 @@
         initializePlansAnimation();
       }
     </script>
+  
+  <!-- Plan Selection Modal -->
+  <div id="plan-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="plan-modal-title" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); z-index:2000;">
+    <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:30px; border-radius:15px; width:450px; max-width:92%; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+      <button id="plan-modal-close" aria-label="Close" style="position:absolute; right:15px; top:12px; background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; width:30px; height:30px; display:flex; align-items:center; justify-content:center;">&times;</button>
+      <h3 id="plan-modal-title" style="color:#20c5b5; margin:0 0 8px 0; font-size:20px; font-weight:700;">Get Started with Your Plan</h3>
+      <p style="color:#9fbfc6; margin:0 0 20px 0; font-size:14px;">Fill in your details and select your plan</p>
+      
+      <form id="planForm">
+        <label for="plan_companyName" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Company Name *</label>
+        <input id="plan_companyName" name="companyName" required placeholder="Your Company Name" style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit;" />
+        
+        <label for="plan_mobile" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Mobile Number *</label>
+        <input id="plan_mobile" name="mobile" required placeholder="+91 98765 43210" pattern="[0-9+\-() ]{6,20}" style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit;" />
+        
+        <label for="plan_email" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Email Address *</label>
+        <input id="plan_email" name="email" type="email" required placeholder="you@company.com" style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit;" />
+        
+        <label for="plan_selection" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Select Your Plan (Optional)</label>
+        <select id="plan_selection" name="plan" style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit; cursor:pointer;">
+          <option value="">-- Choose a Plan --</option>
+          <option value="Silver Plan">🥈 Silver Plan (1–3 Pages)</option>
+          <option value="Gold Plan">🥇 Gold Plan (5–7 Pages)</option>
+          <option value="Platinum Plan">💎 Platinum Plan (10–15 Pages)</option>
+        </select>
+        
+        <label for="plan_requirements" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Your Requirements (Optional)</label>
+        <textarea id="plan_requirements" name="requirements" placeholder="Tell us about your project, features you need, design preferences, etc." style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit; resize:vertical; min-height:80px; max-height:150px;"></textarea>
+        
+        <button type="submit" style="margin-top:20px; width:100%; background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:12px; border-radius:8px; color:#042; font-weight:700; cursor:pointer; font-size:15px; transition:all 0.3s ease;">Submit & Get Started</button>
+        <div id="planModalMsg" style="color:#ffb3b3; font-size:13px; margin-top:12px; min-height:18px; text-align:center;"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openPlanModal(planName) {
+      const modal = document.getElementById('plan-modal');
+      const planSelect = document.getElementById('plan_selection');
+      modal.classList.remove('hidden');
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      
+      // Pre-select the plan only if provided
+      if (planName) {
+        planSelect.value = planName;
+      } else {
+        planSelect.value = ''; // Reset to choose a plan
+      }
+      
+      // Focus on company name field
+      setTimeout(() => document.getElementById('plan_companyName').focus(), 50);
+    }
+
+    function closePlanModal() {
+      const modal = document.getElementById('plan-modal');
+      modal.classList.add('hidden');
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      document.getElementById('planModalMsg').textContent = '';
+      document.getElementById('planForm').reset();
+    }
+
+    // Modal close button handler
+    document.getElementById('plan-modal-close').addEventListener('click', closePlanModal);
+
+    // Close on overlay click
+    document.getElementById('plan-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('plan-modal')) closePlanModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !document.getElementById('plan-modal').classList.contains('hidden')) {
+        closePlanModal();
+      }
+    });
+
+    // Form submission
+    document.getElementById('planForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('planModalMsg');
+      msg.textContent = '';
+      
+      const companyName = document.getElementById('plan_companyName').value.trim();
+      const mobile = document.getElementById('plan_mobile').value.trim();
+      const email = document.getElementById('plan_email').value.trim();
+      const plan = document.getElementById('plan_selection').value.trim();
+      const requirements = document.getElementById('plan_requirements').value.trim();
+      
+      if (!companyName || !mobile || !email) {
+        msg.style.color = '#ffb3b3';
+        msg.textContent = 'Company Name, Mobile, and Email are required.';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ brandName: companyName, phone: mobile, email: email, plan: plan, requirements: requirements })
+        });
+
+        let data = null;
+        const ctype = (res.headers.get('content-type') || '').toLowerCase();
+        if (ctype.includes('application/json')) {
+          try {
+            data = await res.json();
+          } catch (parseErr) {
+            console.error('Failed to parse JSON response:', parseErr);
+          }
+        }
+
+        if (res.ok && data && data.success) {
+          msg.style.color = '#9fbfc6';
+          msg.textContent = '✅ Thank you! We\'ll contact you shortly.';
+          setTimeout(closePlanModal, 1600);
+        } else {
+          msg.style.color = '#ffb3b3';
+          const serverMsg = (data && data.message) ? data.message : 'Submission failed. Try again.';
+          msg.textContent = serverMsg;
+        }
+      } catch (err) {
+        console.error('Plan submit error:', err);
+        msg.style.color = '#ffb3b3';
+        msg.textContent = 'Network error. Make sure the server is running. Run: npm start';
+      }
+    });
+  </script>
+
   <!-- Lead capture modal (opens on Home) -->
   <div id="lead-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="lead-modal-title" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); z-index:2000;">
       <div class="modal-dialog" style="background:linear-gradient(135deg,#0f1630,#14213a); padding:22px; border-radius:10px; width:380px; max-width:92%; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
@@ -1497,10 +2259,28 @@
       })();
     </script>
     <script>
+      // Hamburger menu toggle
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.querySelector('.nav-links');
+
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+      });
+
+      // Close menu when a link is clicked
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+          hamburger.classList.remove('active');
+          navLinks.classList.remove('active');
+        });
+      });
+    </script>
+    <script>
       // Tab navigation: show/hide panels and hook into animations
       (function() {
   const panels = document.querySelectorAll('.tab-panel');
-  const navLinks = document.querySelectorAll('.nav-links a');
+  const navLinksAnchors = document.querySelectorAll('.nav-links a');
   const canvasBg = document.getElementById('canvas-bg');
   const homeSvg = document.querySelector('#home svg');
   const interactiveHero = document.getElementById('interactive-hero');
@@ -1528,7 +2308,7 @@
             }
           });
 
-          navLinks.forEach(a => {
+          navLinksAnchors.forEach(a => {
             const href = a.getAttribute('href') || '#home';
             a.classList.toggle('active', href === ('#' + id));
           });
@@ -1563,7 +2343,7 @@
         }
 
         // Attach nav click handlers
-        navLinks.forEach(a => {
+        navLinksAnchors.forEach(a => {
           a.addEventListener('click', (e) => {
             e.preventDefault();
             const href = a.getAttribute('href') || '#home';
@@ -1579,6 +2359,76 @@
         // If DOM already loaded
         if (document.readyState !== 'loading') setActiveTab(location.hash || '#home');
       })();
+    </script>
+    <script>
+      // Global switchTab function for external button clicks (Learn More, etc.)
+      function switchTab(tabName) {
+        setActiveTab(tabName);
+      }
+
+      // Load and display custom plans added by admin
+      function loadCustomPlans() {
+        fetch('/api/plans')
+          .then(res => res.json())
+          .then(data => {
+            const dynamicContainer = document.getElementById('dynamicPlansContainer');
+            const groupedPlans = data.plans || {};
+
+            // If no custom plans, don't show the container
+            if (Object.keys(groupedPlans).length === 0 || !data.allPlans || data.allPlans.length === 0) {
+              dynamicContainer.innerHTML = '';
+              return;
+            }
+
+            let html = '';
+
+            // Display each category with its plans
+            Object.entries(groupedPlans).forEach(([category, categoryPlans]) => {
+              if (categoryPlans && categoryPlans.length > 0) {
+                html += `<h3 style="font-size: 28px; margin: 40px 0 30px 0; color: #164069; animation: slideInDown 0.8s ease-out;">${category} Plans</h3>`;
+                html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; align-items: stretch; grid-auto-rows: 1fr; margin-bottom: 40px;">`;
+
+                categoryPlans.forEach(plan => {
+                  const tierEmoji = plan.tier === 'Silver' ? '🥈' : plan.tier === 'Gold' ? '🥇' : '💎';
+                  html += `
+                    <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
+                      <div style="text-align: center; margin-bottom: 30px;">
+                        <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">${tierEmoji} ${plan.tier.toUpperCase()} - ${escapeHtml(plan.name)}</h3>
+                        <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Admin Added Plan</p>
+                        <p style="color: #666; font-size: 13px; margin: 0; margin-bottom: 15px;">${escapeHtml(plan.description || plan.name)}</p>
+                      </div>
+                      <div style="text-align: center; margin-bottom: 20px; flex-grow: 1;">
+                        <p style="color: #20c5b5; font-weight: 600; margin: 0; font-size: 18px;">${escapeHtml(plan.price)}</p>
+                      </div>
+                      <button class="btn btn-secondary" onclick="openPlanModal('${escapeHtml(plan.name)}')" style="width: 100%; padding: 12px; cursor: pointer;">Get Started</button>
+                    </div>
+                  `;
+                });
+
+                html += `</div>`;
+              }
+            });
+
+            dynamicContainer.innerHTML = html;
+          })
+          .catch(err => {
+            console.error('Error loading custom plans:', err);
+          });
+      }
+
+      // Load custom plans when page loads
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadCustomPlans);
+      } else {
+        loadCustomPlans();
+      }
+
+      // Reload plans when user switches to plans tab
+      window.addEventListener('hashchange', () => {
+        if (location.hash === '#plans') {
+          loadCustomPlans();
+        }
+      });
     </script>
 </body>
 </html>
