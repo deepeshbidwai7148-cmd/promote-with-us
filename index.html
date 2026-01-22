@@ -1150,9 +1150,45 @@
             <p style="font-size: 18px; color: #666; max-width: 600px; margin: 20px auto 0; animation: slideInUp 0.8s ease-out 0.2s both;">Choose the perfect plan for your business needs</p>
           </div>
 
-          <!-- All Plans Container (dynamic, from JSON) -->
-          <div id="allPlansContainer" style="margin-top: 40px;"></div>
+          <!-- All Plans Container (loaded dynamically from database) -->
+          <div id="allPlansContainer" style="margin-top: 40px;">
+            <p style="color:#9fbfc6; text-align:center;">Loading plans...</p>
+          </div>
         </div>
+
+        <script>
+          // Modify plan cards to show edit/delete buttons to admin users
+          function enhanceAdminPlansView() {
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            if (isAdmin) {
+              const allPlans = document.querySelectorAll('[data-plan-id]');
+              allPlans.forEach(card => {
+                const planId = card.getAttribute('data-plan-id');
+                const buttonContainer = card.querySelector('.plan-button-container');
+                if (buttonContainer) {
+                  const editBtn = document.createElement('button');
+                  editBtn.className = 'btn btn-secondary';
+                  editBtn.style.cssText = 'width: 48%; padding: 10px; cursor: pointer; font-size: 12px; margin-right: 4%;';
+                  editBtn.textContent = '✏️ Edit';
+                  editBtn.onclick = () => editPlan(planId);
+
+                  const deleteBtn = document.createElement('button');
+                  deleteBtn.className = 'btn btn-danger';
+                  deleteBtn.style.cssText = 'width: 48%; padding: 10px; cursor: pointer; font-size: 12px; background-color: #d32f2f; color: white; border: none; border-radius: 5px;';
+                  deleteBtn.textContent = '🗑️ Delete';
+                  deleteBtn.onclick = () => deletePlan(planId);
+
+                  buttonContainer.innerHTML = '';
+                  buttonContainer.appendChild(editBtn);
+                  buttonContainer.appendChild(deleteBtn);
+                }
+              });
+            }
+          }
+
+          // Call after loadCustomPlans completes
+          setTimeout(enhanceAdminPlansView, 100);
+        </script>
       </section>
   <section id="about" class="tab-panel" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f1ff 100%); position: relative; overflow: hidden;">
         <div style="position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(32, 197, 181, 0.1) 0%, transparent 70%); border-radius: 50%; top: 10%; right: 5%; animation: float 20s ease-in-out infinite;"></div>
@@ -1390,6 +1426,16 @@
                   <option value="Gold">🥇 Gold</option>
                   <option value="Platinum">💎 Platinum</option>
                 </select>
+              </div>
+              
+              <div>
+                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan Name *</label>
+                <input id="planName" type="text" required placeholder="e.g., Basic Website" style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
+              </div>
+              
+              <div>
+                <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Price *</label>
+                <input id="planPrice" type="text" required placeholder="e.g., ₹15,000" style="width:100%; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:13px; font-family:inherit;" />
               </div>
               
               <div>
@@ -1817,22 +1863,15 @@
 
             const category = document.getElementById('planCategory').value.trim();
             const tier = document.getElementById('planTier').value.trim();
+            const name = document.getElementById('planName').value.trim();
+            const price = document.getElementById('planPrice').value.trim();
             const description = document.getElementById('planDesc').value.trim();
 
-            if (!category || !tier) {
+            if (!category || !tier || !name || !price) {
               msg.style.color = '#ffb3b3';
-              msg.textContent = 'Category and Tier are required';
+              msg.textContent = 'All required fields must be filled';
               return;
             }
-
-            // Auto-generate name and price
-            const name = `${category} - ${tier} Plan`;
-            const priceMap = {
-              'Silver': '₹15,000',
-              'Gold': '₹30,000',
-              'Platinum': '₹49,999'
-            };
-            const price = priceMap[tier] || '₹20,000';
 
             try {
               const res = await fetch('/api/plans', {
@@ -1847,10 +1886,7 @@
                 msg.style.color = '#9fbfc6';
                 msg.textContent = '✅ Plan added successfully!';
                 addPlanForm.reset();
-                setTimeout(() => {
-                  loadPlansList();
-                  loadAllPlans();
-                }, 500);
+                setTimeout(() => loadPlansList(), 500);
               } else {
                 msg.style.color = '#ffb3b3';
                 msg.textContent = 'Error: ' + (data.message || 'Failed to add plan');
@@ -2452,14 +2488,9 @@
         fetch('/api/plans')
           .then(res => res.json())
           .then(data => {
-            const dynamicContainer = document.getElementById('dynamicPlansContainer');
+            const allPlansContainer = document.getElementById('allPlansContainer');
             const groupedPlans = data.plans || {};
-
-            // If no custom plans, don't show the container
-            if (Object.keys(groupedPlans).length === 0 || !data.allPlans || data.allPlans.length === 0) {
-              dynamicContainer.innerHTML = '';
-              return;
-            }
+            const allPlans = data.allPlans || [];
 
             let html = '';
 
@@ -2472,16 +2503,18 @@
                 categoryPlans.forEach(plan => {
                   const tierEmoji = plan.tier === 'Silver' ? '🥈' : plan.tier === 'Gold' ? '🥇' : '💎';
                   html += `
-                    <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
+                    <div class="glass-card fade-in" data-animate data-plan-id="${plan.id}" style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
                       <div style="text-align: center; margin-bottom: 30px;">
-                        <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">${tierEmoji} ${plan.tier.toUpperCase()} - ${escapeHtml(plan.name)}</h3>
-                        <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">Admin Added Plan</p>
-                        <p style="color: #666; font-size: 13px; margin: 0; margin-bottom: 15px;">${escapeHtml(plan.description || plan.name)}</p>
+                        <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">${tierEmoji} ${plan.tier.toUpperCase()} PLAN</h3>
+                        <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">${escapeHtml(plan.description || '')}</p>
+                        <p style="color: #666; font-size: 13px; margin: 0; margin-bottom: 15px;">${escapeHtml(plan.name)}</p>
                       </div>
                       <div style="text-align: center; margin-bottom: 20px; flex-grow: 1;">
                         <p style="color: #20c5b5; font-weight: 600; margin: 0; font-size: 18px;">${escapeHtml(plan.price)}</p>
                       </div>
-                      <button class="btn btn-secondary" onclick="openPlanModal('${escapeHtml(plan.name)}')" style="width: 100%; padding: 12px; cursor: pointer;">Get Started</button>
+                      <div class="plan-button-container" style="width: 100%; display: flex; gap: 4%; justify-content: center;">
+                        <button class="btn btn-secondary" onclick="openPlanModal('${escapeHtml(plan.name)}')" style="width: 100%; padding: 12px; cursor: pointer;">Get Started</button>
+                      </div>
                     </div>
                   `;
                 });
@@ -2490,85 +2523,18 @@
               }
             });
 
-            dynamicContainer.innerHTML = html;
+            allPlansContainer.innerHTML = html || '<p style="color:#9fbfc6; text-align:center;">No plans available yet.</p>';
+            
+            // Enhance with edit/delete buttons if admin
+            setTimeout(() => {
+              enhanceAdminPlansView();
+            }, 50);
           })
           .catch(err => {
-            console.error('Error loading custom plans:', err);
+            console.error('Error loading plans:', err);
+            document.getElementById('allPlansContainer').innerHTML = '<p style="color:#9fbfc6; text-align:center;">Error loading plans. Please refresh the page.</p>';
           });
       }
-
-      // New function to load ALL plans (including defaults) for the public website display
-      function loadAllPlans() {
-        fetch('/api/plans')
-          .then(res => res.json())
-          .then(data => {
-            const allPlansContainer = document.getElementById('allPlansContainer');
-            const allPlans = data.allPlans || [];
-
-            if (allPlans.length === 0) {
-              allPlansContainer.innerHTML = '<p style="text-align: center; color: #666;">No plans available</p>';
-              return;
-            }
-
-            // Group plans by category
-            const groupedByCategory = {};
-            allPlans.forEach(plan => {
-              if (!groupedByCategory[plan.category]) {
-                groupedByCategory[plan.category] = [];
-              }
-              groupedByCategory[plan.category].push(plan);
-            });
-
-            let html = '';
-
-            // Display each category with its plans
-            Object.entries(groupedByCategory).forEach(([category, categoryPlans]) => {
-              html += `<h3 style="font-size: 28px; margin: 40px 0 30px 0; color: #164069; animation: slideInDown 0.8s ease-out;">${category} Plans</h3>`;
-              html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; align-items: stretch; grid-auto-rows: 1fr; margin-bottom: 40px;">`;
-
-              categoryPlans.forEach(plan => {
-                const tierEmoji = plan.tier === 'Silver' ? '🥈' : plan.tier === 'Gold' ? '🥇' : '💎';
-                const isBadge = plan.tier === 'Gold' ? '<span class="popular-badge" style="position: absolute; top: 10px; right: 10px; background: #20c5b5; color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">POPULAR</span>' : '';
-                
-                html += `
-                  <div class="glass-card fade-in" data-animate style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
-                    ${isBadge}
-                    <div style="text-align: center; margin-bottom: 30px;">
-                      <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">${tierEmoji} ${plan.tier.toUpperCase()}</h3>
-                      <p style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 10px;">${escapeHtml(plan.name)}</p>
-                      <p style="color: #666; font-size: 13px; margin: 0; margin-bottom: 15px;">${escapeHtml(plan.description || '')}</p>
-                    </div>
-                    <div style="text-align: center; margin-bottom: 20px; flex-grow: 1;">
-                      <p style="color: #20c5b5; font-weight: 600; margin: 0; font-size: 18px;">${escapeHtml(plan.price)}</p>
-                    </div>
-                    <button class="btn btn-secondary" onclick="openPlanModal('${escapeHtml(plan.name)}')" style="width: 100%; padding: 12px; cursor: pointer;">Get Started</button>
-                  </div>
-                `;
-              });
-
-              html += `</div>`;
-            });
-
-            allPlansContainer.innerHTML = html;
-          })
-          .catch(err => {
-            console.error('Error loading all plans:', err);
-          });
-      }
-
-      // Load all plans when page loads
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadAllPlans);
-      } else {
-        loadAllPlans();
-      }
-
-      // Reload plans when user scrolls to plans section
-      window.addEventListener('hashchange', () => {
-        if (location.hash === '#plans' || location.hash === '') {
-          loadAllPlans();
-        }
-      });
 
       // Load custom plans when page loads
       if (document.readyState === 'loading') {
