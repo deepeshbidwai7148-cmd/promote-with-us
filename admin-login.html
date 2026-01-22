@@ -727,15 +727,16 @@
                         html += `<div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; margin-bottom: 15px;">`;
                         
                         plans.forEach(plan => {
+                            const planDataJson = JSON.stringify(plan).replace(/"/g, '&quot;');
                             html += `
-                                <div style="background: rgba(32,197,181,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #20c5b5;" data-plan-id="${plan.id}">
+                                <div style="background: rgba(32,197,181,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #20c5b5;" data-plan-id="${plan.id}" data-plan-json="${planDataJson}">
                                     <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
                                         <div style="flex: 1;">
                                             <strong style="color: #20c5b5;">${plan.name}</strong> - ${plan.price}<br>
                                             <span style="color: #9fbfc6; font-size: 12px;">${plan.description}</span>
                                         </div>
                                         <div style="display: flex; gap: 8px;">
-                                            <button onclick="editPlanAdmin('${plan.id}', ${JSON.stringify(plan).replace(/'/g, "&apos;")})" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">✏️ Edit</button>
+                                            <button onclick="editPlanAdmin('${plan.id}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">✏️ Edit</button>
                                             <button onclick="deletePlanAdmin('${plan.id}')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(245, 87, 108, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">🗑️ Delete</button>
                                         </div>
                                     </div>
@@ -902,16 +903,24 @@
         });
 
         // Edit Plan Function
-        async function editPlanAdmin(planId, planData) {
-            // Parse planData if it's a string
-            if (typeof planData === 'string') {
-                try {
-                    planData = JSON.parse(planData);
-                } catch (e) {
-                    console.error('Error parsing plan data:', e);
-                    alert('Error loading plan data');
-                    return;
-                }
+        async function editPlanAdmin(planId) {
+            // Get the plan element and retrieve data from the data attribute
+            const planElement = document.querySelector(`[data-plan-id="${planId}"]`);
+            if (!planElement) {
+                console.error('Plan element not found');
+                alert('Error: Plan not found');
+                return;
+            }
+
+            const planDataJson = planElement.getAttribute('data-plan-json');
+            let planData = null;
+            
+            try {
+                planData = JSON.parse(planDataJson);
+            } catch (e) {
+                console.error('Error parsing plan data:', e);
+                alert('Error loading plan data');
+                return;
             }
             
             // Populate form fields with existing plan data
@@ -1009,13 +1018,13 @@
         }
 
         // Modify form submission to handle both add and update
-        const originalFormSubmit = document.getElementById('addPlanForm').onsubmit;
-        document.getElementById('addPlanForm').addEventListener('submit', async (e) => {
+        const addPlanForm = document.getElementById('addPlanForm');
+        if (addPlanForm) {
+            addPlanForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const msg = document.getElementById('addPlanMsg');
             msg.textContent = '';
             
-            const planId = document.getElementById('addPlanForm').dataset.planId;
             const category = document.getElementById('planCategory').value.trim();
             const tier = document.getElementById('planTier').value.trim();
             const name = document.getElementById('planName').value.trim();
@@ -1040,6 +1049,7 @@
             }
             
             try {
+                const planId = parseInt(document.getElementById('addPlanForm').dataset.planId) || null;
                 const method = planId ? 'PUT' : 'POST';
                 const url = planId ? `/api/plans/${planId}` : '/api/plans';
                 
@@ -1085,7 +1095,8 @@
                 msg.style.color = '#ffb3b3';
                 msg.textContent = '❌ Error: ' + error.message;
             }
-        });
+            });
+        }
     </script>
 </body>
 </html>

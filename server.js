@@ -265,31 +265,9 @@ app.get('/api/leads', (req, res) => {
   res.json({ leads });
 });
 
-// API endpoint to add a new plan (protected by basic auth)
+// API endpoint to add a new plan (frontend auth is handled by login page)
 app.post('/api/plans', (req, res) => {
-  // Validate auth
-  const auth = req.headers['authorization'];
-  const adminUser = process.env.ADMIN_USER || 'admin';
-  const adminPass = process.env.ADMIN_PASS || 'password';
-  
-  if (!auth) {
-    res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
-    return res.status(401).json({ success: false, message: 'Authentication required' });
-  }
-  
-  const parts = auth.split(' ');
-  if (parts.length !== 2 || parts[0] !== 'Basic') {
-    return res.status(400).json({ success: false, message: 'Bad authorization header' });
-  }
-  
-  const decoded = Buffer.from(parts[1], 'base64').toString();
-  const [user, pass] = decoded.split(':');
-  if (user !== adminUser || pass !== adminPass) {
-    res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
-    return res.status(401).json({ success: false, message: 'Invalid credentials' });
-  }
-  
-  const { category, tier, name, price, description, features } = req.body;
+  const { category, tier, name, price, description, features, deliveryTime, idealFor } = req.body;
   
   if (!category || !tier || !name || !price) {
     return res.status(400).json({ success: false, message: 'category, tier, name, and price are required' });
@@ -350,29 +328,8 @@ app.get('/api/plans', (req, res) => {
   res.json({ plans: groupedPlans, allPlans: plans });
 });
 
-// API endpoint to delete a plan (protected by basic auth)
+// API endpoint to delete a plan
 app.delete('/api/plans/:id', (req, res) => {
-  const auth = req.headers['authorization'];
-  const adminUser = process.env.ADMIN_USER || 'admin';
-  const adminPass = process.env.ADMIN_PASS || 'password';
-  
-  if (!auth) {
-    res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
-    return res.status(401).json({ success: false, message: 'Authentication required' });
-  }
-  
-  const parts = auth.split(' ');
-  if (parts.length !== 2 || parts[0] !== 'Basic') {
-    return res.status(400).json({ success: false, message: 'Bad authorization header' });
-  }
-  
-  const decoded = Buffer.from(parts[1], 'base64').toString();
-  const [user, pass] = decoded.split(':');
-  if (user !== adminUser || pass !== adminPass) {
-    res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
-    return res.status(401).json({ success: false, message: 'Invalid credentials' });
-  }
-  
   const planId = parseInt(req.params.id);
   
   try {
@@ -392,29 +349,8 @@ app.delete('/api/plans/:id', (req, res) => {
   }
 });
 
-// API endpoint to edit a plan (protected by basic auth)
+// API endpoint to edit a plan
 app.put('/api/plans/:id', (req, res) => {
-  const auth = req.headers['authorization'];
-  const adminUser = process.env.ADMIN_USER || 'admin';
-  const adminPass = process.env.ADMIN_PASS || 'password';
-  
-  if (!auth) {
-    res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
-    return res.status(401).json({ success: false, message: 'Authentication required' });
-  }
-  
-  const parts = auth.split(' ');
-  if (parts.length !== 2 || parts[0] !== 'Basic') {
-    return res.status(400).json({ success: false, message: 'Bad authorization header' });
-  }
-  
-  const decoded = Buffer.from(parts[1], 'base64').toString();
-  const [user, pass] = decoded.split(':');
-  if (user !== adminUser || pass !== adminPass) {
-    res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
-    return res.status(401).json({ success: false, message: 'Invalid credentials' });
-  }
-  
   const planId = parseInt(req.params.id);
   const { category, tier, name, price, description, features, deliveryTime, idealFor } = req.body;
   
