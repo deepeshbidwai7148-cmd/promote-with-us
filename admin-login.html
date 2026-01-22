@@ -337,6 +337,12 @@
                     <p>Enter your credentials to access the admin dashboard</p>
                 </div>
                 
+                <div class="login-info">
+                    <strong>Demo Credentials:</strong><br>
+                    Username: admin<br>
+                    Password: admin123
+                </div>
+                
                 <form id="loginForm">
                     <div class="form-group">
                         <label for="username">Username</label>
@@ -521,17 +527,13 @@
             try {
                 const auth = btoa(`${username}:${password}`);
                 
-                const response = await fetch('/api/auth/check', {
+                const response = await fetch('/api/plans', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Basic ${auth}`,
                         'Content-Type': 'application/json'
                     }
                 });
-                
-                console.log('Response status:', response.status);
-                const data = await response.json();
-                console.log('Response data:', data);
                 
                 if (response.status === 401) {
                     showMessage('❌ Invalid username or password', 'error');
@@ -598,11 +600,11 @@
                 if (data.leads && data.leads.length > 0) {
                     tbody.innerHTML = data.leads.map(lead => `
                         <tr>
-                            <td>${lead.brandName || lead.brand_name || 'N/A'}</td>
+                            <td>${lead.company_name || 'N/A'}</td>
                             <td>${lead.phone || 'N/A'}</td>
                             <td>${lead.email || 'N/A'}</td>
-                            <td>${lead.plan || 'Not specified'}</td>
-                            <td>${new Date(lead.created_at).toLocaleDateString()}</td>
+                            <td>${lead.plan_name || 'N/A'}</td>
+                            <td>${new Date(lead.submitted_at).toLocaleDateString()}</td>
                         </tr>
                     `).join('');
                 } else {
@@ -610,8 +612,6 @@
                 }
             } catch (error) {
                 console.error('Error loading leads:', error);
-                const tbody = document.getElementById('leadsTableBody');
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #ff6464;">Error loading leads</td></tr>';
             }
         }
         
