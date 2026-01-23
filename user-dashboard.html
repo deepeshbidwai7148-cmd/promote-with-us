@@ -116,6 +116,133 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .plan-card {
+            background: linear-gradient(135deg, #0a1929 0%, #0f2847 100%);
+            border: 1px solid rgba(32, 197, 181, 0.4);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(32, 197, 181, 0.7);
+            box-shadow: 0 12px 35px rgba(32, 197, 181, 0.2);
+        }
+
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #20c5b5 0%, #0db8a1 100%);
+        }
+
+        .plan-card-header {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(32, 197, 181, 0.2);
+        }
+
+        .plan-card-title {
+            color: #20c5b5;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .plan-card-tier {
+            color: #9fbfc6;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .plan-detail {
+            margin: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .plan-detail-label {
+            color: #9fbfc6;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .plan-detail-value {
+            color: #cfd8df;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        .time-remaining {
+            background: linear-gradient(135deg, rgba(32, 197, 181, 0.1), rgba(13, 184, 161, 0.1));
+            border: 1px solid rgba(32, 197, 181, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .time-remaining-label {
+            color: #9fbfc6;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .time-remaining-value {
+            color: #20c5b5;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .plan-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .plan-btn {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .plan-btn-upgrade {
+            background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%);
+            color: #042;
+        }
+
+        .plan-btn-upgrade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(32, 197, 181, 0.3);
+        }
+
         .content-placeholder {
             color: #9fbfc6;
             font-size: 16px;
@@ -128,6 +255,153 @@
             height: 80px;
             margin-bottom: 20px;
             opacity: 0.5;
+        }
+
+        .loading-text {
+            color: #20c5b5;
+            text-align: center;
+            padding: 40px;
+            font-size: 14px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal.hidden {
+            display: none !important;
+        }
+
+        .modal-dialog {
+            background: linear-gradient(135deg, #0f1630, #14213a);
+            padding: 30px;
+            border-radius: 15px;
+            width: 450px;
+            max-width: 92%;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            right: 15px;
+            top: 12px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .modal-title {
+            color: #20c5b5;
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-description {
+            color: #9fbfc6;
+            margin: 0 0 20px 0;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-top: 15px;
+        }
+
+        .form-label {
+            display: block;
+            color: #cfd8df;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #0a1929;
+            background: #0a1929;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-select {
+            cursor: pointer;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            max-height: 150px;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #cfd8df;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #20c5b5;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            width: 100%;
+            background: linear-gradient(135deg, #20c5b5, #0db8a1);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            color: #042;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-message {
+            color: #ffb3b3;
+            font-size: 13px;
+            margin-top: 12px;
+            min-height: 18px;
+            text-align: center;
+        }
+
+        .hidden-section {
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -154,6 +428,14 @@
             .welcome-section h2 {
                 font-size: 22px;
             }
+
+            .plans-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-dialog {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -163,6 +445,7 @@
         <h1>👤 User Dashboard</h1>
         <div class="user-info">
             <span class="username" id="userDisplay">User</span>
+            <button class="logout-btn" style="background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); margin-right: 10px;" onclick="loadUserPlans()">🔄 Refresh</button>
             <button class="logout-btn" onclick="handleUserLogout()">🚪 Logout</button>
         </div>
     </nav>
@@ -172,33 +455,688 @@
         <!-- Welcome Section -->
         <div class="welcome-section">
             <h2>Welcome to Your Dashboard</h2>
-            <p>This is your personal user dashboard. More features coming soon!</p>
+            <p>View and manage your selected plans below</p>
         </div>
 
         <!-- Content Section -->
         <div class="content">
-            <div class="content-placeholder">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" fill="#20c5b5" opacity="0.5"/>
-                </svg>
-                <p>Your dashboard is ready to explore!</p>
-            </div>
+            <div id="plansContainer" class="loading-text">Loading your plans...</div>
+        </div>
+    </div>
+
+    <!-- Upgrade Plan Modal -->
+    <div id="upgrade-plan-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="upgrade-modal-title">
+        <div class="modal-dialog">
+            <button class="modal-close" onclick="closeUpgradePlanModal()" aria-label="Close">&times;</button>
+            <h3 class="modal-title" id="upgrade-modal-title">Upgrade or Add Plan</h3>
+            <p class="modal-description">Update your plan details or add a new plan</p>
+            
+            <form id="upgradePlanForm">
+                <div class="form-group">
+                    <label for="upgrade_companyName" class="form-label">Company Name *</label>
+                    <input id="upgrade_companyName" name="companyName" type="text" required placeholder="Your Company Name" class="form-input" />
+                </div>
+
+                <div class="form-group">
+                    <label for="upgrade_mobile" class="form-label">Mobile Number *</label>
+                    <input id="upgrade_mobile" name="mobile" type="text" required placeholder="+91 98765 43210" pattern="[0-9+\-() ]{6,20}" class="form-input" />
+                </div>
+
+                <div class="form-group">
+                    <label for="upgrade_email" class="form-label">Email Address *</label>
+                    <input id="upgrade_email" name="email" type="email" required placeholder="you@company.com" class="form-input" />
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; color: #cfd8df; font-size: 14px; font-weight: 600; cursor: pointer; gap: 10px;">
+                        <input type="checkbox" id="upgrade_combine_plans_toggle" style="width: 18px; height: 18px; cursor: pointer; accent-color: #20c5b5;" />
+                        Combine Multiple Plans
+                    </label>
+                </div>
+
+                <div id="upgrade_combined_plans_section" class="form-group hidden-section">
+                    <label for="upgrade_plan_count_select" class="form-label">How many plans do you want to combine?</label>
+                    <select id="upgrade_plan_count_select" class="form-select">
+                        <option value="">-- Select Number --</option>
+                        <option value="2">2 Plans</option>
+                        <option value="3">3 Plans</option>
+                    </select>
+                    <div id="upgrade_combined_plans_dropdowns" style="display: flex; flex-direction: column; gap: 20px; margin-top: 15px;"></div>
+                </div>
+
+                <div id="upgrade_single_plan_section" class="form-group">
+                    <label for="upgrade_plan_selection" class="form-label">Select Your Plan</label>
+                    <select id="upgrade_plan_selection" name="plan" class="form-select">
+                        <option value="">-- Choose a Plan --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="upgrade_requirements" class="form-label">Your Requirements (Optional)</label>
+                    <textarea id="upgrade_requirements" name="requirements" placeholder="Tell us about your project, features you need, design preferences, etc." class="form-textarea"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Save Changes & Update Plan</button>
+                <div id="upgradeModalMsg" class="form-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Request Update Modal -->
+    <div id="update-request-modal" class="modal hidden" role="dialog" aria-hidden="true" aria-labelledby="update-request-modal-title">
+        <div class="modal-dialog">
+            <button class="modal-close" onclick="closeUpdateRequestModal()" aria-label="Close">&times;</button>
+            <h3 class="modal-title" id="update-request-modal-title">Request Plan Upgrade</h3>
+            <p class="modal-description">Submit your plan upgrade request to the admin</p>
+            
+            <form id="updateRequestForm">
+                <div class="form-group">
+                    <label for="request_companyName" class="form-label">Company Name *</label>
+                    <input id="request_companyName" name="companyName" type="text" required placeholder="Your Company Name" class="form-input" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="request_mobile" class="form-label">Mobile Number *</label>
+                    <input id="request_mobile" name="mobile" type="text" required placeholder="+91 98765 43210" pattern="[0-9+\-() ]{6,20}" class="form-input" />
+                </div>
+
+                <div class="form-group">
+                    <label for="request_email" class="form-label">Email Address *</label>
+                    <input id="request_email" name="email" type="email" required placeholder="you@company.com" class="form-input" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="request_currentPlan" class="form-label">Current Plan</label>
+                    <input id="request_currentPlan" name="currentPlan" type="text" placeholder="Your current plan" class="form-input" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="request_newPlan" class="form-label">Requested New Plan *</label>
+                    <select id="request_newPlan" name="newPlan" required class="form-input" style="cursor: pointer;">
+                        <option value="">-- Choose a Plan --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="request_description" class="form-label">Upgrade Description *</label>
+                    <textarea id="request_description" name="description" required placeholder="Describe what changes or upgrades you'd like to make..." class="form-textarea"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">📨 Send Upgrade Request</button>
+                <div id="updateRequestMsg" class="form-message"></div>
+            </form>
         </div>
     </div>
 
     <script>
+        let allPlans = [];
+        let currentUserData = null;
+
+        // Load plans on page load
+        async function loadPlansData() {
+            try {
+                const response = await fetch(`/api/plans?t=${Date.now()}`);
+                const data = await response.json();
+                allPlans = data.allPlans || data.plans || [];
+                if (typeof allPlans === 'object' && !Array.isArray(allPlans)) {
+                    allPlans = Object.values(allPlans).flat();
+                }
+                populateUpgradePlanDropdowns();
+            } catch (error) {
+                console.error('Error loading plans:', error);
+            }
+        }
+
+        // Populate upgrade plan dropdowns
+        function populateUpgradePlanDropdowns() {
+            const planSelect = document.getElementById('upgrade_plan_selection');
+            planSelect.innerHTML = '<option value="">-- Choose a Plan --</option>';
+            
+            allPlans.forEach(plan => {
+                const option = document.createElement('option');
+                option.value = plan.name;
+                option.textContent = `${plan.tier} - ${plan.category} (${plan.price})`;
+                planSelect.appendChild(option);
+            });
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        // Calculate time remaining
+        function calculateTimeRemaining(dueDate) {
+            const due = new Date(dueDate);
+            const now = new Date();
+            const diff = due - now;
+            
+            if (diff <= 0) return 'Expired';
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            
+            if (days > 0) {
+                return `${days} day${days !== 1 ? 's' : ''} ${hours} hour${hours !== 1 ? 's' : ''}`;
+            } else {
+                return `${hours} hour${hours !== 1 ? 's' : ''}`;
+            }
+        }
+
+        // Load user data and display plans
+        async function loadUserPlans() {
+            const username = localStorage.getItem('username');
+            if (!username) {
+                document.getElementById('plansContainer').innerHTML = `
+                    <div class="content-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" fill="#20c5b5" opacity="0.5"/>
+                        </svg>
+                        <p>Not logged in</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/leads?t=${Date.now()}`);
+                const data = await response.json();
+                const leads = data.leads || [];
+                
+                // Find user's lead record
+                const userLead = leads.find(lead => 
+                    (lead.username && lead.username.toLowerCase() === username.toLowerCase()) || 
+                    (lead.brandName && lead.brandName.toLowerCase() === username.toLowerCase())
+                );
+                
+                if (!userLead) {
+                    document.getElementById('plansContainer').innerHTML = `
+                        <div class="content-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" fill="#20c5b5" opacity="0.5"/>
+                            </svg>
+                            <p>No plans found. Visit home to select a plan!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                currentUserData = userLead;
+                displayPlans(userLead);
+            } catch (error) {
+                console.error('Error loading user plans:', error);
+                document.getElementById('plansContainer').innerHTML = `
+                    <div class="content-placeholder">
+                        <p>Error loading plans. Please refresh the page.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Display plans in cards
+        function displayPlans(userLead) {
+            const container = document.getElementById('plansContainer');
+            const plans = userLead.plans || [];
+            const planNames = userLead.plan ? [userLead.plan] : [];
+            
+            if (planNames.length === 0 && plans.length === 0) {
+                container.innerHTML = `
+                    <div class="content-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" fill="#20c5b5" opacity="0.5"/>
+                        </svg>
+                        <p>No plans selected yet. Start by selecting a plan!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Combine plan names and plan objects
+            const allPlanNames = [...planNames, ...plans.map(p => p.name || p.plan)];
+            const planDetails = [];
+
+            // Find plan details from allPlans (case-insensitive matching)
+            allPlanNames.forEach(planName => {
+                const planDetail = allPlans.find(p => 
+                    p.name && p.name.toLowerCase() === planName.toLowerCase()
+                );
+                if (planDetail) {
+                    planDetails.push(planDetail);
+                }
+            });
+
+            if (planDetails.length === 0) {
+                container.innerHTML = `
+                    <div class="content-placeholder">
+                        <p>Plan information not available.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="plans-grid">';
+
+            planDetails.forEach((plan, index) => {
+                // Use admin-set dates or defaults
+                const startDate = userLead.planStartDate ? new Date(userLead.planStartDate) : new Date(userLead.created_at);
+                const endDate = userLead.planEndDate ? new Date(userLead.planEndDate) : new Date(new Date(userLead.created_at).getTime() + (30 * 24 * 60 * 60 * 1000));
+                const timeRemaining = calculateTimeRemaining(endDate);
+
+                html += `
+                    <div class="plan-card">
+                        <div class="plan-card-header">
+                            <div class="plan-card-title">${plan.tier}</div>
+                            <div class="plan-card-tier">${plan.category}</div>
+                        </div>
+
+                        <div class="plan-detail">
+                            <span class="plan-detail-label">Plan Name:</span>
+                            <span class="plan-detail-value">${plan.name}</span>
+                        </div>
+
+                        <div class="plan-detail">
+                            <span class="plan-detail-label">Price:</span>
+                            <span class="plan-detail-value">
+                                ${plan.price}
+                                ${plan.originalRate ? `<span style="text-decoration: line-through; color: #999; margin-left: 8px; font-size: 12px;">${plan.originalRate}</span>` : ''}
+                                ${plan.offerPercentage ? `<span style="color: #20c5b5; margin-left: 8px; font-weight: 600; font-size: 12px;">${plan.offerPercentage}% OFF</span>` : ''}
+                            </span>
+                        </div>
+
+                        <div class="plan-detail">
+                            <span class="plan-detail-label">Delivery Time:</span>
+                            <span class="plan-detail-value">${plan.deliveryTime}</span>
+                        </div>
+
+                        <div class="plan-detail">
+                            <span class="plan-detail-label">Start Date:</span>
+                            <span class="plan-detail-value">${formatDate(startDate)}</span>
+                        </div>
+
+                        <div class="plan-detail">
+                            <span class="plan-detail-label">Maintenance Date:</span>
+                            <span class="plan-detail-value">${formatDate(endDate)}</span>
+                        </div>
+
+                        <div class="time-remaining">
+                            <span class="time-remaining-label">Time Remaining</span>
+                            <span class="time-remaining-value">${timeRemaining}</span>
+                        </div>
+
+                        <div class="plan-detail">
+                            <span class="plan-detail-label">Ideal For:</span>
+                            <span class="plan-detail-value">${plan.idealFor}</span>
+                        </div>
+
+                        <div class="plan-actions">
+                            <button type="button" class="plan-btn plan-btn-upgrade" onclick="openUpdateRequestModal()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                📨 Request Upgrade
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Open upgrade plan modal
+        function openUpgradePlanModal() {
+            const modal = document.getElementById('upgrade-plan-modal');
+            const combineToggle = document.getElementById('upgrade_combine_plans_toggle');
+            
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
+            
+            // Reset form
+            combineToggle.checked = false;
+            document.getElementById('upgrade_combined_plans_section').classList.add('hidden-section');
+            document.getElementById('upgrade_single_plan_section').style.display = 'block';
+            document.getElementById('upgrade_plan_count_select').value = '';
+            document.getElementById('upgrade_combined_plans_dropdowns').innerHTML = '';
+            
+            // Pre-fill form with current user data
+            if (currentUserData) {
+                document.getElementById('upgrade_companyName').value = currentUserData.brandName || '';
+                document.getElementById('upgrade_mobile').value = currentUserData.phone || '';
+                document.getElementById('upgrade_email').value = currentUserData.email || '';
+            }
+            
+            setTimeout(() => document.getElementById('upgrade_companyName').focus(), 50);
+        }
+
+        // Close upgrade plan modal
+        function closeUpgradePlanModal() {
+            const modal = document.getElementById('upgrade-plan-modal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            document.getElementById('upgradeModalMsg').textContent = '';
+            document.getElementById('upgradePlanForm').reset();
+        }
+
+        // Open update request modal
+        function openUpdateRequestModal() {
+            const modal = document.getElementById('update-request-modal');
+            
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
+            
+            // Pre-fill form with current user data
+            if (currentUserData) {
+                document.getElementById('request_companyName').value = currentUserData.brandName || '';
+                document.getElementById('request_mobile').value = currentUserData.phone || '';
+                document.getElementById('request_email').value = currentUserData.email || '';
+                document.getElementById('request_currentPlan').value = currentUserData.plan || '';
+            }
+            
+            // Populate plan dropdown
+            populateRequestPlanDropdown();
+            
+            setTimeout(() => document.getElementById('request_newPlan').focus(), 50);
+        }
+        
+        // Populate plan dropdown for upgrade request
+        function populateRequestPlanDropdown() {
+            const planSelect = document.getElementById('request_newPlan');
+            planSelect.innerHTML = '<option value="">-- Choose a Plan --</option>';
+            
+            allPlans.forEach(plan => {
+                const option = document.createElement('option');
+                option.value = plan.name;
+                option.textContent = `${plan.tier} - ${plan.category} (${plan.price})`;
+                planSelect.appendChild(option);
+            });
+        }
+
+        // Close update request modal
+        function closeUpdateRequestModal() {
+            const modal = document.getElementById('update-request-modal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            document.getElementById('updateRequestMsg').textContent = '';
+            document.getElementById('updateRequestForm').reset();
+        }
+
+        // Handle combine plans toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPlansData();
+            loadUserPlans();
+
+            const combineToggle = document.getElementById('upgrade_combine_plans_toggle');
+            const combinedSection = document.getElementById('upgrade_combined_plans_section');
+            const singlePlanSection = document.getElementById('upgrade_single_plan_section');
+            const planCountSelect = document.getElementById('upgrade_plan_count_select');
+            
+            if (combineToggle) {
+                combineToggle.addEventListener('change', function() {
+                    if (this.checked) {
+                        combinedSection.classList.remove('hidden-section');
+                        singlePlanSection.style.display = 'none';
+                    } else {
+                        combinedSection.classList.add('hidden-section');
+                        singlePlanSection.style.display = 'block';
+                    }
+                    planCountSelect.value = '';
+                    document.getElementById('upgrade_combined_plans_dropdowns').innerHTML = '';
+                });
+            }
+            
+            if (planCountSelect) {
+                planCountSelect.addEventListener('change', function() {
+                    const count = parseInt(this.value) || 0;
+                    generateUpgradeCombinedPlanDropdowns(count);
+                });
+            }
+
+            // Close modal on overlay click
+            document.getElementById('upgrade-plan-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('upgrade-plan-modal')) {
+                    closeUpgradePlanModal();
+                }
+            });
+
+            // Close on escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !document.getElementById('upgrade-plan-modal').classList.contains('hidden')) {
+                    closeUpgradePlanModal();
+                }
+            });
+
+            // Form submission
+            document.getElementById('upgradePlanForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const msg = document.getElementById('upgradeModalMsg');
+                msg.textContent = '';
+                
+                const companyName = document.getElementById('upgrade_companyName').value.trim();
+                const mobile = document.getElementById('upgrade_mobile').value.trim();
+                const email = document.getElementById('upgrade_email').value.trim();
+                const plan = document.getElementById('upgrade_plan_selection').value.trim();
+                const requirements = document.getElementById('upgrade_requirements').value.trim();
+                
+                if (!companyName || !mobile || !email) {
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = 'Company Name, Mobile, and Email are required.';
+                    return;
+                }
+
+                try {
+                    // Update the lead record
+                    const updateRes = await fetch(`/api/lead/${currentUserData.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            brandName: companyName, 
+                            phone: mobile, 
+                            email: email, 
+                            plan: plan, 
+                            requirements: requirements 
+                        })
+                    });
+
+                    let data = null;
+                    const ctype = (updateRes.headers.get('content-type') || '').toLowerCase();
+                    if (ctype.includes('application/json')) {
+                        try {
+                            data = await updateRes.json();
+                        } catch (parseErr) {
+                            console.error('Failed to parse JSON response:', parseErr);
+                        }
+                    }
+
+                    if (updateRes.ok && data && data.success) {
+                        msg.style.color = '#4caf50';
+                        msg.textContent = '✅ Plan updated successfully!';
+                        setTimeout(() => {
+                            closeUpgradePlanModal();
+                            // Reload plans to show updated data
+                            loadUserPlans();
+                        }, 1600);
+                    } else {
+                        msg.style.color = '#ffb3b3';
+                        const serverMsg = (data && data.message) ? data.message : 'Update failed. Try again.';
+                        msg.textContent = serverMsg;
+                    }
+                } catch (err) {
+                    console.error('Plan update error:', err);
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = 'Network error. Make sure the server is running.';
+                }
+            });
+
+            // Handle update request form submission
+            document.getElementById('updateRequestForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const msg = document.getElementById('updateRequestMsg');
+                msg.textContent = '';
+                
+                const companyName = document.getElementById('request_companyName').value.trim();
+                const mobile = document.getElementById('request_mobile').value.trim();
+                const email = document.getElementById('request_email').value.trim();
+                const newPlan = document.getElementById('request_newPlan').value.trim();
+                const description = document.getElementById('request_description').value.trim();
+                const currentPlan = document.getElementById('request_currentPlan').value.trim();
+                
+                if (!mobile || !description) {
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = 'Mobile Number and Description are required.';
+                    return;
+                }
+
+                try {
+                    // Store the update request in leads table
+                    const requestRes = await fetch('/api/lead', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            brandName: companyName, 
+                            phone: mobile, 
+                            email: email, 
+                            plan: newPlan || currentPlan, 
+                            requirements: `UPDATE REQUEST: ${description}\nCurrent Plan: ${currentPlan}\nRequested Plan: ${newPlan}`,
+                            remark: 'Update Requested'
+                        })
+                    });
+
+                    let data = null;
+                    const ctype = (requestRes.headers.get('content-type') || '').toLowerCase();
+                    if (ctype.includes('application/json')) {
+                        try {
+                            data = await requestRes.json();
+                        } catch (parseErr) {
+                            console.error('Failed to parse JSON response:', parseErr);
+                        }
+                    }
+
+                    if (requestRes.ok && data && data.success) {
+                        msg.style.color = '#4caf50';
+                        msg.textContent = '✅ Update request sent successfully! Admin will review soon.';
+                        setTimeout(() => {
+                            closeUpdateRequestModal();
+                        }, 2000);
+                    } else {
+                        msg.style.color = '#ffb3b3';
+                        const serverMsg = (data && data.message) ? data.message : 'Request failed. Try again.';
+                        msg.textContent = serverMsg;
+                    }
+                } catch (err) {
+                    console.error('Update request error:', err);
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = 'Network error. Make sure the server is running.';
+                }
+            });
+
+            // Close update request modal on overlay click
+            document.getElementById('update-request-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('update-request-modal')) {
+                    closeUpdateRequestModal();
+                }
+            });
+
+            // Close on escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !document.getElementById('update-request-modal').classList.contains('hidden')) {
+                    closeUpdateRequestModal();
+                }
+            });
+        });
+
+        // Generate combined plan dropdowns
+        function generateUpgradeCombinedPlanDropdowns(count) {
+            const container = document.getElementById('upgrade_combined_plans_dropdowns');
+            container.innerHTML = '';
+            
+            const allCategories = [...new Set(allPlans.map(p => p.category))];
+
+            for (let i = 1; i <= count; i++) {
+                const planGroup = document.createElement('div');
+                planGroup.style.cssText = 'padding:15px; background:rgba(255,255,255,0.05); border-radius:8px; border:1px solid #0a1929;';
+                planGroup.innerHTML = `
+                    <h4 style="color:#20c5b5; margin-top:0; margin-bottom:12px; font-size:13px;">Plan ${i}</h4>
+
+                    <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Category</label>
+                    <select id="upgrade_combined_category_${i}" style="width:100%; padding:8px 10px; margin-bottom:12px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
+                        <option value="">-- Choose Category --</option>
+                        ${allCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('')}
+                    </select>
+
+                    <label style="display:block; color:#cfd8df; font-size:13px; font-weight:600; margin-bottom:6px;">Plan</label>
+                    <select id="upgrade_combined_plan_${i}" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:13px; font-family:inherit; cursor:pointer;">
+                        <option value="">-- Choose Plan --</option>
+                    </select>
+                `;
+
+                container.appendChild(planGroup);
+
+                const categorySelect = planGroup.querySelector(`#upgrade_combined_category_${i}`);
+                const planSelect = planGroup.querySelector(`#upgrade_combined_plan_${i}`);
+
+                categorySelect.addEventListener('change', function() {
+                    filterUpgradePlansByCategory(planSelect, this.value);
+                    updateUpgradeCategoryDropdowns(count);
+                });
+            }
+            
+            updateUpgradeCategoryDropdowns(count);
+        }
+
+        // Filter plans by category for upgrade
+        function filterUpgradePlansByCategory(selectElement, category) {
+            selectElement.innerHTML = '<option value="">-- Choose Plan --</option>';
+            
+            if (!category) return;
+            
+            const categoryPlans = allPlans.filter(p => p.category === category);
+            categoryPlans.forEach(plan => {
+                const option = document.createElement('option');
+                option.value = plan.name;
+                option.textContent = `${plan.tier} - ${plan.price}`;
+                selectElement.appendChild(option);
+            });
+        }
+
+        // Update category dropdowns visibility
+        function updateUpgradeCategoryDropdowns(count) {
+            const allCategories = [...new Set(allPlans.map(p => p.category))];
+            
+            for (let i = 1; i <= count; i++) {
+                const categorySelect = document.getElementById(`upgrade_combined_category_${i}`);
+                if (!categorySelect) continue;
+                
+                const selectedCategories = new Set();
+                for (let j = 1; j <= count; j++) {
+                    if (i !== j) {
+                        const otherSelect = document.getElementById(`upgrade_combined_category_${j}`);
+                        if (otherSelect && otherSelect.value) {
+                            selectedCategories.add(otherSelect.value);
+                        }
+                    }
+                }
+                
+                const options = categorySelect.querySelectorAll('option');
+                options.forEach(option => {
+                    if (option.value === '') return;
+                    option.disabled = selectedCategories.has(option.value);
+                });
+            }
+        }
+
         // Check if user is logged in
         window.addEventListener('load', () => {
             const userLoggedIn = localStorage.getItem('userLoggedIn');
             const username = localStorage.getItem('username');
 
             if (!userLoggedIn) {
-                // Redirect to home if not logged in
                 window.location.href = 'index.html';
                 return;
             }
 
-            // Display username
             if (username) {
                 document.getElementById('userDisplay').textContent = `👤 ${username}`;
             }

@@ -251,6 +251,8 @@ app.get('/admin/leads.json', basicAuth, (req, res) => {
 
 // Public leads endpoint (for dashboard - no auth required)
 app.get('/api/leads', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.set('Pragma', 'no-cache');
   const rows = loadLeads();
   const leads = rows.map(r => ({
     id: r.id,
@@ -262,7 +264,10 @@ app.get('/api/leads', (req, res) => {
     remark: r.remark || 'Pending',
     username: r.username || null,
     password: r.password || null,
-    created_at: r.created_at
+    created_at: r.created_at,
+    planStartDate: r.planStartDate || null,
+    planEndDate: r.planEndDate || null,
+    approvedBy: r.approvedBy || null
   })).reverse();
   
   res.json({ leads });
@@ -296,6 +301,36 @@ app.put('/api/lead/:id/remark', (req, res) => {
     return res.json({ success: true, message: `Lead marked as ${remark}` });
   } catch (err) {
     console.error('Error updating lead remark:', err);
+    return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
+  }
+});
+
+// API endpoint to update lead data (edit user info, plans, dates)
+app.put('/api/lead/:id', (req, res) => {
+  const leadId = parseInt(req.params.id);
+  const { brandName, phone, email, plan, requirements, planStartDate, planEndDate } = req.body;
+
+  try {
+    const leads = loadLeads();
+    const leadIndex = leads.findIndex(l => l.id === leadId);
+
+    if (leadIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+
+    // Update all provided fields
+    if (brandName) leads[leadIndex].brand_name = brandName;
+    if (phone) leads[leadIndex].phone = phone;
+    if (email) leads[leadIndex].email = email;
+    if (plan) leads[leadIndex].plan = plan;
+    if (requirements) leads[leadIndex].requirements = requirements;
+    if (planStartDate) leads[leadIndex].planStartDate = planStartDate;
+    if (planEndDate) leads[leadIndex].planEndDate = planEndDate;
+
+    saveLeads(leads);
+    return res.json({ success: true, message: 'Lead updated successfully' });
+  } catch (err) {
+    console.error('Error updating lead:', err);
     return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
   }
 });
@@ -382,7 +417,7 @@ app.post('/api/lead/:id/credentials', (req, res) => {
 
 // API endpoint to add a new plan (frontend auth is handled by login page)
 app.post('/api/plans', (req, res) => {
-  const { category, tier, name, price, description, features, deliveryTime, idealFor } = req.body;
+  const { category, tier, name, price, originalRate, offerPercentage, description, features, deliveryTime, idealFor } = req.body;
   
   if (!category || !tier || !name || !price) {
     return res.status(400).json({ success: false, message: 'category, tier, name, and price are required' });
@@ -396,8 +431,12 @@ app.post('/api/plans', (req, res) => {
       tier: tier,
       name: name,
       price: price,
+      originalRate: originalRate || '',
+      offerPercentage: offerPercentage || '',
       description: description || '',
       features: features || [],
+      deliveryTime: deliveryTime || '',
+      idealFor: idealFor || '',
       created_at: new Date().toISOString()
     };
     
@@ -413,6 +452,8 @@ app.post('/api/plans', (req, res) => {
 
 // API endpoint to get all plans (public - but check auth if header present)
 app.get('/api/plans', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.set('Pragma', 'no-cache');
   // Check if auth header is present, if so validate it
   const auth = req.headers['authorization'];
   if (auth) {
@@ -467,7 +508,7 @@ app.delete('/api/plans/:id', (req, res) => {
 // API endpoint to edit a plan
 app.put('/api/plans/:id', (req, res) => {
   const planId = parseInt(req.params.id);
-  const { category, tier, name, price, description, features, deliveryTime, idealFor } = req.body;
+  const { category, tier, name, price, originalRate, offerPercentage, description, features, deliveryTime, idealFor } = req.body;
   
   if (!category || !tier || !name || !price) {
     return res.status(400).json({ success: false, message: 'All required fields must be provided' });
@@ -487,6 +528,8 @@ app.put('/api/plans/:id', (req, res) => {
       tier: tier,
       name: name,
       price: price,
+      originalRate: originalRate || plans[planIndex].originalRate || '',
+      offerPercentage: offerPercentage || plans[planIndex].offerPercentage || '',
       description: description || '',
       features: features || plans[planIndex].features || [],
       deliveryTime: deliveryTime || plans[planIndex].deliveryTime || '',

@@ -6,6 +6,8 @@
       "tier": "Silver",
       "name": "SILVER PLAN",
       "price": "7999/-",
+      "originalRate": "9999/-",
+      "offerPercentage": "20",
       "description": "Best for: Local shops, startups, personal brands",
       "features": [
         "✅ 1–3 Page Static Website",
