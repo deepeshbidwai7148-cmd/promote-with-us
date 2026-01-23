@@ -114,6 +114,66 @@
         "✅ Play Store Deployment Support"
       ],
       "created_at": "2026-01-22T15:54:05.596Z"
+    },
+    {
+      "id": 6,
+      "category": "Social Media",
+      "tier": "Silver",
+      "name": "🥈 SILVER PLAN",
+      "price": "₹4,999 /-",
+      "description": "Small businesses & startups",
+      "features": [
+        "✅ Handling of Instagram, Facebook, LinkedIn & YouTube",
+        "✅ Profile Optimization (Bio, DP, Highlights, About)",
+        "✅ 8–10 Posts / Reels per month (All platforms combined)",
+        "✅ Basic Content Design",
+        "✅ Caption Writing & Hashtags",
+        "✅ Comment & Message Monitoring",
+        "✅ Basic Paid Ads Setup ( ad budget by client)",
+        "✅ Monthly Performance Report"
+      ],
+      "created_at": "2026-01-23T05:45:26.189Z"
+    },
+    {
+      "id": 7,
+      "category": "Social Media",
+      "tier": "Gold",
+      "name": "🥇GOLD PLAN",
+      "price": "₹8,999",
+      "description": "Growing brands & professionals",
+      "features": [
+        "✅ 14-18 Posts / Reels per month",
+        "✅ Advanced Graphic & Video Content",
+        "✅ Brand Theme (Colors, Fonts, Style)",
+        "✅ Content Calendar & Strategy",
+        "✅ Better Hashtag & Reach Strategy",
+        "✅ Lead-Focused Ads Setup",
+        "✅ Audience Targeting & Optimization",
+        "✅ Bi-Weekly Performance Report"
+      ],
+      "created_at": "2026-01-23T05:52:15.604Z",
+      "deliveryTime": "",
+      "idealFor": "",
+      "updated_at": "2026-01-23T05:52:55.611Z"
+    },
+    {
+      "id": 8,
+      "category": "Social Media",
+      "tier": "Platinum",
+      "name": "💎 PLATINUM PLAN",
+      "price": "₹14,999/-",
+      "description": "Serious brands & companies",
+      "features": [
+        "✅ Daily Posts / Reels",
+        "✅ Premium Branding & Visual Identity",
+        "✅ Viral Content Strategy",
+        "✅ Advanced Paid Ads Management",
+        "✅ Lead Generation Funnel",
+        "✅ Weekly Performance Reports",
+        "✅ Competitor Analysis",
+        "✅ Dedicated Account Manager"
+      ],
+      "created_at": "2026-01-23T06:01:17.569Z"
     }
   ]
 }
