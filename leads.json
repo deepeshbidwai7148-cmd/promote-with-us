@@ -17,7 +17,8 @@
       "plan": "Platinum Plan",
       "requirements": "",
       "created_at": "2026-01-22T06:54:07.922Z",
-      "remark": "Pending"
+      "remark": "Approved",
+      "approvedBy": "deepesh"
     },
     {
       "id": 11,
@@ -29,20 +30,21 @@
       "created_at": "2026-01-22T09:03:34.132Z",
       "remark": "Approved",
       "username": "Promote",
-      "password": "ACDS@123"
+      "password": "ACDS@123",
+      "approvedBy": "deepesh",
+      "planStartDate": "2026-01-23",
+      "planEndDate": "2026-03-23"
     },
     {
-      "id": 5,
-      "brand_name": "Agrawal PVT",
-      "phone": "9922477583",
-      "email": "cmagrawal133@gmail.com",
-      "plan": "Not specified",
-      "requirements": "",
-      "created_at": "2026-01-23T04:30:53.488Z",
+      "id": 4,
+      "brand_name": "darkholds",
+      "phone": "7066051359",
+      "email": "jayeslomate@gmail.com",
+      "plan": "PLATINUM PLAN",
+      "requirements": "hello give me free",
+      "created_at": "2026-01-23T08:24:13.925Z",
       "remark": "Approved",
-      "approvedBy": "chetan",
-      "username": "Agrawal",
-      "password": "ACDS@123"
+      "approvedBy": "jayesh"
     }
   ]
 }
