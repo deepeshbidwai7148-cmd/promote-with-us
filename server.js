@@ -285,22 +285,38 @@ app.put('/api/lead/:id/remark', (req, res) => {
       return res.status(404).json({ success: false, message: 'Lead not found' });
     }
 
-    // If rejecting, remove the lead
-    if (remark === 'Rejected') {
-      leads.splice(leadIndex, 1);
-    } else {
-      // Otherwise, update the remark
-      leads[leadIndex].remark = remark;
-      // Store admin username if approving
-      if (remark === 'Approved' && approvedBy) {
-        leads[leadIndex].approvedBy = approvedBy;
-      }
+    // Update the remark (no longer delete rejected leads)
+    leads[leadIndex].remark = remark;
+    // Store admin username if approving
+    if (remark === 'Approved' && approvedBy) {
+      leads[leadIndex].approvedBy = approvedBy;
     }
 
     saveLeads(leads);
     return res.json({ success: true, message: `Lead marked as ${remark}` });
   } catch (err) {
     console.error('Error updating lead remark:', err);
+    return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
+  }
+});
+
+// API endpoint to delete a lead
+app.delete('/api/lead/:id', (req, res) => {
+  const leadId = parseInt(req.params.id);
+
+  try {
+    const leads = loadLeads();
+    const leadIndex = leads.findIndex(l => l.id === leadId);
+
+    if (leadIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+
+    leads.splice(leadIndex, 1);
+    saveLeads(leads);
+    return res.json({ success: true, message: 'Lead deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting lead:', err);
     return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
   }
 });

@@ -524,6 +524,7 @@
                 <button class="tab-btn active" onclick="switchTab('leads')">📋 All Leads</button>
                 <button class="tab-btn" onclick="switchTab('pending')">⏳ Pending</button>
                 <button class="tab-btn" onclick="switchTab('approved')">✅ Approved Users</button>
+                <button class="tab-btn" onclick="switchTab('rejected')">❌ Rejected</button>
                 <button class="tab-btn" onclick="switchTab('plans')">➕ Plans</button>
             </div>
             
@@ -594,7 +595,32 @@
                                 </tr>
                             </thead>
                             <tbody id="approvedTableBody">
-                                <tr><td colspan="7" style="text-align: center; color: #9fbfc6;">No approved users yet</td></tr>
+                                <tr><td colspan="8" style="text-align: center; color: #9fbfc6;">No approved users yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rejected Tab -->
+            <div id="rejectedTab" class="tab-content">
+                <div class="section-box">
+                    <div class="section-title">Rejected Leads</div>
+                    <div class="scroll-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Plan</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Submitted At</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rejectedTableBody">
+                                <tr><td colspan="7" style="text-align: center; color: #9fbfc6;">No rejected leads</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -759,6 +785,7 @@
             loadLeads();
             loadPendingLeads();
             loadApprovedUsers();
+            loadRejectedLeads();
             loadCustomPlans();
         }
         
@@ -777,6 +804,11 @@
             
             event.target.classList.add('active');
             document.getElementById(tab + 'Tab').classList.add('active');
+            
+            // Reload data when switching to rejected tab
+            if (tab === 'rejected') {
+                loadRejectedLeads();
+            }
         }
         
         // Load leads (excluding approved records)
@@ -868,6 +900,36 @@
                 }
             } catch (error) {
                 console.error('Error loading approved users:', error);
+            }
+        }
+        
+        // Load rejected records
+        async function loadRejectedLeads() {
+            try {
+                const response = await fetch('/api/leads');
+                const data = await response.json();
+                const tbody = document.getElementById('rejectedTableBody');
+                
+                // Filter only rejected leads
+                const rejectedLeads = data.leads.filter(lead => lead.remark === 'Rejected');
+                
+                if (rejectedLeads && rejectedLeads.length > 0) {
+                    tbody.innerHTML = rejectedLeads.map(lead => `
+                        <tr class="lead-row" onclick="showDetailModal(${JSON.stringify(lead).replace(/"/g, '&quot;')})">
+                            <td>${lead.brandName || 'N/A'}</td>
+                            <td>${lead.plan || 'Not specified'}</td>
+                            <td>${lead.phone || 'N/A'}</td>
+                            <td>${lead.email || 'N/A'}</td>
+                            <td>${new Date(lead.created_at).toLocaleDateString()}</td>
+                            <td><span style="background: rgba(244, 67, 54, 0.2); color: #f44336; padding: 4px 8px; border-radius: 4px; font-size: 12px;">❌ Rejected</span></td>
+                            <td style="text-align: center;"><button onclick="event.stopPropagation(); deleteLead(${lead.id})" style="background: rgba(244, 67, 54, 0.2); border: 1px solid rgba(244, 67, 54, 0.5); color: #f44336; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(244, 67, 54, 0.4)'" onmouseout="this.style.background='rgba(244, 67, 54, 0.2)'">🗑️ Remove</button></td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #9fbfc6;">No rejected leads</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading rejected leads:', error);
             }
         }
         
@@ -1212,6 +1274,7 @@
                     loadLeads();
                     loadPendingLeads();
                     loadApprovedUsers();
+                    loadRejectedLeads();
                 } else {
                     alert(`❌ Failed to update remark: ${data.message || 'Unknown error'}`);
                 }
@@ -1221,11 +1284,36 @@
             }
         }
         
+        // Function to delete a rejected lead
+        async function deleteLead(leadId) {
+            if (!confirm('Are you sure you want to permanently delete this record?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/lead/${leadId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('✅ Lead deleted successfully');
+                    loadRejectedLeads();
+                } else {
+                    alert(`❌ Failed to delete lead: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error('Error deleting lead:', error);
+                alert(`❌ Error deleting lead: ${error.message}`);
+            }
+        }
+        
         function closeDetailModal() {
             const modal = document.getElementById('detailModal');
             modal.classList.remove('show');
         }
-        
         // Function to copy text to clipboard
         function copyToClipboard(text, button) {
             navigator.clipboard.writeText(text).then(() => {
