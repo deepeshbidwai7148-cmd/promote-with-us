@@ -264,6 +264,7 @@ app.get('/api/leads', (req, res) => {
     remark: r.remark || 'Pending',
     username: r.username || null,
     password: r.password || null,
+    description: r.description || '',
     created_at: r.created_at,
     planStartDate: r.planStartDate || null,
     planEndDate: r.planEndDate || null,
@@ -308,7 +309,7 @@ app.put('/api/lead/:id/remark', (req, res) => {
 // API endpoint to update lead data (edit user info, plans, dates)
 app.put('/api/lead/:id', (req, res) => {
   const leadId = parseInt(req.params.id);
-  const { brandName, phone, email, plan, requirements, planStartDate, planEndDate } = req.body;
+  const { brandName, phone, email, plan, requirements, description, planStartDate, planEndDate } = req.body;
 
   try {
     const leads = loadLeads();
@@ -324,6 +325,7 @@ app.put('/api/lead/:id', (req, res) => {
     if (email) leads[leadIndex].email = email;
     if (plan) leads[leadIndex].plan = plan;
     if (requirements) leads[leadIndex].requirements = requirements;
+    if (description !== undefined) leads[leadIndex].description = description;
     if (planStartDate) leads[leadIndex].planStartDate = planStartDate;
     if (planEndDate) leads[leadIndex].planEndDate = planEndDate;
 
