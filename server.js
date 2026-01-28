@@ -377,6 +377,12 @@ app.post('/api/lead/:id/credentials', (req, res) => {
       return res.status(400).json({ success: false, message: 'Can only generate credentials for approved leads' });
     }
 
+    // Check if username is unique
+    const usernameExists = leads.some(l => l.id !== leadId && l.username && l.username.toLowerCase() === username.toLowerCase());
+    if (usernameExists) {
+      return res.status(400).json({ success: false, message: 'Username already exists. Please choose a different username.' });
+    }
+
     // Store credentials
     lead.username = username;
     lead.password = password;

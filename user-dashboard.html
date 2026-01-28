@@ -773,6 +773,9 @@
                             <button type="button" class="plan-btn plan-btn-upgrade" onclick="openUpdateRequestModal()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
                                 📨 Request Upgrade
                             </button>
+                            <button type="button" class="plan-btn plan-btn-upgrade" onclick="viewDescription()" style="background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); margin-top: 10px;">
+                                📝 View Description
+                            </button>
                         </div>
                     </div>
                 `;
@@ -1150,6 +1153,42 @@
                 localStorage.removeItem('username');
                 window.location.href = 'index.html';
             }
+        }
+
+        // View description modal
+        function viewDescription() {
+            if (!currentUserData || !currentUserData.description) {
+                alert('No description available for this user.');
+                return;
+            }
+
+            // Create modal dynamically
+            const modalHTML = `
+                <div id="descriptionViewModal" class="modal" style="display: flex !important;">
+                    <div class="modal-dialog" style="width: 600px;">
+                        <button type="button" class="modal-close" onclick="closeDescriptionViewModal()">×</button>
+                        <h2 class="modal-title">📝 Description</h2>
+                        <div style="background: rgba(32, 197, 181, 0.1); border: 1px solid rgba(32, 197, 181, 0.3); border-radius: 8px; padding: 20px; margin-top: 15px; color: #cfd8df; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word;">
+                            ${currentUserData.description}
+                        </div>
+                        <button type="button" onclick="closeDescriptionViewModal()" style="width: 100%; margin-top: 20px; padding: 12px; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                            ✅ Close
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Remove existing modal if any
+            const existing = document.getElementById('descriptionViewModal');
+            if (existing) existing.remove();
+
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function closeDescriptionViewModal() {
+            const modal = document.getElementById('descriptionViewModal');
+            if (modal) modal.remove();
         }
     </script>
 </body>
