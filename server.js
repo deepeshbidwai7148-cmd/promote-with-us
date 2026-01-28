@@ -265,6 +265,7 @@ app.get('/api/leads', (req, res) => {
     username: r.username || null,
     password: r.password || null,
     description: r.description || '',
+    descriptionUpdateRequests: r.descriptionUpdateRequests || [],
     created_at: r.created_at,
     planStartDate: r.planStartDate || null,
     planEndDate: r.planEndDate || null,
@@ -333,6 +334,124 @@ app.put('/api/lead/:id', (req, res) => {
     return res.json({ success: true, message: 'Lead updated successfully' });
   } catch (err) {
     console.error('Error updating lead:', err);
+    return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
+  }
+});
+
+// API endpoint to submit description update request
+app.post('/api/lead/:id/description-update-request', (req, res) => {
+  const leadId = parseInt(req.params.id);
+  const { updateRequest, currentDescription, brandName, email } = req.body;
+
+  if (!updateRequest) {
+    return res.status(400).json({ success: false, message: 'Update request is required' });
+  }
+
+  try {
+    const leads = loadLeads();
+    const leadIndex = leads.findIndex(l => l.id === leadId);
+
+    if (leadIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+
+    // Initialize descriptionUpdateRequests array if it doesn't exist
+    if (!leads[leadIndex].descriptionUpdateRequests) {
+      leads[leadIndex].descriptionUpdateRequests = [];
+    }
+
+    // Add new update request
+    const newRequest = {
+      id: Date.now(),
+      timestamp: new Date().toISOString(),
+      updateRequest: updateRequest,
+      currentDescription: currentDescription,
+      status: 'Pending'
+    };
+
+    leads[leadIndex].descriptionUpdateRequests.push(newRequest);
+    saveLeads(leads);
+
+    // Send email notification to admin (non-blocking)
+    try {
+      if (process.env.GMAIL_USER && process.env.GMAIL_PASSWORD) {
+        const mailOptions = {
+          from: process.env.GMAIL_USER || '',
+          to: process.env.GMAIL_USER || '',
+          subject: `📝 Description Update Request - ${brandName || 'User'}`,
+          html: `
+            <h2>New Description Update Request</h2>
+            <p><strong>From:</strong> ${brandName || 'N/A'}</p>
+            <p><strong>Email:</strong> ${email || 'N/A'}</p>
+            <hr>
+            <h3>Current Description:</h3>
+            <div style="background: #f5f5f5; padding: 10px; border-radius: 4px; white-space: pre-wrap;">
+              ${currentDescription || 'No description available'}
+            </div>
+            <h3>Requested Changes:</h3>
+            <div style="background: #f5f5f5; padding: 10px; border-radius: 4px; white-space: pre-wrap;">
+              ${updateRequest}
+            </div>
+            <hr>
+            <p>Please review this request in the admin dashboard.</p>
+          `
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+          if (err) {
+            console.error('Error sending update request email:', err);
+          } else {
+            console.log('Update request email sent:', info.response);
+          }
+        });
+      }
+    } catch (emailErr) {
+      console.error('Email sending error (non-critical):', emailErr);
+      // Don't fail the request if email fails
+    }
+
+    return res.json({ success: true, message: 'Description update request submitted successfully' });
+  } catch (err) {
+    console.error('Error submitting description update request:', err);
+    return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
+  }
+});
+
+// API endpoint to update description update request status
+app.put('/api/lead/:id/description-update-request/:requestId', (req, res) => {
+  const leadId = parseInt(req.params.id);
+  const requestId = req.params.requestId;
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ success: false, message: 'Status is required' });
+  }
+
+  try {
+    const leads = loadLeads();
+    const leadIndex = leads.findIndex(l => l.id === leadId);
+
+    if (leadIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+
+    if (!leads[leadIndex].descriptionUpdateRequests) {
+      return res.status(404).json({ success: false, message: 'No update requests found' });
+    }
+
+    // Find and update the request
+    const requestIndex = leads[leadIndex].descriptionUpdateRequests.findIndex(r => r.id == requestId);
+    if (requestIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Update request not found' });
+    }
+
+    leads[leadIndex].descriptionUpdateRequests[requestIndex].status = status;
+    leads[leadIndex].descriptionUpdateRequests[requestIndex].resolvedAt = new Date().toISOString();
+
+    saveLeads(leads);
+    return res.json({ success: true, message: 'Update request status updated successfully' });
+  } catch (err) {
+    console.error('Error updating request status:', err);
     return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
   }
 });

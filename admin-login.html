@@ -1511,6 +1511,27 @@
                 descHistory.innerHTML = '<em style="color: #9fbfc6;">No description added yet</em>';
             }
             
+            // Display update requests if any
+            const updateRequestsContainer = document.getElementById('descriptionUpdateRequests');
+            if (lead.descriptionUpdateRequests && lead.descriptionUpdateRequests.length > 0) {
+                const pendingRequests = lead.descriptionUpdateRequests.filter(r => r.status === 'Pending');
+                if (pendingRequests.length > 0) {
+                    const requestsHTML = pendingRequests.map(req => `
+                        <div style="background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3); border-radius: 6px; padding: 12px; margin-bottom: 10px;">
+                            <p style="color: #ff9800; font-weight: 600; font-size: 12px; margin: 0 0 8px 0;">🔔 User Update Request - ${new Date(req.timestamp).toLocaleDateString()}</p>
+                            <p style="color: #cfd8df; font-size: 13px; margin: 0; white-space: pre-wrap; word-wrap: break-word;">${req.updateRequest}</p>
+                            <button onclick="markUpdateRequestAsResolved('${req.id}')" style="margin-top: 8px; padding: 4px 10px; background: rgba(76, 175, 80, 0.3); border: 1px solid rgba(76, 175, 80, 0.5); color: #4caf50; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px;">✅ Resolved</button>
+                        </div>
+                    `).join('');
+                    updateRequestsContainer.innerHTML = `<p style="color: #ff9800; font-weight: 600; font-size: 13px; margin-bottom: 10px;">📢 Pending User Requests:</p>${requestsHTML}`;
+                    updateRequestsContainer.style.display = 'block';
+                } else {
+                    updateRequestsContainer.style.display = 'none';
+                }
+            } else {
+                updateRequestsContainer.style.display = 'none';
+            }
+            
             // Change title and button based on whether description exists
             if (lead.description) {
                 descTitle.textContent = '📝 Update Description';
@@ -1533,7 +1554,33 @@
             document.getElementById('approvedDescTextarea').value = '';
         }
 
-        // Function to save description for approved user
+        // Function to mark update request as resolved
+        async function markUpdateRequestAsResolved(requestId) {
+            if (!currentLeadForApprovedDesc) {
+                alert('❌ Error: Lead not found');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/lead/${currentLeadForApprovedDesc.id}/description-update-request/${requestId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Resolved' })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('✅ Update request marked as resolved');
+                    loadApprovedUsers();
+                    openApprovedUserDescriptionModal(currentLeadForApprovedDesc);
+                } else {
+                    alert(`❌ Failed: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error marking request as resolved:', error);
+                alert(`❌ Error: ${error.message}`);
+            }
+        }        // Function to save description for approved user
         async function saveApprovedUserDescription() {
             if (!currentLeadForApprovedDesc) {
                 alert('❌ Error: Lead not found');
@@ -1798,6 +1845,8 @@
                 <button type="button" class="modal-close" onclick="closeApprovedUserDescriptionModal()">×</button>
             </div>
             <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column;">
+                <div id="descriptionUpdateRequests" style="display: none; margin-bottom: 20px; padding: 15px; background: rgba(255, 152, 0, 0.1); border: 2px solid rgba(255, 152, 0, 0.3); border-radius: 6px; max-height: 200px; overflow-y: auto;">
+                </div>
                 <div style="margin-bottom: 20px; padding: 15px; background: rgba(32, 197, 181, 0.1); border: 1px solid rgba(32, 197, 181, 0.3); border-radius: 6px;">
                     <p style="color: #20c5b5; font-weight: 600; font-size: 13px; margin: 0 0 8px 0;">Current Description History:</p>
                     <div id="descriptionHistory" style="color: #cfd8df; font-size: 14px; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; min-height: 40px;">
