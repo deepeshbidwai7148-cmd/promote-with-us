@@ -825,7 +825,7 @@
         // Load leads (excluding approved records)
         async function loadLeads() {
             try {
-                const response = await fetch('/api/leads');
+                const response = await fetch(`/api/leads?t=${Date.now()}`);
                 const data = await response.json();
                 const tbody = document.getElementById('leadsTableBody');
                 
@@ -854,7 +854,7 @@
         // Load pending leads
         async function loadPendingLeads() {
             try {
-                const response = await fetch('/api/leads');
+                const response = await fetch(`/api/leads?t=${Date.now()}`);
                 const data = await response.json();
                 const tbody = document.getElementById('pendingTableBody');
                 
@@ -883,7 +883,7 @@
         // Load approved users
         async function loadApprovedUsers() {
             try {
-                const response = await fetch('/api/leads');
+                const response = await fetch(`/api/leads?t=${Date.now()}`);
                 const data = await response.json();
                 const tbody = document.getElementById('approvedTableBody');
                 
@@ -918,7 +918,7 @@
         // Load rejected records
         async function loadRejectedLeads() {
             try {
-                const response = await fetch('/api/leads');
+                const response = await fetch(`/api/leads?t=${Date.now()}`);
                 const data = await response.json();
                 const tbody = document.getElementById('rejectedTableBody');
                 
@@ -1561,7 +1561,10 @@
                 const data = await response.json();
                 if (data.success) {
                     alert('✅ Description saved successfully!');
+                    // Update the local object
+                    currentLeadForApprovedDesc.description = description;
                     closeApprovedUserDescriptionModal();
+                    // Reload approved users to update the table
                     loadApprovedUsers();
                 } else {
                     alert(`❌ Failed to save description: ${data.message}`);
