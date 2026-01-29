@@ -1285,7 +1285,13 @@
                         <button type="button" class="modal-close" onclick="closeUserProfileModal()">×</button>
                         <h2 class="modal-title">👤 My Profile</h2>
                         
-                        <div style="margin-top: 20px;">
+                        <div style="margin-top: 20px; text-align: center;">
+                            <div style="width: 100px; height: 100px; margin: 0 auto 20px; border-radius: 50%; background: linear-gradient(135deg, #20c5b5 0%, #16a39e 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid rgba(32, 197, 181, 0.3);">
+                                ${currentUserData.profilePhoto ? `<img src="${currentUserData.profilePhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="Profile Photo" />` : `<span style="font-size: 40px;">👤</span>`}
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 10px;">
                             <div style="background: rgba(32, 197, 181, 0.1); border: 1px solid rgba(32, 197, 181, 0.3); border-radius: 8px; padding: 20px;">
                                 <div style="margin-bottom: 18px;">
                                     <label style="color: #9fbfc6; font-size: 12px; font-weight: 600; display: block; margin-bottom: 5px;">Company Name</label>
@@ -1307,23 +1313,21 @@
                                     <p style="color: #cfd8df; font-size: 15px; font-weight: 600; margin: 0;">${currentUserData.username || 'Not set'}</p>
                                 </div>
 
-                                <div style="margin-bottom: 18px;">
+                                <div style="margin-bottom: 0;">
                                     <label style="color: #9fbfc6; font-size: 12px; font-weight: 600; display: block; margin-bottom: 5px;">Current Plan</label>
                                     <p style="color: #20c5b5; font-size: 15px; font-weight: 700; margin: 0;">${currentUserData.plan || 'No plan selected'}</p>
-                                </div>
-
-                                <div style="margin-bottom: 0;">
-                                    <label style="color: #9fbfc6; font-size: 12px; font-weight: 600; display: block; margin-bottom: 5px;">Account Status</label>
-                                    <p style="color: ${currentUserData.remark === 'Approved' ? '#4caf50' : currentUserData.remark === 'Rejected' ? '#f44336' : '#ff9800'}; font-size: 15px; font-weight: 700; margin: 0;">
-                                        ${currentUserData.remark === 'Approved' ? '✅ Approved' : currentUserData.remark === 'Rejected' ? '❌ Rejected' : '⏳ Pending'}
-                                    </p>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="button" onclick="closeUserProfileModal()" style="width: 100%; margin-top: 20px; padding: 12px; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
-                            ✅ Close
-                        </button>
+                        <div style="display: flex; gap: 12px; margin-top: 20px;">
+                            <button type="button" onclick="openEditProfileModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                ✏️ Edit Profile
+                            </button>
+                            <button type="button" onclick="closeUserProfileModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                ✅ Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1337,6 +1341,158 @@
         function closeUserProfileModal() {
             const modal = document.getElementById('userProfileModal');
             if (modal) modal.remove();
+        }
+
+        // Open edit profile modal
+        function openEditProfileModal() {
+            const editModal = `
+                <div id="editProfileModal" class="modal" style="display: flex !important;">
+                    <div class="modal-dialog" style="width: 500px;">
+                        <button type="button" class="modal-close" onclick="closeEditProfileModal()">×</button>
+                        <h2 class="modal-title">✏️ Update Profile</h2>
+                        
+                        <form id="editProfileForm" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <label for="edit_phone" class="form-label">Phone Number</label>
+                                <input id="edit_phone" type="text" placeholder="+91 98765 43210" value="${currentUserData.phone || ''}" pattern="[0-9+\-() ]{6,20}" class="form-input" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit_email" class="form-label">Email Address</label>
+                                <input id="edit_email" type="email" placeholder="you@company.com" value="${currentUserData.email || ''}" class="form-input" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit_profilePhoto" class="form-label">Profile Photo (Optional)</label>
+                                <input id="edit_profilePhoto" type="file" accept="image/*" class="form-input" />
+                                <small style="color: #9fbfc6; display: block; margin-top: 5px;">Supported formats: JPG, PNG, GIF (Max 2MB)</small>
+                            </div>
+
+                            <div id="editProfileMsg" class="form-message"></div>
+
+                            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                                <button type="submit" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                    ✅ Save Changes
+                                </button>
+                                <button type="button" onclick="closeEditProfileModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                    ❌ Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            const existing = document.getElementById('editProfileModal');
+            if (existing) existing.remove();
+
+            document.body.insertAdjacentHTML('beforeend', editModal);
+
+            // Handle form submission
+            document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await submitProfileUpdate();
+            });
+        }
+
+        function closeEditProfileModal() {
+            const modal = document.getElementById('editProfileModal');
+            if (modal) modal.remove();
+        }
+
+        // Submit profile update
+        async function submitProfileUpdate() {
+            if (!currentUserData) {
+                alert('❌ Error: User data not found');
+                return;
+            }
+
+            const phone = document.getElementById('edit_phone').value.trim();
+            const email = document.getElementById('edit_email').value.trim();
+            const photoFile = document.getElementById('edit_profilePhoto').files[0];
+            const msgDiv = document.getElementById('editProfileMsg');
+
+            if (!phone || !email) {
+                msgDiv.style.color = '#ffb3b3';
+                msgDiv.textContent = '❌ Phone and Email are required';
+                return;
+            }
+
+            try {
+                let profilePhoto = currentUserData.profilePhoto;
+
+                // Convert profile photo to base64 if provided
+                if (photoFile) {
+                    // Check file size (max 2MB)
+                    if (photoFile.size > 2 * 1024 * 1024) {
+                        msgDiv.style.color = '#ffb3b3';
+                        msgDiv.textContent = '❌ Profile photo must be less than 2MB';
+                        return;
+                    }
+
+                    profilePhoto = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(photoFile);
+                    });
+                }
+
+                const response = await fetch(`/api/lead/${currentUserData.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        brandName: currentUserData.brandName,
+                        phone: phone,
+                        email: email,
+                        plan: currentUserData.plan,
+                        requirements: currentUserData.requirements,
+                        description: currentUserData.description,
+                        profilePhoto: profilePhoto,
+                        planStartDate: currentUserData.planStartDate,
+                        planEndDate: currentUserData.planEndDate
+                    })
+                });
+
+                if (!response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const data = await response.json();
+                        msgDiv.style.color = '#ffb3b3';
+                        msgDiv.textContent = `❌ Failed: ${data.message || 'Unknown error'}`;
+                    } else {
+                        msgDiv.style.color = '#ffb3b3';
+                        msgDiv.textContent = `❌ Server error: ${response.status}`;
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    msgDiv.style.color = '#4caf50';
+                    msgDiv.textContent = '✅ Profile updated successfully!';
+                    
+                    // Update currentUserData
+                    currentUserData.phone = phone;
+                    currentUserData.email = email;
+                    currentUserData.profilePhoto = profilePhoto;
+                    
+                    // Update profile info in dropdown
+                    updateProfileInfo();
+                    
+                    setTimeout(() => {
+                        closeEditProfileModal();
+                        closeUserProfileModal();
+                    }, 1500);
+                } else {
+                    msgDiv.style.color = '#ffb3b3';
+                    msgDiv.textContent = `❌ Failed: ${data.message}`;
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                msgDiv.style.color = '#ffb3b3';
+                msgDiv.textContent = `❌ Error: ${error.message}`;
+            }
         }
 
         // Check if user is logged in

@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 // Setup data storage (JSON files in project root)
 const dataFile = path.join(__dirname, 'leads.json');
 const plansFile = path.join(__dirname, 'plans.json');
+const notificationsFile = path.join(__dirname, 'notifications.json');
 
 // Initialize data files if they don't exist
 function initializeDataFile() {
@@ -19,6 +20,9 @@ function initializeDataFile() {
   }
   if (!fs.existsSync(plansFile)) {
     fs.writeFileSync(plansFile, JSON.stringify({ plans: [] }, null, 2));
+  }
+  if (!fs.existsSync(notificationsFile)) {
+    fs.writeFileSync(notificationsFile, JSON.stringify({ notifications: [] }, null, 2));
   }
 }
 
@@ -64,6 +68,48 @@ function savePlans(plans) {
   }
 }
 
+// Load notifications from file
+function loadNotifications() {
+  try {
+    const data = fs.readFileSync(notificationsFile, 'utf-8');
+    return JSON.parse(data).notifications || [];
+  } catch (err) {
+    console.error('Error reading notifications file:', err);
+    return [];
+  }
+}
+
+// Save notifications to file
+function saveNotifications(notifications) {
+  try {
+    fs.writeFileSync(notificationsFile, JSON.stringify({ notifications }, null, 2));
+  } catch (err) {
+    console.error('Error writing notifications file:', err);
+  }
+}
+
+// Add a notification (profile update or description update)
+function addNotification(type, leadId, brandName, email, details) {
+  try {
+    const notifications = loadNotifications();
+    const notification = {
+      id: Date.now(),
+      type: type, // 'profile_update' or 'description_update'
+      leadId: leadId,
+      brandName: brandName,
+      email: email,
+      details: details,
+      read: false,
+      createdAt: new Date().toISOString()
+    };
+    notifications.push(notification);
+    saveNotifications(notifications);
+    console.log(`Notification created: ${type} from ${brandName}`);
+  } catch (err) {
+    console.error('Error adding notification:', err);
+  }
+}
+
 // Setup Nodemailer transporter for Gmail
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -74,8 +120,8 @@ const transporter = nodemailer.createTransport({
 });
 
 // Middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname)));
 
 // CORS middleware
@@ -310,7 +356,7 @@ app.put('/api/lead/:id/remark', (req, res) => {
 // API endpoint to update lead data (edit user info, plans, dates)
 app.put('/api/lead/:id', (req, res) => {
   const leadId = parseInt(req.params.id);
-  const { brandName, phone, email, plan, requirements, description, planStartDate, planEndDate } = req.body;
+  const { brandName, phone, email, plan, requirements, description, profilePhoto, planStartDate, planEndDate } = req.body;
 
   try {
     const leads = loadLeads();
@@ -320,17 +366,63 @@ app.put('/api/lead/:id', (req, res) => {
       return res.status(404).json({ success: false, message: 'Lead not found' });
     }
 
-    // Update all provided fields
-    if (brandName) leads[leadIndex].brand_name = brandName;
-    if (phone) leads[leadIndex].phone = phone;
-    if (email) leads[leadIndex].email = email;
-    if (plan) leads[leadIndex].plan = plan;
-    if (requirements) leads[leadIndex].requirements = requirements;
-    if (description !== undefined) leads[leadIndex].description = description;
-    if (planStartDate) leads[leadIndex].planStartDate = planStartDate;
-    if (planEndDate) leads[leadIndex].planEndDate = planEndDate;
+    const lead = leads[leadIndex];
+    let updateDetails = [];
+
+    // Track what fields were updated
+    if (brandName && brandName !== lead.brand_name) {
+      updateDetails.push(`Brand Name: ${lead.brand_name} → ${brandName}`);
+      leads[leadIndex].brand_name = brandName;
+    }
+    if (phone && phone !== lead.phone) {
+      updateDetails.push(`Phone: ${lead.phone} → ${phone}`);
+      leads[leadIndex].phone = phone;
+    }
+    if (email && email !== lead.email) {
+      updateDetails.push(`Email: ${lead.email} → ${email}`);
+      leads[leadIndex].email = email;
+    }
+    if (plan && plan !== lead.plan) {
+      updateDetails.push(`Plan: ${lead.plan} → ${plan}`);
+      leads[leadIndex].plan = plan;
+    }
+    if (requirements && requirements !== lead.requirements) {
+      updateDetails.push('Requirements Updated');
+      leads[leadIndex].requirements = requirements;
+    }
+    if (description !== undefined && description !== lead.description) {
+      updateDetails.push('Description Updated');
+      leads[leadIndex].description = description;
+    }
+    if (profilePhoto !== undefined && profilePhoto !== lead.profilePhoto) {
+      updateDetails.push('Profile Photo Updated');
+      leads[leadIndex].profilePhoto = profilePhoto;
+    }
+    if (planStartDate && planStartDate !== lead.planStartDate) {
+      updateDetails.push(`Plan Start Date: ${lead.planStartDate} → ${planStartDate}`);
+      leads[leadIndex].planStartDate = planStartDate;
+    }
+    if (planEndDate && planEndDate !== lead.planEndDate) {
+      updateDetails.push(`Plan End Date: ${lead.planEndDate} → ${planEndDate}`);
+      leads[leadIndex].planEndDate = planEndDate;
+    }
 
     saveLeads(leads);
+
+    // Create notification if any profile field was updated
+    if (updateDetails.length > 0) {
+      addNotification(
+        'profile_update',
+        leadId,
+        brandName || lead.brand_name,
+        email || lead.email,
+        {
+          changes: updateDetails,
+          timestamp: new Date().toISOString()
+        }
+      );
+    }
+
     return res.json({ success: true, message: 'Lead updated successfully' });
   } catch (err) {
     console.error('Error updating lead:', err);
@@ -371,6 +463,19 @@ app.post('/api/lead/:id/description-update-request', (req, res) => {
 
     leads[leadIndex].descriptionUpdateRequests.push(newRequest);
     saveLeads(leads);
+
+    // Create notification for description update request
+    addNotification(
+      'description_update',
+      leadId,
+      brandName || leads[leadIndex].brand_name,
+      email || leads[leadIndex].email,
+      {
+        updateRequest: updateRequest,
+        currentDescription: currentDescription,
+        requestId: newRequest.id
+      }
+    );
 
     // Send email notification to admin (non-blocking)
     try {
@@ -574,6 +679,75 @@ app.post('/api/plans', (req, res) => {
   } catch (err) {
     console.error('Error saving plan:', err);
     return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
+  }
+});
+
+// API endpoint to get all notifications
+app.get('/api/notifications', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.set('Pragma', 'no-cache');
+  try {
+    const notifications = loadNotifications();
+    const unreadCount = notifications.filter(n => !n.read).length;
+    res.json({ 
+      notifications: notifications.reverse(), 
+      unreadCount: unreadCount 
+    });
+  } catch (err) {
+    console.error('Error loading notifications:', err);
+    res.status(500).json({ success: false, message: 'Error loading notifications' });
+  }
+});
+
+// API endpoint to mark notification as read
+app.patch('/api/notifications/:id/read', (req, res) => {
+  const notificationId = parseInt(req.params.id);
+  try {
+    const notifications = loadNotifications();
+    const notification = notifications.find(n => n.id === notificationId);
+    
+    if (!notification) {
+      return res.status(404).json({ success: false, message: 'Notification not found' });
+    }
+    
+    notification.read = true;
+    saveNotifications(notifications);
+    res.json({ success: true, message: 'Notification marked as read' });
+  } catch (err) {
+    console.error('Error updating notification:', err);
+    res.status(500).json({ success: false, message: 'Error updating notification' });
+  }
+});
+
+// API endpoint to mark all notifications as read
+app.patch('/api/notifications/read-all', (req, res) => {
+  try {
+    const notifications = loadNotifications();
+    notifications.forEach(n => n.read = true);
+    saveNotifications(notifications);
+    res.json({ success: true, message: 'All notifications marked as read' });
+  } catch (err) {
+    console.error('Error updating notifications:', err);
+    res.status(500).json({ success: false, message: 'Error updating notifications' });
+  }
+});
+
+// API endpoint to delete a notification
+app.delete('/api/notifications/:id', (req, res) => {
+  const notificationId = parseInt(req.params.id);
+  try {
+    const notifications = loadNotifications();
+    const filteredNotifications = notifications.filter(n => n.id !== notificationId);
+    
+    if (filteredNotifications.length === notifications.length) {
+      return res.status(404).json({ success: false, message: 'Notification not found' });
+    }
+    
+    saveNotifications(filteredNotifications);
+    res.json({ success: true, message: 'Notification deleted' });
+  } catch (err) {
+    console.error('Error deleting notification:', err);
+    res.status(500).json({ success: false, message: 'Error deleting notification' });
   }
 });
 
