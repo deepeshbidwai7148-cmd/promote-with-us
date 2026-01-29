@@ -78,6 +78,107 @@
             box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);
         }
 
+        /* Profile Dropdown Styles */
+        .profile-menu-container {
+            position: relative;
+        }
+
+        .profile-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .profile-btn:hover {
+            background: rgba(32, 197, 181, 0.2);
+            transform: scale(1.05);
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: linear-gradient(135deg, #0f1630 0%, #14213a 100%);
+            border: 1px solid rgba(32, 197, 181, 0.3);
+            border-radius: 10px;
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+            margin-top: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .profile-dropdown.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-dropdown-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(32, 197, 181, 0.2);
+            text-align: center;
+        }
+
+        .profile-dropdown-header .username {
+            color: #20c5b5;
+            font-weight: 700;
+            font-size: 15px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .profile-dropdown-header .email {
+            color: #9fbfc6;
+            font-size: 12px;
+        }
+
+        .profile-dropdown-item {
+            padding: 12px 20px;
+            color: #cfd8df;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .profile-dropdown-item:hover {
+            background: rgba(32, 197, 181, 0.2);
+            color: #20c5b5;
+        }
+
+        .profile-dropdown-item.logout:hover {
+            background: rgba(245, 87, 108, 0.2);
+            color: #f5576c;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -444,9 +545,27 @@
     <nav class="navbar">
         <h1>👤 User Dashboard</h1>
         <div class="user-info">
-            <span class="username" id="userDisplay">User</span>
-            <button class="logout-btn" style="background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); margin-right: 10px;" onclick="loadUserPlans()">🔄 Refresh</button>
-            <button class="logout-btn" onclick="handleUserLogout()">🚪 Logout</button>
+            <div class="profile-menu-container">
+                <button class="profile-btn" id="profileBtn" onclick="toggleProfileDropdown()">👤</button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-dropdown-header">
+                        <span class="username" id="profileUsername">User</span>
+                        <span class="email" id="profileEmail">user@email.com</span>
+                    </div>
+                    <button class="profile-dropdown-item" onclick="openUserProfile()">
+                        <span>👤</span>
+                        <span>View Profile</span>
+                    </button>
+                    <button class="profile-dropdown-item" onclick="handleRefresh()">
+                        <span>🔄</span>
+                        <span>Refresh</span>
+                    </button>
+                    <button class="profile-dropdown-item logout" onclick="handleUserLogout()">
+                        <span>🚪</span>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -663,6 +782,7 @@
                 }
 
                 currentUserData = userLead;
+                updateProfileInfo();
                 displayPlans(userLead);
             } catch (error) {
                 console.error('Error loading user plans:', error);
@@ -722,9 +842,15 @@
                 const startDate = userLead.planStartDate ? new Date(userLead.planStartDate) : new Date(userLead.created_at);
                 const endDate = userLead.planEndDate ? new Date(userLead.planEndDate) : new Date(new Date(userLead.created_at).getTime() + (30 * 24 * 60 * 60 * 1000));
                 const timeRemaining = calculateTimeRemaining(endDate);
+                const hasOffer = plan.offerPercentage && plan.originalRate;
 
                 html += `
-                    <div class="plan-card">
+                    <div class="plan-card" style="position: relative;">
+                        ${hasOffer ? `
+                            <div style="position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 13px; box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3); z-index: 10;">
+                                🎉 ${plan.offerPercentage}% OFF
+                            </div>
+                        ` : ''}
                         <div class="plan-card-header">
                             <div class="plan-card-title">${plan.tier}</div>
                             <div class="plan-card-tier">${plan.category}</div>
@@ -772,6 +898,9 @@
                         <div class="plan-actions">
                             <button type="button" class="plan-btn plan-btn-upgrade" onclick="openUpdateRequestModal()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
                                 📨 Request Upgrade
+                            </button>
+                            <button type="button" class="plan-btn plan-btn-upgrade" onclick="viewDescription()" style="background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); margin-top: 10px;">
+                                📝 View Description
                             </button>
                         </div>
                     </div>
@@ -1127,6 +1256,223 @@
             }
         }
 
+        // Toggle profile dropdown menu
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const profileContainer = document.querySelector('.profile-menu-container');
+            if (!profileContainer.contains(e.target)) {
+                document.getElementById('profileDropdown').classList.remove('active');
+            }
+        });
+
+        // Refresh plans
+        function handleRefresh() {
+            document.getElementById('profileDropdown').classList.remove('active');
+            loadUserPlans();
+        }
+
+        // Open user profile modal
+        function openUserProfile() {
+            if (!currentUserData) {
+                alert('User data not available');
+                return;
+            }
+
+            document.getElementById('profileDropdown').classList.remove('active');
+
+            const profileModal = `
+                <div id="userProfileModal" class="modal" style="display: flex !important;">
+                    <div class="modal-dialog" style="width: 500px;">
+                        <button type="button" class="modal-close" onclick="closeUserProfileModal()">×</button>
+                        <h2 class="modal-title">👤 My Profile</h2>
+                        
+                        <div style="margin-top: 20px; text-align: center;">
+                            <div style="width: 100px; height: 100px; margin: 0 auto 20px; border-radius: 50%; background: linear-gradient(135deg, #20c5b5 0%, #16a39e 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid rgba(32, 197, 181, 0.3);">
+                                ${currentUserData.profilePhoto ? `<img src="${currentUserData.profilePhoto}" style="width: 100%; height: 100%; object-fit: cover;" alt="Profile Photo" />` : `<span style="font-size: 40px;">👤</span>`}
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 10px;">
+                            <div style="background: rgba(32, 197, 181, 0.1); border: 1px solid rgba(32, 197, 181, 0.3); border-radius: 8px; padding: 20px;">
+                                <div style="margin-bottom: 18px;">
+                                    <label style="color: #9fbfc6; font-size: 12px; font-weight: 600; display: block; margin-bottom: 5px;">Company Name</label>
+                                    <p style="color: #cfd8df; font-size: 15px; font-weight: 600; margin: 0;">${currentUserData.brandName || 'N/A'}</p>
+                                </div>
+
+                                <div style="margin-bottom: 18px;">
+                                    <label style="color: #9fbfc6; font-size: 12px; font-weight: 600; display: block; margin-bottom: 5px;">Phone</label>
+                                    <p style="color: #cfd8df; font-size: 15px; font-weight: 600; margin: 0;">${currentUserData.phone || 'N/A'}</p>
+                                </div>
+
+                                <div style="margin-bottom: 18px;">
+                                    <label style="color: #9fbfc6; font-size: 12px; font-weight: 600; display: block; margin-bottom: 5px;">Email</label>
+                                    <p style="color: #cfd8df; font-size: 15px; font-weight: 600; margin: 0;">${currentUserData.email || 'N/A'}</p>
+                                </div>
+
+                                <div style="margin-bottom: 18px;">
+                                    <label style="color: #9fbfc6; font-size: 12px; font-weight: 600; display: block; margin-bottom: 5px;">Username</label>
+                                    <p style="color: #cfd8df; font-size: 15px; font-weight: 600; margin: 0;">${currentUserData.username || 'Not set'}</p>
+                                </div>
+
+                                <div style="margin-bottom: 0;">
+                                    <label style="color: #9fbfc6; font-size: 12px; font-weight: 600; display: block; margin-bottom: 5px;">Current Plan</label>
+                                    <p style="color: #20c5b5; font-size: 15px; font-weight: 700; margin: 0;">${currentUserData.plan || 'No plan selected'}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; margin-top: 20px;">
+                            <button type="button" onclick="openEditProfileModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                ✏️ Edit Profile
+                            </button>
+                            <button type="button" onclick="closeUserProfileModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                ✅ Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const existing = document.getElementById('userProfileModal');
+            if (existing) existing.remove();
+
+            document.body.insertAdjacentHTML('beforeend', profileModal);
+        }
+
+        function closeUserProfileModal() {
+            const modal = document.getElementById('userProfileModal');
+            if (modal) modal.remove();
+        }
+
+        // Open edit profile modal
+        function openEditProfileModal() {
+            const editModal = `
+                <div id="editProfileModal" class="modal" style="display: flex !important;">
+                    <div class="modal-dialog" style="width: 500px;">
+                        <button type="button" class="modal-close" onclick="closeEditProfileModal()">×</button>
+                        <h2 class="modal-title">✏️ Update Profile</h2>
+                        
+                        <form id="editProfileForm" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <label for="edit_phone" class="form-label">Phone Number</label>
+                                <input id="edit_phone" type="text" placeholder="+91 98765 43210" value="${currentUserData.phone || ''}" pattern="[0-9+\-() ]{6,20}" class="form-input" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit_email" class="form-label">Email Address</label>
+                                <input id="edit_email" type="email" placeholder="you@company.com" value="${currentUserData.email || ''}" class="form-input" required />
+                            </div>
+
+                            <div id="editProfileMsg" class="form-message"></div>
+
+                            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                                <button type="submit" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                    ✅ Save Changes
+                                </button>
+                                <button type="button" onclick="closeEditProfileModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                    ❌ Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            const existing = document.getElementById('editProfileModal');
+            if (existing) existing.remove();
+
+            document.body.insertAdjacentHTML('beforeend', editModal);
+
+            // Handle form submission
+            document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await submitProfileUpdate();
+            });
+        }
+
+        function closeEditProfileModal() {
+            const modal = document.getElementById('editProfileModal');
+            if (modal) modal.remove();
+        }
+
+        // Submit profile update
+        async function submitProfileUpdate() {
+            if (!currentUserData) {
+                alert('❌ Error: User data not found');
+                return;
+            }
+
+            const phone = document.getElementById('edit_phone').value.trim();
+            const email = document.getElementById('edit_email').value.trim();
+            const msgDiv = document.getElementById('editProfileMsg');
+
+            if (!phone || !email) {
+                msgDiv.style.color = '#ffb3b3';
+                msgDiv.textContent = '❌ Phone and Email are required';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/lead/${currentUserData.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        brandName: currentUserData.brandName,
+                        phone: phone,
+                        email: email,
+                        plan: currentUserData.plan,
+                        requirements: currentUserData.requirements,
+                        description: currentUserData.description,
+                        planStartDate: currentUserData.planStartDate,
+                        planEndDate: currentUserData.planEndDate
+                    })
+                });
+
+                if (!response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const data = await response.json();
+                        msgDiv.style.color = '#ffb3b3';
+                        msgDiv.textContent = `❌ Failed: ${data.message || 'Unknown error'}`;
+                    } else {
+                        msgDiv.style.color = '#ffb3b3';
+                        msgDiv.textContent = `❌ Server error: ${response.status}`;
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    msgDiv.style.color = '#4caf50';
+                    msgDiv.textContent = '✅ Profile updated successfully!';
+                    
+                    // Update currentUserData
+                    currentUserData.phone = phone;
+                    currentUserData.email = email;
+                    
+                    // Update profile info in dropdown
+                    updateProfileInfo();
+                    
+                    setTimeout(() => {
+                        closeEditProfileModal();
+                        closeUserProfileModal();
+                    }, 1500);
+                } else {
+                    msgDiv.style.color = '#ffb3b3';
+                    msgDiv.textContent = `❌ Failed: ${data.message}`;
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                msgDiv.style.color = '#ffb3b3';
+                msgDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
         // Check if user is logged in
         window.addEventListener('load', () => {
             const userLoggedIn = localStorage.getItem('userLoggedIn');
@@ -1138,9 +1484,19 @@
             }
 
             if (username) {
-                document.getElementById('userDisplay').textContent = `👤 ${username}`;
+                document.getElementById('profileUsername').textContent = username;
+                // Load user data to show email in profile dropdown
+                loadUserPlans();
             }
         });
+
+        // Update profile dropdown info when user data is loaded
+        function updateProfileInfo() {
+            if (currentUserData) {
+                document.getElementById('profileUsername').textContent = currentUserData.brandName || localStorage.getItem('username') || 'User';
+                document.getElementById('profileEmail').textContent = currentUserData.email || 'user@email.com';
+            }
+        }
 
         // Handle user logout
         function handleUserLogout() {
@@ -1149,6 +1505,150 @@
                 localStorage.removeItem('userLoggedIn');
                 localStorage.removeItem('username');
                 window.location.href = 'index.html';
+            }
+        }
+
+        // View description modal
+        function viewDescription() {
+            if (!currentUserData || !currentUserData.description) {
+                alert('No description available for this user.');
+                return;
+            }
+
+            // Format description with line breaks and better styling
+            const formattedDescription = currentUserData.description
+                .split('\n')
+                .map(line => `<p style="margin: 8px 0; line-height: 1.6;">${line || '&nbsp;'}</p>`)
+                .join('');
+
+            // Create modal dynamically
+            const modalHTML = `
+                <div id="descriptionViewModal" class="modal" style="display: flex !important;">
+                    <div class="modal-dialog" style="width: 700px; max-width: 90vw;">
+                        <button type="button" class="modal-close" onclick="closeDescriptionViewModal()">×</button>
+                        <h2 class="modal-title">📝 Current Description</h2>
+                        <div style="background: rgba(32, 197, 181, 0.1); border: 1px solid rgba(32, 197, 181, 0.3); border-radius: 8px; padding: 20px; margin-top: 15px; color: #cfd8df; line-height: 1.8;">
+                            ${formattedDescription}
+                        </div>
+                        <div style="display: flex; gap: 12px; margin-top: 20px;">
+                            <button type="button" onclick="openDescriptionUpdateModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s;">
+                                ✏️ Request Update
+                            </button>
+                            <button type="button" onclick="closeDescriptionViewModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                ✅ Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remove existing modal if any
+            const existing = document.getElementById('descriptionViewModal');
+            if (existing) existing.remove();
+
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function closeDescriptionViewModal() {
+            const modal = document.getElementById('descriptionViewModal');
+            if (modal) modal.remove();
+        }
+
+        // Open description update request modal
+        function openDescriptionUpdateModal() {
+            const modalHTML = `
+                <div id="descriptionUpdateModal" class="modal" style="display: flex !important;">
+                    <div class="modal-dialog" style="width: 700px; max-width: 90vw;">
+                        <button type="button" class="modal-close" onclick="closeDescriptionUpdateModal()">×</button>
+                        <h2 class="modal-title">📝 Request Description Update</h2>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4 style="color: #20c5b5; margin-bottom: 10px; font-weight: 600;">Current Description:</h4>
+                            <div style="background: rgba(32, 197, 181, 0.05); border: 1px solid rgba(32, 197, 181, 0.2); border-radius: 6px; padding: 12px; margin-bottom: 20px; color: #cfd8df; font-size: 13px; max-height: 150px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word;">
+                                ${currentUserData.description || 'No description available'}
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label for="updateDescRequest" style="display: block; color: #cfd8df; font-weight: 600; margin-bottom: 10px; font-size: 14px;">What changes would you like to make? *</label>
+                            <textarea id="updateDescRequest" placeholder="Describe the updates you want to make to your description..." style="width: 100%; height: 150px; padding: 12px; border: 1px solid rgba(32, 197, 181, 0.3); border-radius: 6px; background: rgba(32, 197, 181, 0.05); color: #fff; font-family: inherit; font-size: 13px; resize: vertical;" required></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 12px;">
+                            <button type="button" onclick="submitDescriptionUpdateRequest()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s;">
+                                ✅ Submit Request
+                            </button>
+                            <button type="button" onclick="closeDescriptionUpdateModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                ❌ Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remove existing modal if any
+            const existing = document.getElementById('descriptionUpdateModal');
+            if (existing) existing.remove();
+
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function closeDescriptionUpdateModal() {
+            const modal = document.getElementById('descriptionUpdateModal');
+            if (modal) modal.remove();
+        }
+
+        // Submit description update request
+        async function submitDescriptionUpdateRequest() {
+            if (!currentUserData) {
+                alert('❌ Error: User data not found');
+                return;
+            }
+
+            const updateRequest = document.getElementById('updateDescRequest').value.trim();
+            if (!updateRequest) {
+                alert('❌ Please describe what changes you want to make.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/lead/${currentUserData.id}/description-update-request`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        updateRequest: updateRequest,
+                        currentDescription: currentUserData.description || '',
+                        userId: currentUserData.id,
+                        brandName: currentUserData.brandName,
+                        email: currentUserData.email
+                    })
+                });
+
+                // Check if response is OK first
+                if (!response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const data = await response.json();
+                        alert(`❌ Failed to submit request: ${data.message || 'Unknown error'}`);
+                    } else {
+                        alert(`❌ Server error: ${response.status} ${response.statusText}`);
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('✅ Your update request has been submitted successfully! The admin will review it shortly.');
+                    closeDescriptionUpdateModal();
+                    closeDescriptionViewModal();
+                } else {
+                    alert(`❌ Failed to submit request: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error submitting update request:', error);
+                alert(`❌ Error: ${error.message}`);
             }
         }
     </script>

@@ -1,0 +1,33 @@
+{
+  "notifications": [
+    {
+      "id": 1769662945970,
+      "type": "description_update",
+      "leadId": 11,
+      "brandName": "promote",
+      "email": "promote_with.us@gmail.com",
+      "details": {
+        "updateRequest": "Add more tab in website",
+        "currentDescription": "need Basic UI design for website\nneed database support",
+        "requestId": 1769662945947
+      },
+      "read": true,
+      "createdAt": "2026-01-29T05:02:25.970Z"
+    },
+    {
+      "id": 1769662961654,
+      "type": "profile_update",
+      "leadId": 11,
+      "brandName": "promote",
+      "email": "promote_with.us@gmail.com",
+      "details": {
+        "changes": [
+          "Phone: 8485037148 → 9922477583"
+        ],
+        "timestamp": "2026-01-29T05:02:41.653Z"
+      },
+      "read": true,
+      "createdAt": "2026-01-29T05:02:41.654Z"
+    }
+  ]
+}
