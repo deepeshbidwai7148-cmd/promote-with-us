@@ -842,9 +842,15 @@
                 const startDate = userLead.planStartDate ? new Date(userLead.planStartDate) : new Date(userLead.created_at);
                 const endDate = userLead.planEndDate ? new Date(userLead.planEndDate) : new Date(new Date(userLead.created_at).getTime() + (30 * 24 * 60 * 60 * 1000));
                 const timeRemaining = calculateTimeRemaining(endDate);
+                const hasOffer = plan.offerPercentage && plan.originalRate;
 
                 html += `
-                    <div class="plan-card">
+                    <div class="plan-card" style="position: relative;">
+                        ${hasOffer ? `
+                            <div style="position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 13px; box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3); z-index: 10;">
+                                🎉 ${plan.offerPercentage}% OFF
+                            </div>
+                        ` : ''}
                         <div class="plan-card-header">
                             <div class="plan-card-title">${plan.tier}</div>
                             <div class="plan-card-tier">${plan.category}</div>
@@ -1362,12 +1368,6 @@
                                 <input id="edit_email" type="email" placeholder="you@company.com" value="${currentUserData.email || ''}" class="form-input" required />
                             </div>
 
-                            <div class="form-group">
-                                <label for="edit_profilePhoto" class="form-label">Profile Photo (Optional)</label>
-                                <input id="edit_profilePhoto" type="file" accept="image/*" class="form-input" />
-                                <small style="color: #9fbfc6; display: block; margin-top: 5px;">Supported formats: JPG, PNG, GIF (Max 2MB)</small>
-                            </div>
-
                             <div id="editProfileMsg" class="form-message"></div>
 
                             <div style="display: flex; gap: 12px; margin-top: 20px;">
@@ -1409,7 +1409,6 @@
 
             const phone = document.getElementById('edit_phone').value.trim();
             const email = document.getElementById('edit_email').value.trim();
-            const photoFile = document.getElementById('edit_profilePhoto').files[0];
             const msgDiv = document.getElementById('editProfileMsg');
 
             if (!phone || !email) {
@@ -1419,25 +1418,6 @@
             }
 
             try {
-                let profilePhoto = currentUserData.profilePhoto;
-
-                // Convert profile photo to base64 if provided
-                if (photoFile) {
-                    // Check file size (max 2MB)
-                    if (photoFile.size > 2 * 1024 * 1024) {
-                        msgDiv.style.color = '#ffb3b3';
-                        msgDiv.textContent = '❌ Profile photo must be less than 2MB';
-                        return;
-                    }
-
-                    profilePhoto = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(photoFile);
-                    });
-                }
-
                 const response = await fetch(`/api/lead/${currentUserData.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -1448,7 +1428,6 @@
                         plan: currentUserData.plan,
                         requirements: currentUserData.requirements,
                         description: currentUserData.description,
-                        profilePhoto: profilePhoto,
                         planStartDate: currentUserData.planStartDate,
                         planEndDate: currentUserData.planEndDate
                     })
@@ -1475,7 +1454,6 @@
                     // Update currentUserData
                     currentUserData.phone = phone;
                     currentUserData.email = email;
-                    currentUserData.profilePhoto = profilePhoto;
                     
                     // Update profile info in dropdown
                     updateProfileInfo();

@@ -356,7 +356,7 @@ app.put('/api/lead/:id/remark', (req, res) => {
 // API endpoint to update lead data (edit user info, plans, dates)
 app.put('/api/lead/:id', (req, res) => {
   const leadId = parseInt(req.params.id);
-  const { brandName, phone, email, plan, requirements, description, profilePhoto, planStartDate, planEndDate } = req.body;
+  const { brandName, phone, email, plan, requirements, description, planStartDate, planEndDate } = req.body;
 
   try {
     const leads = loadLeads();
@@ -393,10 +393,6 @@ app.put('/api/lead/:id', (req, res) => {
     if (description !== undefined && description !== lead.description) {
       updateDetails.push('Description Updated');
       leads[leadIndex].description = description;
-    }
-    if (profilePhoto !== undefined && profilePhoto !== lead.profilePhoto) {
-      updateDetails.push('Profile Photo Updated');
-      leads[leadIndex].profilePhoto = profilePhoto;
     }
     if (planStartDate && planStartDate !== lead.planStartDate) {
       updateDetails.push(`Plan Start Date: ${lead.planStartDate} → ${planStartDate}`);

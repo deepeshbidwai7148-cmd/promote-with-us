@@ -19,12 +19,14 @@
       "requirements": "",
       "created_at": "2026-01-22T06:54:07.922Z",
       "remark": "Approved",
-      "approvedBy": "deepesh"
+      "approvedBy": "deepesh",
+      "username": "Chetan",
+      "password": "ACDS@123"
     },
     {
       "id": 11,
       "brand_name": "promote",
-      "phone": "8485037148",
+      "phone": "9922477583",
       "email": "promote_with.us@gmail.com",
       "plan": "PLATINUM PLAN",
       "requirements": "xyz",
@@ -49,6 +51,14 @@
           "id": 1769620213061,
           "timestamp": "2026-01-28T17:10:13.061Z",
           "updateRequest": "add more tabs",
+          "currentDescription": "need Basic UI design for website\nneed database support",
+          "status": "Resolved",
+          "resolvedAt": "2026-01-29T05:05:31.443Z"
+        },
+        {
+          "id": 1769662945947,
+          "timestamp": "2026-01-29T05:02:25.947Z",
+          "updateRequest": "Add more tab in website",
           "currentDescription": "need Basic UI design for website\nneed database support",
           "status": "Pending"
         }

@@ -1086,11 +1086,14 @@
                         
                         plans.forEach(plan => {
                             const planDataJson = JSON.stringify(plan).replace(/"/g, '&quot;');
+                            const hasOffer = plan.offerPercentage && plan.originalRate;
                             html += `
-                                <div style="background: rgba(32,197,181,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #20c5b5;" data-plan-id="${plan.id}" data-plan-json="${planDataJson}">
+                                <div style="background: rgba(32,197,181,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #20c5b5; position: relative;" data-plan-id="${plan.id}" data-plan-json="${planDataJson}">
+                                    ${hasOffer ? `<div style="position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; box-shadow: 0 2px 6px rgba(245, 87, 108, 0.3);">🎉 ${plan.offerPercentage}% OFF</div>` : ''}
                                     <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
                                         <div style="flex: 1;">
-                                            <strong style="color: #20c5b5;">${plan.name}</strong> - ${plan.price}<br>
+                                            <strong style="color: #20c5b5;">${plan.name}</strong> - ${plan.price}
+                                            ${hasOffer ? `<span style="text-decoration: line-through; color: #999; margin-left: 8px; font-size: 12px;">${plan.originalRate}</span>` : ''}<br>
                                             <span style="color: #9fbfc6; font-size: 12px;">${plan.description}</span>
                                         </div>
                                         <div style="display: flex; gap: 8px;">
