@@ -74,6 +74,18 @@
       "requirements": "web with basic UI",
       "created_at": "2026-01-23T08:24:13.925Z",
       "remark": "Approved",
+<<<<<<< HEAD
+      "approvedBy": "jayesh"
+    },
+    {
+      "id": 5,
+      "brand_name": "deepesh",
+      "phone": "8485037148",
+      "email": "deep@gmail.com",
+      "plan": "SILVER PLAN",
+      "requirements": "",
+      "created_at": "2026-01-29T05:26:52.214Z"
+=======
       "approvedBy": "jayesh",
       "planStartDate": "2026-01-23",
       "planEndDate": "2026-02-26",
@@ -88,6 +100,7 @@
       "plan": "💎 ADVANCED APP PLAN",
       "requirements": "",
       "created_at": "2026-01-23T16:48:54.585Z"
+>>>>>>> ef891a6f0091c4b51143dfcd95a05cee8861e67c
     }
   ]
 }

@@ -1979,12 +1979,29 @@
         <label for="plan_requirements" style="display:block; margin-top:15px; color:#cfd8df; font-size:14px; font-weight:600;">Your Requirements (Optional)</label>
         <textarea id="plan_requirements" name="requirements" placeholder="Tell us about your project, features you need, design preferences, etc." style="width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid #0a1929; background:#0a1929; color:#fff; font-size:14px; font-family:inherit; resize:vertical; min-height:80px; max-height:150px;"></textarea>
         
+        <div style="display:flex; align-items:flex-start; gap:10px; margin-top:12px;">
+          <label style="display:flex; align-items:center; gap:10px; color:#cfd8df; font-size:13px; cursor:pointer;">
+            <input type="checkbox" id="plan_agree_terms" style="width:18px; height:18px; accent-color:#20c5b5;" />
+            <span style="color:#cfd8df; font-size:13px;">I have agreed to the <a href="terms.html" target="_blank" rel="noopener noreferrer" style="color:#20c5b5; text-decoration:underline;">Terms &amp; Conditions</a>, <a href="privacy.html" target="_blank" rel="noopener noreferrer" style="color:#20c5b5; text-decoration:underline;">Privacy Policy</a>, and <a href="refund.html" target="_blank" rel="noopener noreferrer" style="color:#20c5b5; text-decoration:underline;">Refund Policy</a>.</span>
+          </label>
+        </div>
+
         <button type="submit" style="margin-top:20px; width:100%; background:linear-gradient(135deg,#20c5b5,#0db8a1); border:none; padding:12px; border-radius:8px; color:#042; font-weight:700; cursor:pointer; font-size:15px; transition:all 0.3s ease;">Submit & Get Started</button>
         <div id="planModalMsg" style="color:#ffb3b3; font-size:13px; margin-top:12px; min-height:18px; text-align:center;"></div>
       </form>
     </div>
   </div>
 
+  <style>
+    /* Compact agreement text inside plan modal */
+    #plan-modal span[title^="I have agreed"] {
+      font-size: 11px !important;
+      white-space: nowrap !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+  </style>
   <script>
     let allPlans = [];
     
@@ -2045,6 +2062,9 @@
       document.getElementById('single_plan_section').style.display = 'block';
       document.getElementById('plan_count_select').value = '';
       document.getElementById('combined_plans_dropdowns').innerHTML = '';
+      // Ensure agreement checkbox is cleared
+      const agreeCheckbox = document.getElementById('plan_agree_terms');
+      if (agreeCheckbox) agreeCheckbox.checked = false;
       
       // Populate all plans in single plan select
       filterPlansBySelectedCategories();
@@ -2226,6 +2246,19 @@
         return;
       }
 
+      const agree = document.getElementById('plan_agree_terms') ? document.getElementById('plan_agree_terms').checked : false;
+      if (!agree) {
+        // Show agreement popup if user tries to submit without checking terms
+        const popup = document.getElementById('planAgreePopup');
+        if (popup) {
+          popup.style.display = 'block';
+          popup.setAttribute('aria-hidden', 'false');
+        }
+        const popupClose = document.getElementById('planAgreePopupClose');
+        if (popupClose) popupClose.focus();
+        return;
+      }
+
       try {
         const res = await fetch('/api/lead', {
           method: 'POST',
@@ -2258,6 +2291,34 @@
         msg.textContent = 'Network error. Make sure the server is running. Run: npm start';
       }
     });
+
+    // Agreement popup close handler
+    (function() {
+      const popupCloseBtn = document.getElementById('planAgreePopupClose');
+      if (popupCloseBtn && !popupCloseBtn._agreeHandlerAttached) {
+        popupCloseBtn.addEventListener('click', function() {
+          const popup = document.getElementById('planAgreePopup');
+          if (popup) { popup.style.display = 'none'; popup.setAttribute('aria-hidden', 'true'); }
+          const cb = document.getElementById('plan_agree_terms');
+          if (cb) cb.focus();
+        });
+        popupCloseBtn._agreeHandlerAttached = true;
+      }
+
+      // Close popup on Escape key when visible
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const popup = document.getElementById('planAgreePopup');
+          if (popup && popup.style.display === 'block') {
+            popup.style.display = 'none';
+            popup.setAttribute('aria-hidden', 'true');
+            const cb = document.getElementById('plan_agree_terms');
+            if (cb) cb.focus();
+          }
+        }
+      });
+    })();
+
   </script>
 
   <!-- Lead capture modal (opens on Home) -->
