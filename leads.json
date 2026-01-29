@@ -45,6 +45,15 @@
       "created_at": "2026-01-23T08:24:13.925Z",
       "remark": "Approved",
       "approvedBy": "jayesh"
+    },
+    {
+      "id": 5,
+      "brand_name": "deepesh",
+      "phone": "8485037148",
+      "email": "deep@gmail.com",
+      "plan": "SILVER PLAN",
+      "requirements": "",
+      "created_at": "2026-01-29T05:26:52.214Z"
     }
   ]
 }
