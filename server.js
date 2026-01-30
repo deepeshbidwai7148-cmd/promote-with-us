@@ -10,9 +10,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Setup data storage (JSON files in project root)
-const dataFile = path.join(__dirname, 'leads.json');
-const plansFile = path.join(__dirname, 'plans.json');
-const notificationsFile = path.join(__dirname, 'notifications.json');
+const dataFile = path.join(__dirname, 'database', 'leads.json');
+const plansFile = path.join(__dirname, 'database', 'plans.json');
+const notificationsFile = path.join(__dirname, 'database', 'notifications.json');
 
 // Initialize data files if they don't exist
 function initializeDataFile() {
@@ -215,7 +215,7 @@ function escapeHtml(str) {
 
 // API endpoint to receive leads
 app.post('/api/lead', (req, res) => {
-  const { brandName, phone, email, plan, requirements } = req.body;
+  const { brandName, phone, email, plan, requirements, username } = req.body;
   if (!brandName || !phone || !email) {
     return res.status(400).json({ success: false, message: 'brandName, phone and email are required' });
   }
@@ -234,6 +234,19 @@ app.post('/api/lead', (req, res) => {
 
   try {
     const leads = loadLeads();
+
+    // Prevent registrations from blacklisted users (match by email / phone / username)
+    const matchedBlacklisted = (leads || []).some(l => l && l.blacklisted && (
+      (l.email && String(l.email).toLowerCase() === String(email).toLowerCase()) ||
+      (l.phone && String(l.phone) === String(phone)) ||
+      (username && l.username && String(l.username).toLowerCase() === String(username).toLowerCase())
+    ));
+
+    if (matchedBlacklisted) {
+      console.warn('Blocked registration attempt for blacklisted identity:', email, phone, username);
+      return res.status(403).json({ success: false, message: 'This account has been blocked. Contact support for help.' });
+    }
+
     const newLead = {
       id: leads.length + 1,
       brand_name: brandName,
@@ -243,13 +256,13 @@ app.post('/api/lead', (req, res) => {
       requirements: requirements || '',
       created_at: new Date().toISOString()
     };
-    
+
     leads.push(newLead);
     saveLeads(leads);
-    
-    // Send email notifications to both company and user
+
+    // Send email notifications to both company and user (best-effort)
     sendEmailNotification(brandName, phone, email, plan, requirements);
-    
+
     return res.json({ success: true, id: newLead.id });
   } catch (err) {
     console.error('Error saving lead:', err);
@@ -386,7 +399,10 @@ app.get('/admin/leads.json', basicAuth, (req, res) => {
     phone: r.phone,
     email: r.email,
     plan: r.plan || 'Not specified',
-    created_at: r.created_at
+    created_at: r.created_at,
+    blacklisted: !!r.blacklisted,
+    blacklistReason: r.blacklistReason || null,
+    blacklistedAt: r.blacklistedAt || null
   })).reverse();
   
   res.json({ leads });
@@ -397,7 +413,9 @@ app.get('/api/leads', (req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
   res.set('Pragma', 'no-cache');
   const rows = loadLeads();
-  const leads = rows.map(r => ({
+  // Exclude blacklisted records from public responses
+  const publicRows = (rows || []).filter(r => !r.blacklisted);
+  const leads = publicRows.map(r => ({
     id: r.id,
     brandName: r.brand_name,
     phone: r.phone,
@@ -429,6 +447,8 @@ app.get('/api/lead/:id', (req, res) => {
     const leads = loadLeads();
     const lead = (leads || []).find(l => Number(l.id) === leadId);
     if (!lead) return res.status(404).json({ success: false, message: 'Lead not found' });
+    // Hide blacklisted leads from public view
+    if (lead.blacklisted) return res.status(404).json({ success: false, message: 'Lead not found' });
     return res.json({ success: true, lead });
   } catch (err) {
     console.error('Error fetching lead:', err);
@@ -465,6 +485,37 @@ app.put('/api/lead/:id/remark', (req, res) => {
   } catch (err) {
     console.error('Error updating lead remark:', err);
     return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
+  }
+});
+
+// Admin API: set/unset blacklist for a lead (visible to admin UI)
+app.put('/api/lead/:id/blacklist', (req, res) => {
+  const leadId = parseInt(req.params.id);
+  const { blacklisted, reason } = req.body || {};
+  if (typeof blacklisted !== 'boolean') return res.status(400).json({ success: false, message: 'blacklisted (boolean) is required' });
+  try {
+    const leads = loadLeads();
+    const idx = leads.findIndex(l => Number(l.id) === leadId);
+    if (idx === -1) return res.status(404).json({ success: false, message: 'Lead not found' });
+
+    leads[idx].blacklisted = blacklisted;
+    if (blacklisted) {
+      leads[idx].blacklistReason = reason || '';
+      leads[idx].blacklistedAt = new Date().toISOString();
+    } else {
+      delete leads[idx].blacklistReason;
+      delete leads[idx].blacklistedAt;
+    }
+
+    saveLeads(leads);
+
+    // create a notification for the admin log (notifying internal inbox)
+    addNotification('profile_update', leadId, leads[idx].brand_name, leads[idx].email, { changes: [blacklisted ? 'User blacklisted' : 'User removed from blacklist'], timestamp: new Date().toISOString() });
+
+    return res.json({ success: true, blacklisted: !!leads[idx].blacklisted });
+  } catch (err) {
+    console.error('Error updating blacklist:', err);
+    return res.status(500).json({ success: false, message: 'Database error' });
   }
 });
 

@@ -781,6 +781,21 @@
                     (lead.email && lead.email.toLowerCase() === usernameLower)
                 );
                 
+                // If the user's account has been blacklisted, block access from the user panel
+                if (userLead && userLead.blacklisted) {
+                    document.getElementById('plansContainer').innerHTML = `
+                        <div class="content-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:72px;height:72px;margin-bottom:18px;">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#b71c1c" opacity="0.12"/>
+                                <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8z" fill="#b71c1c"/>
+                            </svg>
+                            <h3 style="color:#b71c1c; margin-bottom:8px;">Account blocked</h3>
+                            <p style="color:#9fbfc6; max-width:520px;">Your account has been suspended and access to the dashboard is restricted. If you believe this is an error, please contact us at <strong>promotewithus6@gmail.com</strong>.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
                 if (!userLead) {
                     document.getElementById('plansContainer').innerHTML = `
                         <div class="content-placeholder">

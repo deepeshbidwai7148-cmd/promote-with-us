@@ -631,6 +631,7 @@
                 <button class="tab-btn active" onclick="switchTab('leads')">📋 All Leads</button>
                 <button class="tab-btn" onclick="switchTab('pending')">⏳ Pending</button>
                 <button class="tab-btn" onclick="switchTab('approved')">✅ Approved Users</button>
+                <button class="tab-btn" onclick="switchTab('blacklisted')">🚫 Blacklisted</button>
                 <button class="tab-btn" onclick="switchTab('rejected')">❌ Rejected</button>
                 <button class="tab-btn" onclick="switchTab('notifications')">🔔 Notifications <span id="notificationBadge" style="display: none; background: #ff6b6b; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; margin-left: 5px;">0</span></button>
                 <button class="tab-btn" onclick="switchTab('plans')">➕ Plans</button>
@@ -713,9 +714,33 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Blacklisted Tab -->
+            <div id="blacklistedTab" class="tab-content">
+                <div class="section-box">
+                    <div class="section-title">Blacklisted Users</div>
+                    <div class="scroll-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Plan</th>
+                                    <th>Contact</th>
+                                    <th>Reason</th>
+                                    <th>Blacklisted At</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blacklistedTableBody">
+                                <tr><td colspan="6" style="text-align: center; color: #9fbfc6;">No blacklisted users</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             
             <!-- Rejected Tab -->
-            <div id="rejectedTab" class="tab-content">
+            <div id="rejectedTab" class="tab-content"> 
                 <div class="section-box">
                     <div class="section-title">Rejected Leads</div>
                     <div class="scroll-container">
@@ -974,6 +999,8 @@
                     // keep admin session in-session only (cleared when window/tab is closed)
                     sessionStorage.setItem('isAdmin', 'true');
                     sessionStorage.setItem('adminUsername', username.toLowerCase());
+                    // store ephemeral Basic auth so the Blacklisted tab can fetch /admin/leads.json without prompting
+                    try { sessionStorage.setItem('adminAuth', btoa(`${username}:${password}`)); } catch(e) { /* ignore */ }
                     document.getElementById('dashboardUser').textContent = `Welcome, ${username}`;
                     showMessage('✅ Login successful!', 'success');
                     setTimeout(() => showDashboard(), 500);
@@ -1031,6 +1058,8 @@
                 loadRejectedLeads();
             } else if (tab === 'notifications') {
                 loadNotifications();
+            } else if (tab === 'blacklisted') {
+                loadBlacklistedUsers();
             }
         }
         
@@ -1127,6 +1156,52 @@
                 }
             } catch (error) {
                 console.error('Error loading approved users:', error);
+            }
+        }
+
+        // Load blacklisted users (admin only)
+        async function loadBlacklistedUsers() {
+            const tbody = document.getElementById('blacklistedTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9fbfc6;">Loading blacklisted users...</td></tr>';
+            try {
+                // Try to reuse stored basic auth (ephemeral) set at admin login
+                let auth = sessionStorage.getItem('adminAuth');
+                if (!auth) {
+                    const pwd = prompt('Enter admin password to view blacklisted users (this is stored only for your session):');
+                    if (!pwd) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#f6a623;">Admin password required to view blacklisted users.</td></tr>';
+                        return;
+                    }
+                    const user = sessionStorage.getItem('adminUsername') || 'admin';
+                    auth = btoa(`${user}:${pwd}`);
+                    sessionStorage.setItem('adminAuth', auth);
+                }
+
+                const resp = await fetch('/admin/leads.json?t=' + Date.now(), { headers: { 'Authorization': 'Basic ' + auth } });
+                if (resp.status === 401) {
+                    sessionStorage.removeItem('adminAuth');
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#f44336;">Unauthorized — please re-enter admin password via the Blacklisted tab.</td></tr>';
+                    return;
+                }
+                const data = await resp.json();
+                const blacklisted = (data.leads || []).filter(l => l.blacklisted === true);
+                if (!blacklisted.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9fbfc6;">No blacklisted users</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = blacklisted.map(lead => `
+                    <tr class="lead-row" onclick="showDetailModal(${JSON.stringify(lead).replace(/"/g, '&quot;')})">
+                        <td>${lead.brandName || 'N/A'}</td>
+                        <td>${lead.plan || 'Not specified'}</td>
+                        <td>${lead.email || ''}${lead.phone ? ' / ' + lead.phone : ''}</td>
+                        <td style="color:#ffb3b3;">${lead.blacklistReason ? escapeHtml(lead.blacklistReason) : '<em>—</em>'}</td>
+                        <td>${lead.blacklistedAt ? new Date(lead.blacklistedAt).toLocaleString() : '-'}</td>
+                        <td style="text-align:center"><button onclick="event.stopPropagation(); toggleBlacklist(${lead.id}, false)" style="background:linear-gradient(135deg,#4caf50,#2e7d32);border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;font-weight:700">🔓 Unblock</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading blacklisted users:', err);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#f44336;">Failed to load — try again.</td></tr>';
             }
         }
         
@@ -1436,8 +1511,21 @@
                     </div>
                 ` : ''}
                 
-                <div style="margin-top: 15px;">
-                    <button id="updateRemarkBtn" style="width: 100%; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; color: white; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">💾 Update Remark</button>
+                <div style="display:flex; gap:12px; margin-top: 15px; align-items:center;">
+                    <div style="flex:1; display:flex; gap:10px; align-items:center;">
+                        <select id="remarkDropdown" style="min-width:180px; height:44px; padding:0 14px; border-radius:8px; background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.03); color:#cfd8df; font-weight:700; display:inline-flex; align-items:center;">
+                            <option value="Pending" ${currentRemark === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+                            <option value="Approved" ${currentRemark === 'Approved' ? 'selected' : ''}>✅ Approved</option>
+                            <option value="Rejected" ${currentRemark === 'Rejected' ? 'selected' : ''}>❌ Rejected</option>
+                        </select>
+                        <button id="updateRemarkBtn" style="height:44px; display:inline-flex; align-items:center; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; color: white; padding: 0 18px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px;">💾 Update Remark</button>
+                        <button onclick="event.stopPropagation(); document.getElementById('remarkDropdown').value='Approved'; updateLeadRemark(${lead.id});" style="height:44px; display:inline-flex; align-items:center; background: #20c5b5; color:#042; padding: 0 14px; border-radius:8px; border:none; font-weight:700;">✅ Approve</button>
+                        <button onclick="event.stopPropagation(); document.getElementById('remarkDropdown').value='Rejected'; updateLeadRemark(${lead.id});" style="height:44px; display:inline-flex; align-items:center; background: rgba(255,100,100,0.12); color:#ff6b6b; padding: 0 14px; border-radius:8px; border:1px solid rgba(255,100,100,0.15); font-weight:700;">❌ Reject</button>
+                    </div>
+                    <div style="min-width:160px; display:flex; flex-direction:column; gap:8px; justify-content:center;">
+                        <button id="blacklistBtn" style="height:44px; background: linear-gradient(135deg,#b71c1c,#8b0000); border: none; color: white; padding: 0 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 13px;">🔒 ${lead && lead.blacklisted ? 'Remove from blacklist' : 'Blacklist user'}</button>
+                        <div id="blacklistInfo" style="color:#ffb3b3; font-size:12px; display: ${lead && lead.blacklisted ? 'block' : 'none'};">${lead && lead.blacklistReason ? escapeHtml(lead.blacklistReason) + '<br/>' : ''}${lead && lead.blacklistedAt ? 'Since: ' + new Date(lead.blacklistedAt).toLocaleString() : ''}</div>
+                    </div>
                 </div>
             `;
             
@@ -1489,6 +1577,9 @@
             document.getElementById('updateRemarkBtn').addEventListener('click', () => {
                 updateLeadRemark(lead.id);
             });
+
+            // Wire blacklist button (if present)
+            setTimeout(() => wireBlacklistButton(), 50);
             
             // Attach Save button listener (allow editing regardless of remark)
             const saveEditBtn = document.getElementById('saveEditBtn');
@@ -1949,6 +2040,54 @@
             }
         }
         
+        // Toggle blacklist status for a lead (admin)
+        async function toggleBlacklist(leadId, setTo, reason) {
+            try {
+                const resp = await fetch(`/api/lead/${leadId}/blacklist`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ blacklisted: !!setTo, reason: reason || '' })
+                });
+                const data = await resp.json();
+                if (resp.ok && data.success) {
+                    alert(data.blacklisted ? '🔒 User blacklisted' : '✅ User removed from blacklist');
+                    closeDetailModal();
+                    loadLeads();
+                    loadPendingLeads();
+                    loadApprovedUsers();
+                    loadRejectedLeads();
+                    // refresh the blacklisted tab (if open)
+                    try { if (document.getElementById('blacklistedTab').classList.contains('active')) loadBlacklistedUsers(); } catch(e){}
+                    return;
+                }
+                alert('Failed to update blacklist: ' + (data.message || 'server error'));
+            } catch (err) {
+                console.error('toggleBlacklist error', err);
+                alert('Network error while updating blacklist');
+            }
+        }
+
+        // Wire blacklist button in detail modal (safe to call even if element missing)
+        function wireBlacklistButton() {
+            const btn = document.getElementById('blacklistBtn');
+            if (!btn) return;
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lead = window.currentDetailLead || window._lastOpenedLead;
+                if (!lead || !lead.id) return alert('No lead selected');
+                const willBlacklist = !lead.blacklisted;
+                if (!willBlacklist) {
+                    if (!confirm('Remove user from blacklist?')) return;
+                    toggleBlacklist(lead.id, false);
+                    return;
+                }
+
+                const reason = prompt('Reason for blacklisting (optional):');
+                if (!confirm(willBlacklist ? 'Are you sure you want to blacklist this user? This will block future submissions and access.' : 'Confirm change?')) return;
+                toggleBlacklist(lead.id, true, reason || '');
+            });
+        }
+
         // Function to delete a rejected lead
         async function deleteLead(leadId) {
             if (!confirm('Are you sure you want to permanently delete this record?')) {

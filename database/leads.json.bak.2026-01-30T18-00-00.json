@@ -27,7 +27,10 @@
       ],
       "totalAmount": 1500,
       "paidAmount": 123.45,
-      "remainingAmount": 1376.55
+      "remainingAmount": 1376.55,
+      "blacklisted": true,
+      "blacklistReason": "",
+      "blacklistedAt": "2026-01-30T14:58:35.320Z"
     },
     {
       "id": 2,
@@ -43,44 +46,43 @@
       "password": "ACDS@123",
       "planStartDate": "2026-02-01",
       "planEndDate": "2026-02-28",
-      "payments": [
-        {
-          "id": 1769751791623,
-          "transactionId": "TXNml0gitxjDXDTFI",
-          "amount": 5000,
-          "method": "UPI",
-          "date": "2026-01-30",
-          "note": ""
-        },
-        {
-          "id": 1769753158459,
-          "transactionId": "TXNml0hc4l7SN0OHX",
-          "amount": 5000,
-          "method": "Cash",
-          "date": "2026-01-30",
-          "note": ""
-        },
-        {
-          "id": 1769753822458,
-          "transactionId": "TXNml0hqcxmS4RMKW",
-          "amount": 5000,
-          "method": "UPI",
-          "date": "2026-01-30",
-          "note": ""
-        },
-        {
-          "id": 1769755712181,
-          "transactionId": "TXNml0iuv1xKJGKN4",
-          "amount": 2000,
-          "method": "UPI",
-          "date": "2026-01-30",
-          "note": ""
-        }
-      ],
+      "payments": [],
       "totalAmount": 50000,
       "paidAmount": 17000,
       "remainingAmount": 33000,
-      "description": ""
+      "description": "",
+      "blacklisted": true,
+      "blacklistReason": "test: fraud (dev)",
+      "blacklistedAt": "2026-01-30T07:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "brand_name": "deepesh",
+      "phone": "575456456",
+      "email": "deepesh@gmail.com",
+      "plan": "PLATINUM PLAN",
+      "requirements": "",
+      "created_at": "2026-01-30T16:01:42.636Z",
+      "remark": "Approved",
+      "approvedBy": "promotewithus",
+      "username": "deepesh123",
+      "password": "ACDS@123",
+      "payments": [],
+      "totalAmount": 50000,
+      "paidAmount": 5000,
+      "remainingAmount": 45000,
+      "blacklisted": true,
+      "blacklistReason": "",
+      "blacklistedAt": "2026-01-30T16:13:21.167Z"
+    },
+    {
+      "id": 4,
+      "brand_name": "55",
+      "phone": "6956995",
+      "email": "11@gmail.com",
+      "plan": "PLATINUM PLAN",
+      "requirements": "",
+      "created_at": "2026-01-30T16:14:46.947Z"
     }
   ]
 }

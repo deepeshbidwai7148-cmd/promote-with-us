@@ -58,7 +58,7 @@
         ],
         "timestamp": "2026-01-30T04:27:01.797Z"
       },
-      "read": false,
+      "read": true,
       "createdAt": "2026-01-30T04:27:01.798Z"
     },
     {
@@ -74,7 +74,7 @@
         ],
         "timestamp": "2026-01-30T04:29:52.759Z"
       },
-      "read": false,
+      "read": true,
       "createdAt": "2026-01-30T04:29:52.759Z"
     },
     {
@@ -91,6 +91,66 @@
       },
       "read": false,
       "createdAt": "2026-01-30T06:21:01.404Z"
+    },
+    {
+      "id": 1769785115329,
+      "type": "profile_update",
+      "leadId": 1,
+      "brandName": "fguhds",
+      "email": "tejasbidwai4225@gmail.com",
+      "details": {
+        "changes": [
+          "User blacklisted"
+        ],
+        "timestamp": "2026-01-30T14:58:35.328Z"
+      },
+      "read": true,
+      "createdAt": "2026-01-30T14:58:35.329Z"
+    },
+    {
+      "id": 1769789601168,
+      "type": "profile_update",
+      "leadId": 3,
+      "brandName": "deepesh",
+      "email": "deepesh@gmail.com",
+      "details": {
+        "changes": [
+          "User blacklisted"
+        ],
+        "timestamp": "2026-01-30T16:13:21.168Z"
+      },
+      "read": false,
+      "createdAt": "2026-01-30T16:13:21.168Z"
+    },
+    {
+      "id": 1769790522377,
+      "type": "profile_update",
+      "leadId": 4,
+      "brandName": "55",
+      "email": "11@gmail.com",
+      "details": {
+        "changes": [
+          "User blacklisted"
+        ],
+        "timestamp": "2026-01-30T16:28:42.376Z"
+      },
+      "read": false,
+      "createdAt": "2026-01-30T16:28:42.377Z"
+    },
+    {
+      "id": 1769790528957,
+      "type": "profile_update",
+      "leadId": 4,
+      "brandName": "55",
+      "email": "11@gmail.com",
+      "details": {
+        "changes": [
+          "User removed from blacklist"
+        ],
+        "timestamp": "2026-01-30T16:28:48.956Z"
+      },
+      "read": false,
+      "createdAt": "2026-01-30T16:28:48.957Z"
     }
   ]
 }

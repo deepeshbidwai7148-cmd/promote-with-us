@@ -37,7 +37,7 @@ async function run() {
     console.log('Lead (summary):', JSON.stringify({ id: getJson.lead && getJson.lead.id, paidAmount: getJson.lead && getJson.lead.paidAmount, remainingAmount: getJson.lead && getJson.lead.remainingAmount, paymentsCount: (getJson.lead && getJson.lead.payments && getJson.lead.payments.length) || 0 }, null, 2));
 
     // Check leads.json on disk
-    const leadsPath = path.resolve(__dirname, '..', 'leads.json');
+    const leadsPath = path.resolve(__dirname, '..', 'database', 'leads.json');
     if (fs.existsSync(leadsPath)) {
       const raw = fs.readFileSync(leadsPath, 'utf8');
       const has = raw.indexOf('e2e-test') !== -1;
