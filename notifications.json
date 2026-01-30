@@ -28,6 +28,69 @@
       },
       "read": true,
       "createdAt": "2026-01-29T05:02:41.654Z"
+    },
+    {
+      "id": 1769745990791,
+      "type": "profile_update",
+      "leadId": 1,
+      "brandName": "fguhds",
+      "email": "tejasbidwai4225@gmail.com",
+      "details": {
+        "changes": [
+          "Plan Start Date: undefined → 2026-01-30",
+          "Plan End Date: undefined → 2026-01-31"
+        ],
+        "timestamp": "2026-01-30T04:06:30.790Z"
+      },
+      "read": true,
+      "createdAt": "2026-01-30T04:06:30.791Z"
+    },
+    {
+      "id": 1769747221798,
+      "type": "profile_update",
+      "leadId": 2,
+      "brandName": "deepesh",
+      "email": "deepeshbidwai7148@gmail.com",
+      "details": {
+        "changes": [
+          "Plan Start Date: undefined → 2026-01-30",
+          "Plan End Date: undefined → 2026-12-03"
+        ],
+        "timestamp": "2026-01-30T04:27:01.797Z"
+      },
+      "read": false,
+      "createdAt": "2026-01-30T04:27:01.798Z"
+    },
+    {
+      "id": 1769747392759,
+      "type": "profile_update",
+      "leadId": 2,
+      "brandName": "deepesh",
+      "email": "deepeshbidwai7148@gmail.com",
+      "details": {
+        "changes": [
+          "Plan Start Date: 2026-01-30 → 2026-02-01",
+          "Plan End Date: 2026-12-03 → 2026-02-28"
+        ],
+        "timestamp": "2026-01-30T04:29:52.759Z"
+      },
+      "read": false,
+      "createdAt": "2026-01-30T04:29:52.759Z"
+    },
+    {
+      "id": 1769754061404,
+      "type": "profile_update",
+      "leadId": 2,
+      "brandName": "deepesh",
+      "email": "deepeshbidwai7148@gmail.com",
+      "details": {
+        "changes": [
+          "Description Updated"
+        ],
+        "timestamp": "2026-01-30T06:21:01.403Z"
+      },
+      "read": false,
+      "createdAt": "2026-01-30T06:21:01.404Z"
     }
   ]
 }

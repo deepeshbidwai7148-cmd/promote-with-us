@@ -820,7 +820,7 @@
             <button onclick="openPlanModal()" type="button" class="start-now" style="display:inline-block; padding: 16px 45px; font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); color: white; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; letter-spacing: 1px; text-transform: uppercase;">
               Start <span style="display: inline-block; animation: nowPulse 1s ease-in-out infinite; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.8);">Now</span> →
             </button>
-            <button class="learn-more-btn" onclick="switchTab('plans'); document.getElementById('plans').scrollIntoView({ behavior: 'smooth' });" style="padding: 16px 45px; font-size: 16px; font-weight: 700; background: transparent; color: #20c5b5; border: 2px solid #20c5b5; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; text-transform: uppercase; position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 8px;">
+            <button class="learn-more-btn" onclick="openPlansTo()" style="padding: 16px 45px; font-size: 16px; font-weight: 700; background: transparent; color: #20c5b5; border: 2px solid #20c5b5; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; text-transform: uppercase; position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 8px;">
               <span class="learn-more-text">Learn More</span>
               <span class="learn-more-icon">→</span>
             </button>
@@ -2532,9 +2532,99 @@
     </script>
     <script>
       // Global switchTab function for external button clicks (Learn More, etc.)
-      function switchTab(tabName) {
-        setActiveTab(tabName);
+      function showTempBanner(msg) {
+        let b = document.getElementById('tempBanner');
+        if (!b) {
+          b = document.createElement('div');
+          b.id = 'tempBanner';
+          b.className = 'temp-banner';
+          b.setAttribute('aria-live', 'polite');
+          document.body.appendChild(b);
+        }
+        b.textContent = msg;
+        b.style.opacity = '1';
+        setTimeout(() => { b.style.opacity = '0'; }, 1200);
       }
+
+      function switchTab(tabName) {
+        console.log('inline switchTab called', tabName);
+        if (typeof setActiveTab === 'function') {
+          setActiveTab(tabName);
+          if (tabName === 'plans') showTempBanner('Plans opened');
+        } else {
+          // no-op fallback (other scripts may provide an alternate switcher)
+          console.warn('setActiveTab not found; switchTab fallback did nothing');
+        }
+      }
+
+      // Open Plans and focus a specific plan.
+      // If `idOrName` is provided it will try to find element by data-plan-id or by matching name text.
+      function openPlansTo(idOrName) {
+        try { if (typeof setActiveTab === 'function') setActiveTab('plans'); else switchTab('plans'); } catch(e) { /* ignore */ }
+        showTempBanner('Opening Plans');
+
+        // Ensure plans are loaded, then try to find the requested plan or the first one
+        function focusPlanElement(el) {
+          if (!el) return false;
+          try {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            el.classList.add('plan-highlight');
+            setTimeout(() => el.classList.remove('plan-highlight'), 2200);
+            return true;
+          } catch (e) { return false; }
+        }
+
+        const tryFind = () => {
+          const container = document.getElementById('allPlansContainer');
+          if (!container) return false;
+          // If idOrName is provided, try data-plan-id match first
+          if (idOrName) {
+            let byId = container.querySelector(`[data-plan-id="${idOrName}"]`);
+            if (byId) return focusPlanElement(byId);
+            // try by name text match (case-insensitive)
+            const nodes = container.querySelectorAll('[data-plan-id]');
+            for (const n of nodes) {
+              const title = n.querySelector('h3');
+              if (title && title.textContent.toLowerCase().includes(String(idOrName).toLowerCase())) {
+                return focusPlanElement(n);
+              }
+            }
+          }
+          // default: focus first plan card
+          const first = container.querySelector('[data-plan-id]');
+          if (first) return focusPlanElement(first);
+          return false;
+        };
+
+        // If plans are already present try immediately, otherwise wait for them
+        if (!tryFind()) {
+          // wait for up to 2.5s for plans to render
+          const start = Date.now();
+          const interval = setInterval(() => {
+            if (tryFind() || (Date.now() - start) > 2500) {
+              clearInterval(interval);
+            }
+          }, 100);
+        }
+      }
+
+      // Global handler: ensure any "Learn More" control opens Plans and closes the Start modal if visible
+      document.addEventListener('click', function (e) {
+        const target = e.target.closest('.learn-more-btn, .learn-more, [data-open-plans], a.learn-more-link');
+        if (!target) return;
+        e.preventDefault();
+        const planIdentifier = target.dataset.planId || target.dataset.plan || undefined;
+
+        // Close plan modal if open (Start button may have opened it)
+        const planModal = document.getElementById('plan-modal');
+        if (planModal && planModal.style.display !== 'none' && !planModal.classList.contains('hidden')) {
+          try { planModal.classList.add('hidden'); } catch (err) {}
+          try { planModal.style.display = 'none'; } catch (err) {}
+        }
+
+        // Open the plans tab and focus the plan if specified
+        try { openPlansTo(planIdentifier); } catch (err) { console.warn('openPlansTo unavailable', err); }
+      });
 
       // Load and display custom plans added by admin
       function loadCustomPlans() {
@@ -2559,10 +2649,12 @@
                   const hasOffer = plan.offerPercentage && plan.originalRate;
                   
                   html += `
-                    <div class="glass-card fade-in" data-animate data-plan-id="${plan.id}" style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%;">
+                    <div class="glass-card fade-in" data-animate data-plan-id="${plan.id}" style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%; padding: 24px; box-sizing: border-box;">
                       ${hasOffer ? `
-                        <div style="position: absolute; top: 15px; right: 15px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3); z-index: 10;">
-                          🎉 ${plan.offerPercentage}% OFF
+                        <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                          <div class="offer-badge" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);">
+                            🎉 ${plan.offerPercentage}% OFF
+                          </div>
                         </div>
                       ` : ''}
                       <div style="text-align: center; margin-bottom: 20px;">

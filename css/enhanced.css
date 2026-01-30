@@ -581,10 +581,63 @@ section {
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 0;
+  /* ensure pseudo-elements don't block clicks */
+  pointer-events: none;
 }
 
 .learn-more-btn:hover::after {
   opacity: 1;
+}
+
+/* Prevent the ::before shimmer from catching pointer events */
+.learn-more-btn::before {
+  pointer-events: none;
+}
+
+/* Offer badge styling and spacing helper to prevent overlapping plan titles */
+.glass-card {
+  /* ensure reasonable inner spacing */
+  box-sizing: border-box;
+  padding-top: 0; /* top spacing handled by internal top-row */
+}
+
+/* Offer badge inline style (non-absolute) so it pushes content instead of overlapping
+   Add a slight rotation + shadow to give a "stamp" appearance without overlapping titles. */
+.offer-badge {
+  display: inline-block;
+  pointer-events: none;
+  line-height: 1;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.14);
+  border: 1px solid rgba(255,255,255,0.15);
+  transform: rotate(-8deg) translateY(-4px);
+  transform-origin: center;
+  margin-right: -6px; /* slight overhang for stamp effect */
+  transition: transform 0.18s ease;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.12);
+  z-index: 3;
+}
+
+/* Subtle "stamp" press effect on hover for non-touch devices */
+@media (hover: hover) {
+  .offer-badge:hover {
+    transform: rotate(-6deg) translateY(-2px) scale(1.02);
+  }
+}
+
+/* Responsive: smaller badge at narrow widths */
+@media (max-width: 520px) {
+  .offer-badge {
+    font-size: 12px;
+    padding: 6px 10px;
+    transform: rotate(-6deg) translateY(-2px);
+    margin-right: -4px;
+  }
 }
 
 .learn-more-text {

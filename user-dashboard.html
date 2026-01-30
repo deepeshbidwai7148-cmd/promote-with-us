@@ -577,6 +577,16 @@
             <p>View and manage your selected plans below</p>
         </div>
 
+        <!-- Payment Summary Section -->
+        <div id="dashboardPaymentSummary" style="background: linear-gradient(135deg, #0f1630 0%, #14213a 100%); border: 1px solid rgba(32, 197, 181, 0.2); border-radius: 12px; padding: 18px 24px; margin-bottom: 28px; box-shadow: 0 4px 18px rgba(32,197,181,0.07); display: flex; align-items: center; justify-content: space-between; gap: 18px;">
+            <div id="dashboardPaymentInfo" style="color:#cfd8df; font-size:15px;">
+                Total: <strong id="dashboardTotalAmount" style="color:#20c5b5;">—</strong> &nbsp; • &nbsp; Paid: <strong id="dashboardPaidAmount" style="color:#cfd8df;">—</strong> &nbsp; • &nbsp; Remaining: <strong id="dashboardRemainingAmount" style="color:#f6a623;">—</strong>
+            </div>
+            <div>
+                <button onclick="openUserPayments()" style="background:transparent; border:1px solid rgba(255,255,255,0.06); color:#cfd8df; padding:8px 16px; border-radius:6px; font-weight:700;">View Payments</button>
+            </div>
+        </div>
+
         <!-- Content Section -->
         <div class="content">
             <div id="plansContainer" class="loading-text">Loading your plans...</div>
@@ -763,10 +773,12 @@
                 const data = await response.json();
                 const leads = data.leads || [];
                 
-                // Find user's lead record
+                // Find user's lead record (allow username, brandName or email match)
+                const usernameLower = username.toLowerCase();
                 const userLead = leads.find(lead => 
-                    (lead.username && lead.username.toLowerCase() === username.toLowerCase()) || 
-                    (lead.brandName && lead.brandName.toLowerCase() === username.toLowerCase())
+                    (lead.username && lead.username.toLowerCase() === usernameLower) || 
+                    (lead.brandName && lead.brandName.toLowerCase() === usernameLower) ||
+                    (lead.email && lead.email.toLowerCase() === usernameLower)
                 );
                 
                 if (!userLead) {
@@ -797,6 +809,13 @@
         // Display plans in cards
         function displayPlans(userLead) {
             const container = document.getElementById('plansContainer');
+            // Update dashboard payment summary
+            const total = userLead.totalAmount !== undefined ? `₹${userLead.totalAmount}` : '—';
+            const paid = userLead.paidAmount || 0;
+            const remaining = (userLead.remainingAmount !== null && userLead.remainingAmount !== undefined) ? `₹${userLead.remainingAmount}` : '—';
+            document.getElementById('dashboardTotalAmount').textContent = total;
+            document.getElementById('dashboardPaidAmount').textContent = `₹${paid}`;
+            document.getElementById('dashboardRemainingAmount').textContent = remaining;
             const plans = userLead.plans || [];
             const planNames = userLead.plan ? [userLead.plan] : [];
             
@@ -844,6 +863,10 @@
                 const timeRemaining = calculateTimeRemaining(endDate);
                 const hasOffer = plan.offerPercentage && plan.originalRate;
 
+                // Payment details for this user
+                const paid = userLead.paidAmount !== undefined ? `₹${userLead.paidAmount}` : '—';
+                const remaining = userLead.remainingAmount !== undefined && userLead.remainingAmount !== null ? `₹${userLead.remainingAmount}` : '—';
+
                 html += `
                     <div class="plan-card" style="position: relative;">
                         ${hasOffer ? `
@@ -883,6 +906,15 @@
                         <div class="plan-detail">
                             <span class="plan-detail-label">Maintenance Date:</span>
                             <span class="plan-detail-value">${formatDate(endDate)}</span>
+                        </div>
+
+                        <div class="plan-detail" style="margin-top:10px;">
+                            <span class="plan-detail-label">Paid Amount:</span>
+                            <span class="plan-detail-value">${paid}</span>
+                        </div>
+                        <div class="plan-detail">
+                            <span class="plan-detail-label">Remaining Amount:</span>
+                            <span class="plan-detail-value">${remaining}</span>
                         </div>
 
                         <div class="time-remaining">
@@ -1349,6 +1381,69 @@
             if (modal) modal.remove();
         }
 
+        // User payments modal & helpers
+        async function openUserPayments() {
+            // refresh current user record from server to ensure latest payments are shown
+            try {
+                if (currentUserData && currentUserData.id) {
+                    const resp = await fetch(`/api/lead/${encodeURIComponent(currentUserData.id)}?t=${Date.now()}`);
+                    const json = await resp.json();
+                    if (json && json.success) currentUserData = Object.assign({}, currentUserData || {}, json.lead);
+                }
+            } catch (err) {
+                console.warn('Could not refresh user record before showing payments:', err);
+            }
+
+            const payments = currentUserData && Array.isArray(currentUserData.payments) ? currentUserData.payments : [];
+            const total = currentUserData && currentUserData.totalAmount !== undefined ? `₹${currentUserData.totalAmount}` : '—';
+            const paid = currentUserData && (currentUserData.paidAmount || 0);
+            const remaining = currentUserData && (currentUserData.remainingAmount !== null && currentUserData.remainingAmount !== undefined) ? `₹${currentUserData.remainingAmount}` : '—';
+
+            const rows = (payments.slice().reverse().map(p => {
+                const d = new Date(p.date).toLocaleDateString();
+                const txn = p.transactionId || p.txnId || p.id || '—';
+                const thumb = p.screenshotData ? `<div style="margin-left:12px;"><img src="${p.screenshotData}" style="max-width:110px; border-radius:6px; cursor:pointer; border:1px solid rgba(255,255,255,0.04);" onclick="window.open('${p.screenshotData}','_blank')" title="Open attachment"></div>` : '';
+                return `<div style="display:flex; flex-direction:column; gap:6px; padding:10px 0; border-bottom:1px dashed rgba(255,255,255,0.03);">
+                            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+                                <div style="min-width:110px; color:#9fbfc6;">${d}</div>
+                                <div style="flex:1; color:#cfd8df; display:flex; align-items:center; gap:12px;">${p.note || ''} ${thumb}</div>
+                                <div style="font-weight:700; color:#20c5b5;">₹${p.amount}</div>
+                                <div style="min-width:100px; text-align:right; color:#9fbfc6;">${p.method}</div>
+                            </div>
+                            <div style="color:#9fbfc6; font-size:12px;">Transaction: <span style="color:#cfd8df; font-weight:700;">${txn}</span></div>
+                        </div>`;
+            })).join('') || '<div style="color:#9fbfc6; padding:12px 0;">No payments recorded</div>';
+
+            const modal = `
+                <div id="userPaymentsModal" class="modal" style="display:flex !important;">
+                    <div class="modal-dialog" style="width:520px;">
+                        <button type="button" class="modal-close" onclick="closeUserPaymentsModal()">×</button>
+                        <h2 class="modal-title">💳 Payment Summary</h2>
+                        <div style="margin-top:12px; color:#cfd8df;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <div style="color:#9fbfc6;">Total</div>
+                                <div style="font-weight:700; color:#20c5b5;">${total}</div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <div style="color:#9fbfc6;">Paid</div>
+                                <div style="font-weight:700; color:#cfd8df;">₹${paid}</div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                                <div style="color:#9fbfc6;">Remaining</div>
+                                <div style="font-weight:700; color:#f6a623;">${remaining}</div>
+                            </div>
+                            <div style="border-top:1px solid rgba(255,255,255,0.03); padding-top:12px; max-height:340px; overflow:auto;">${rows}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const existing = document.getElementById('userPaymentsModal'); if (existing) existing.remove();
+            document.body.insertAdjacentHTML('beforeend', modal);
+        }
+
+        function closeUserPaymentsModal() { const m = document.getElementById('userPaymentsModal'); if (m) m.remove(); }
+
         // Open edit profile modal
         function openEditProfileModal() {
             const editModal = `
@@ -1369,6 +1464,8 @@
                             </div>
 
                             <div id="editProfileMsg" class="form-message"></div>
+
+                            <div style="color:#9fbfc6; font-size:13px; margin-top:12px;">💡 Payment details are managed from the <strong>Dashboard → Payments</strong> screen and are <strong>not</strong> saved in your profile.</div>
 
                             <div style="display: flex; gap: 12px; margin-top: 20px;">
                                 <button type="submit" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); border: none; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
@@ -1417,20 +1514,24 @@
                 return;
             }
 
+            // Defensive: ensure no payment-related data gets submitted via profile update
+            // (payments must always go through the Payments modal / /api/lead/:id/payment)
+            const safePayload = {
+                brandName: currentUserData.brandName,
+                phone: phone,
+                email: email,
+                plan: currentUserData.plan,
+                requirements: currentUserData.requirements,
+                description: currentUserData.description,
+                planStartDate: currentUserData.planStartDate,
+                planEndDate: currentUserData.planEndDate
+            };
+
             try {
                 const response = await fetch(`/api/lead/${currentUserData.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        brandName: currentUserData.brandName,
-                        phone: phone,
-                        email: email,
-                        plan: currentUserData.plan,
-                        requirements: currentUserData.requirements,
-                        description: currentUserData.description,
-                        planStartDate: currentUserData.planStartDate,
-                        planEndDate: currentUserData.planEndDate
-                    })
+                    body: JSON.stringify(safePayload)
                 });
 
                 if (!response.ok) {

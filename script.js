@@ -1,31 +1,33 @@
 // Global switchTab function for tab navigation
 function switchTab(tabName) {
-  // Hide all tab contents
-  const tabContents = document.querySelectorAll('.tab-content');
-  tabContents.forEach(tab => {
-    tab.classList.remove('active');
-  });
+  // Prefer main site's navigation helper if present
+  if (typeof setActiveTab === 'function') {
+    setActiveTab(tabName);
+    return;
+  }
 
-  // Remove active class from all buttons
-  const tabButtons = document.querySelectorAll('.nav-tab-button');
-  tabButtons.forEach(btn => {
-    btn.classList.remove('active');
-  });
+  // Fallback for pages that use .tab-content/.nav-tab-button
+  const tabContents = document.querySelectorAll('.tab-content, .tab-panel');
+  tabContents.forEach(tab => tab.classList.remove('active'));
 
-  // Show the selected tab
+  const tabButtons = document.querySelectorAll('.nav-tab-button, .nav-menu a, .nav-links a');
+  tabButtons.forEach(btn => btn.classList.remove('active'));
+
   const selectedTab = document.getElementById(tabName);
   if (selectedTab) {
     selectedTab.classList.add('active');
+    // ensure it's shown if display was toggled
+    selectedTab.style.display = '';
   }
 
-  // Add active class to the clicked button
-  const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
-  if (selectedButton) {
-    selectedButton.classList.add('active');
-  }
+  // Mark corresponding nav link active (if present)
+  const navLink = document.querySelector(`a[href="#${tabName}"]`);
+  if (navLink) navLink.classList.add('active');
 
-  // Scroll to top
-  window.scrollTo(0, 0);
+  // Smooth scroll to the panel when available
+  if (selectedTab && selectedTab.scrollIntoView) {
+    selectedTab.scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
 // Contact Form Handler

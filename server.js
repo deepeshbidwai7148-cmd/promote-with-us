@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 const app = express();
@@ -256,12 +257,55 @@ app.post('/api/lead', (req, res) => {
   }
 });
 
-// Basic auth middleware for admin routes (development use)
-function basicAuth(req, res, next) {
-  const auth = req.headers['authorization'];
-  const adminUser = process.env.ADMIN_USER || 'admin';
-  const adminPass = process.env.ADMIN_PASS || 'password';
+// --- Admin credentials (hashed) support ---
+const adminCredsFile = path.join(__dirname, 'admin-credentials.json');
+let adminCredentials = []; // { username, hash }
 
+function loadAdminCredentials() {
+  try {
+    if (fs.existsSync(adminCredsFile)) {
+      const raw = fs.readFileSync(adminCredsFile, 'utf8');
+      const parsed = JSON.parse(raw);
+      adminCredentials = parsed.admins || [];
+      console.log('Loaded', adminCredentials.length, 'admin credential(s) from admin-credentials.json');
+      return;
+    }
+
+    // If no file, but env provided, create a hashed credential from env
+    const envUser = process.env.ADMIN_USER;
+    const envPass = process.env.ADMIN_PASS;
+    if (envUser && envPass) {
+      const hash = bcrypt.hashSync(envPass, 10);
+      adminCredentials = [{ username: envUser.toLowerCase(), hash }];
+      fs.writeFileSync(adminCredsFile, JSON.stringify({ admins: adminCredentials }, null, 2));
+      console.log('Created admin-credentials.json from environment ADMIN_USER');
+      return;
+    }
+
+    // Fallback: create default (insecure) admin/admin and persist (only for development)
+    const defaultHash = bcrypt.hashSync('password', 10);
+    adminCredentials = [{ username: 'admin', hash: defaultHash }];
+    fs.writeFileSync(adminCredsFile, JSON.stringify({ admins: adminCredentials }, null, 2));
+    console.warn('No admin credentials found — created default admin/password in admin-credentials.json (development only).');
+  } catch (err) {
+    console.error('Failed to load or create admin credentials:', err);
+    adminCredentials = [];
+  }
+}
+
+function saveAdminCredentials() {
+  try {
+    fs.writeFileSync(adminCredsFile, JSON.stringify({ admins: adminCredentials }, null, 2));
+  } catch (err) {
+    console.error('Failed to save admin credentials:', err);
+  }
+}
+
+loadAdminCredentials();
+
+// Basic auth middleware for admin routes (development use) — now validates hashed passwords
+async function basicAuth(req, res, next) {
+  const auth = req.headers['authorization'];
   if (!auth) {
     res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
     return res.status(401).send('Authentication required');
@@ -274,11 +318,64 @@ function basicAuth(req, res, next) {
 
   const decoded = Buffer.from(parts[1], 'base64').toString();
   const [user, pass] = decoded.split(':');
-  if (user === adminUser && pass === adminPass) return next();
+  if (!user || !pass) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
+    return res.status(401).send('Invalid credentials');
+  }
+
+  const username = user.toLowerCase();
+  const cred = adminCredentials.find(c => c.username === username);
+  if (cred) {
+    const ok = await bcrypt.compare(pass, cred.hash);
+    if (ok) return next();
+  }
+
+  // Backward-compatible check against plain env vars (if present)
+  const envUser = (process.env.ADMIN_USER || '').toLowerCase();
+  const envPass = process.env.ADMIN_PASS || '';
+  if (envUser && envPass && username === envUser && pass === envPass) return next();
 
   res.setHeader('WWW-Authenticate', 'Basic realm="Leads Admin"');
   return res.status(401).send('Invalid credentials');
 }
+
+// Admin login endpoint (verifies password against stored bcrypt hashes)
+app.post('/api/admin/login', express.json(), async (req, res) => {
+  const { username, password } = req.body || {};
+  if (!username || !password) return res.status(400).json({ success: false, message: 'username and password required' });
+  const uname = String(username).toLowerCase();
+  const cred = adminCredentials.find(c => c.username === uname);
+  if (!cred) return res.status(401).json({ success: false, message: 'Invalid username or password' });
+  try {
+    const ok = await bcrypt.compare(password, cred.hash);
+    if (!ok) return res.status(401).json({ success: false, message: 'Invalid username or password' });
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Admin login error:', err);
+    return res.status(500).json({ success: false, message: 'Internal error' });
+  }
+});
+
+// Add or update an admin (protected by basicAuth)
+app.post('/api/admin/change-password', basicAuth, express.json(), async (req, res) => {
+  const { username, newPassword } = req.body || {};
+  if (!username || !newPassword) return res.status(400).json({ success: false, message: 'username and newPassword are required' });
+  try {
+    const uname = String(username).toLowerCase();
+    const hash = await bcrypt.hash(newPassword, 10);
+    const existing = adminCredentials.findIndex(c => c.username === uname);
+    if (existing !== -1) {
+      adminCredentials[existing].hash = hash;
+    } else {
+      adminCredentials.push({ username: uname, hash });
+    }
+    saveAdminCredentials();
+    return res.json({ success: true, message: 'Admin credentials updated' });
+  } catch (err) {
+    console.error('Error updating admin credentials:', err);
+    return res.status(500).json({ success: false, message: 'Internal error' });
+  }
+});
 
 // JSON endpoint for leads (also protected)
 app.get('/admin/leads.json', basicAuth, (req, res) => {
@@ -315,10 +412,28 @@ app.get('/api/leads', (req, res) => {
     created_at: r.created_at,
     planStartDate: r.planStartDate || null,
     planEndDate: r.planEndDate || null,
-    approvedBy: r.approvedBy || null
+    approvedBy: r.approvedBy || null,
+    // Payment fields
+    payments: Array.isArray(r.payments) ? r.payments : [],
+    totalAmount: r.totalAmount !== undefined ? r.totalAmount : null,
+    paidAmount: r.paidAmount !== undefined ? r.paidAmount : 0,
+    remainingAmount: r.remainingAmount !== undefined ? r.remainingAmount : null
   })).reverse();
-  
   res.json({ leads });
+});
+
+// Single lead endpoint (public)
+app.get('/api/lead/:id', (req, res) => {
+  const leadId = Number(req.params.id);
+  try {
+    const leads = loadLeads();
+    const lead = (leads || []).find(l => Number(l.id) === leadId);
+    if (!lead) return res.status(404).json({ success: false, message: 'Lead not found' });
+    return res.json({ success: true, lead });
+  } catch (err) {
+    console.error('Error fetching lead:', err);
+    return res.status(500).json({ success: false, message: 'Database error' });
+  }
 });
 
 // API endpoint to update lead remark status
@@ -369,38 +484,52 @@ app.put('/api/lead/:id', (req, res) => {
     const lead = leads[leadIndex];
     let updateDetails = [];
 
-    // Track what fields were updated
-    if (brandName && brandName !== lead.brand_name) {
-      updateDetails.push(`Brand Name: ${lead.brand_name} → ${brandName}`);
-      leads[leadIndex].brand_name = brandName;
+    // Track what fields were updated — accept explicit undefined/empty to allow clearing
+    if (brandName !== undefined && brandName !== lead.brand_name) {
+      updateDetails.push(`Brand Name: ${lead.brand_name || 'N/A'} → ${brandName || 'N/A'}`);
+      leads[leadIndex].brand_name = brandName || lead.brand_name;
     }
-    if (phone && phone !== lead.phone) {
-      updateDetails.push(`Phone: ${lead.phone} → ${phone}`);
-      leads[leadIndex].phone = phone;
+
+    if (phone !== undefined && phone !== lead.phone) {
+      updateDetails.push(`Phone: ${lead.phone || 'N/A'} → ${phone || 'N/A'}`);
+      leads[leadIndex].phone = phone || lead.phone;
     }
-    if (email && email !== lead.email) {
-      updateDetails.push(`Email: ${lead.email} → ${email}`);
-      leads[leadIndex].email = email;
+
+    if (email !== undefined && email !== lead.email) {
+      updateDetails.push(`Email: ${lead.email || 'N/A'} → ${email || 'N/A'}`);
+      leads[leadIndex].email = email || lead.email;
     }
-    if (plan && plan !== lead.plan) {
-      updateDetails.push(`Plan: ${lead.plan} → ${plan}`);
-      leads[leadIndex].plan = plan;
+
+    if (plan !== undefined && plan !== lead.plan) {
+      updateDetails.push(`Plan: ${lead.plan || 'Not specified'} → ${plan || 'Not specified'}`);
+      leads[leadIndex].plan = plan || lead.plan;
     }
-    if (requirements && requirements !== lead.requirements) {
+
+    if (requirements !== undefined && requirements !== lead.requirements) {
       updateDetails.push('Requirements Updated');
-      leads[leadIndex].requirements = requirements;
+      leads[leadIndex].requirements = requirements || '';
     }
+
     if (description !== undefined && description !== lead.description) {
       updateDetails.push('Description Updated');
       leads[leadIndex].description = description;
     }
-    if (planStartDate && planStartDate !== lead.planStartDate) {
-      updateDetails.push(`Plan Start Date: ${lead.planStartDate} → ${planStartDate}`);
-      leads[leadIndex].planStartDate = planStartDate;
+
+    // Accept empty string/null to CLEAR dates; only record change if value actually differs
+    if (planStartDate !== undefined) {
+      const newStart = planStartDate || null;
+      if (newStart !== (lead.planStartDate || null)) {
+        updateDetails.push(`Plan Start Date: ${lead.planStartDate || 'none'} → ${newStart || 'none'}`);
+        leads[leadIndex].planStartDate = newStart;
+      }
     }
-    if (planEndDate && planEndDate !== lead.planEndDate) {
-      updateDetails.push(`Plan End Date: ${lead.planEndDate} → ${planEndDate}`);
-      leads[leadIndex].planEndDate = planEndDate;
+
+    if (planEndDate !== undefined) {
+      const newEnd = planEndDate || null;
+      if (newEnd !== (lead.planEndDate || null)) {
+        updateDetails.push(`Plan End Date: ${lead.planEndDate || 'none'} → ${newEnd || 'none'}`);
+        leads[leadIndex].planEndDate = newEnd;
+      }
     }
 
     saveLeads(leads);
@@ -423,6 +552,95 @@ app.put('/api/lead/:id', (req, res) => {
   } catch (err) {
     console.error('Error updating lead:', err);
     return res.status(500).json({ success: false, message: 'Database error: ' + err.message });
+  }
+});
+
+// API endpoint to add payment or update payment-related fields for a lead
+app.put('/api/lead/:id/payment', (req, res) => {
+  const leadId = parseInt(req.params.id);
+  const { totalAmount, payment } = req.body || {};
+  console.log(`[payments] incoming for lead=${leadId} body=`, JSON.stringify(req.body || {}));
+
+  try {
+    const leads = loadLeads();
+    const leadIndex = leads.findIndex(l => l.id === leadId);
+    if (leadIndex === -1) return res.status(404).json({ success: false, message: 'Lead not found' });
+
+    const lead = leads[leadIndex];
+    let addedPayment = null;
+
+    // Ensure payments array exists
+    if (!Array.isArray(lead.payments)) lead.payments = [];
+
+    // If totalAmount provided, set/replace it (allow clearing with null/empty)
+    if (totalAmount !== undefined) {
+      if (totalAmount === null || totalAmount === '') {
+        delete lead.totalAmount;
+      } else {
+        const parsed = Number(totalAmount);
+        if (Number.isNaN(parsed) || parsed < 0) return res.status(400).json({ success: false, message: 'Invalid totalAmount' });
+        lead.totalAmount = parsed;
+      }
+    }
+
+    // If payment object provided, validate and append (generate transactionId if not provided)
+    if (payment) {
+      const { amount, method, date, note, transactionId, screenshotData } = payment;
+      const amt = Number(amount);
+      if (Number.isNaN(amt) || amt <= 0) return res.status(400).json({ success: false, message: 'Invalid payment amount' });
+
+      // helper to create a compact, reasonably-unique transaction id
+      function makeTxn() {
+        return 'TXN' + Date.now().toString(36) + Math.random().toString(36).slice(2,8).toUpperCase();
+      }
+
+      let txn = transactionId && String(transactionId).trim() ? String(transactionId).trim() : makeTxn();
+      // avoid accidental collision within this lead
+      while ((lead.payments || []).some(x => x.transactionId === txn)) {
+        txn = makeTxn();
+      }
+
+      // If a screenshot/data-url is provided, do a lightweight size check to avoid huge blobs
+      let screenshot = null;
+      if (screenshotData && String(screenshotData).startsWith('data:')) {
+        const len = String(screenshotData).length;
+        // ~300KB limit for inline storage (project is file-backed JSON; increase if you migrate to DB/FS)
+        if (len > 300_000) {
+          return res.status(400).json({ success: false, message: 'Attachment too large (max ~300KB)'});
+        }
+        screenshot = String(screenshotData);
+        console.log(`[payments] received screenshot for lead=${leadId} size=${len}`);
+      }
+
+      const p = {
+        id: Date.now(),
+        transactionId: txn,
+        amount: amt,
+        method: method || 'Unknown',
+        date: date || new Date().toISOString(),
+        note: note || ''
+      };
+
+      if (screenshot) p.screenshotData = screenshot;
+
+      lead.payments.push(p);
+      addedPayment = p;
+    }
+
+    // Recalculate paidAmount and remainingAmount
+    const paidAmount = (lead.payments || []).reduce((s, x) => s + (Number(x.amount) || 0), 0);
+    lead.paidAmount = paidAmount;
+    if (lead.totalAmount !== undefined) {
+      lead.remainingAmount = Math.max(0, Number(lead.totalAmount) - paidAmount);
+    } else {
+      lead.remainingAmount = null;
+    }
+
+    saveLeads(leads);
+    return res.json({ success: true, lead, addedPayment });
+  } catch (err) {
+    console.error('Error updating payment info:', err);
+    return res.status(500).json({ success: false, message: 'Database error' });
   }
 });
 
