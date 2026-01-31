@@ -1472,7 +1472,6 @@
                                 <option value="Branding">Branding</option>
                             </select>
                         </div>
-                        
                         <div>
                             <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Plan Tier *</label>
                             <select id="planTier" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); font-size: 13px; font-family: inherit; cursor: pointer;">
@@ -1482,25 +1481,21 @@
                                 <option value="Platinum">💎 Platinum</option>
                             </select>
                         </div>
-                        
                         <div>
                             <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Plan Name *</label>
                             <input id="planName" type="text" required placeholder="e.g., Basic Website" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
                         </div>
-                        
                         <div>
-                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Price *</label>
-                            <input id="planPrice" type="text" required placeholder="e.g., ₹15,000" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Original Price *</label>
+                            <input id="planOriginalRate" type="number" min="0" step="1" placeholder="e.g., 19999" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
                         </div>
-                        
                         <div>
-                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Original Rate (before discount)</label>
-                            <input id="planOriginalRate" type="text" placeholder="e.g., ₹19,999" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Final Price *</label>
+                            <input id="planPrice" type="number" min="0" step="1" placeholder="e.g., 15000" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
                         </div>
-                        
                         <div>
-                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Offer Percentage (discount %)</label>
-                            <input id="planOfferPercentage" type="text" placeholder="e.g., 25" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
+                            <label style="display: block; color: #cfd8df; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Discount</label>
+                            <div id="autoDiscountDisplay" style="color: #20c5b5; font-weight: 700; font-size: 15px; min-height: 18px;">0% OFF</div>
                         </div>
                         
                         <div>
@@ -1637,6 +1632,13 @@
     </div>
     
     <script>
+                // Price formatter utility
+                function formatPriceINR(price) {
+                    if (typeof price === 'string') price = price.replace(/[^\d.]/g, '');
+                    let num = Number(price);
+                    if (isNaN(num)) return '';
+                    return `₹${num}/-`;
+                }
         const loginForm = document.getElementById('loginForm');
         const loginMessage = document.getElementById('loginMessage');
         const loginSubmitBtn = document.getElementById('loginSubmitBtn');
@@ -1933,40 +1935,37 @@
                 const response = await fetch('/api/plans');
                 const data = await response.json();
                 const plansContainer = document.getElementById('plansList');
-                
                 const groupedPlans = data.plans || {};
                 let html = '';
-                
                 Object.entries(groupedPlans).forEach(([category, plans]) => {
                     if (plans && plans.length > 0) {
                         html += `<h3 style="color: #20c5b5; margin: 20px 0 10px 0; font-size: 14px;">${category} Plans</h3>`;
                         html += `<div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; margin-bottom: 15px;">`;
-                        
                         plans.forEach(plan => {
                             const planDataJson = JSON.stringify(plan).replace(/"/g, '&quot;');
                             const hasOffer = plan.offerPercentage && plan.originalRate;
                             html += `
-                                <div style="background: rgba(32,197,181,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #20c5b5; position: relative;" data-plan-id="${plan.id}" data-plan-json="${planDataJson}">
-                                    ${hasOffer ? `<div style="position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; box-shadow: 0 2px 6px rgba(245, 87, 108, 0.3);">🎉 ${plan.offerPercentage}% OFF</div>` : ''}
-                                    <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
-                                        <div style="flex: 1;">
-                                            <strong style="color: #20c5b5;">${plan.name}</strong> - ${plan.price}
-                                            ${hasOffer ? `<span style="text-decoration: line-through; color: #999; margin-left: 8px; font-size: 12px;">${plan.originalRate}</span>` : ''}<br>
+                                <div style="background: rgba(32,197,181,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #20c5b5;" data-plan-id="${plan.id}" data-plan-json="${planDataJson}">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
+                                        <div style="flex: 1; min-width: 180px;">
+                                            <strong style="color: #20c5b5;">${plan.name}</strong> - ${formatPriceINR(plan.price)}
+                                            ${hasOffer ? `<span style="text-decoration: line-through; color: #999; margin-left: 8px; font-size: 12px;">${formatPriceINR(plan.originalRate)}</span>` : ''}<br>
                                             <span style="color: #9fbfc6; font-size: 12px;">${plan.description}</span>
                                         </div>
-                                        <div style="display: flex; gap: 8px;">
-                                            <button onclick="editPlanAdmin('${plan.id}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">✏️ Edit</button>
-                                            <button onclick="deletePlanAdmin('${plan.id}')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(245, 87, 108, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">🗑️ Delete</button>
+                                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                            ${hasOffer ? `<span style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 12px; box-shadow: 0 2px 6px rgba(245, 87, 108, 0.3); margin-right: 0; margin-bottom: 0;">🎉 ${plan.offerPercentage}% OFF</span>` : ''}
+                                            <div class="actions" style="display: flex; gap: 8px;">
+                                                <button onclick="editPlanAdmin('${plan.id}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">✏️ Edit</button>
+                                                <button onclick="deletePlanAdmin('${plan.id}')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(245, 87, 108, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">🗑️ Delete</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             `;
                         });
-                        
                         html += '</div>';
                     }
                 });
-                
                 plansContainer.innerHTML = html || '<p style="color: #9fbfc6; text-align: center;">No plans yet</p>';
             } catch (error) {
                 console.error('Error loading plans:', error);
@@ -3115,18 +3114,20 @@
         });
 
         // Edit Plan Function
-        async function editPlanAdmin(planId) {
-            // Get the plan element and retrieve data from the data attribute
+        // Strict edit mode and editingPlanId
+        let isEditMode = false;
+        let editingPlanId = null;
+        window.editPlanAdmin = function(planId) {
+            isEditMode = true;
+            editingPlanId = planId;
             const planElement = document.querySelector(`[data-plan-id="${planId}"]`);
             if (!planElement) {
                 console.error('Plan element not found');
                 alert('Error: Plan not found');
                 return;
             }
-
             const planDataJson = planElement.getAttribute('data-plan-json');
             let planData = null;
-            
             try {
                 planData = JSON.parse(planDataJson);
             } catch (e) {
@@ -3134,23 +3135,19 @@
                 alert('Error loading plan data');
                 return;
             }
-            
-            // Populate form fields with existing plan data
             document.getElementById('planCategory').value = planData.category || '';
             document.getElementById('planTier').value = planData.tier || '';
             document.getElementById('planName').value = planData.name || '';
             document.getElementById('planPrice').value = planData.price || '';
             document.getElementById('planOriginalRate').value = planData.originalRate || '';
-            document.getElementById('planOfferPercentage').value = planData.offerPercentage || '';
+            // No manual offer percentage field to set
+            if (window.updateDiscountDisplay) window.updateDiscountDisplay();
             document.getElementById('planDesc').value = planData.description || '';
             document.getElementById('planDeliveryTime').value = planData.deliveryTime || '';
             document.getElementById('planIdealFor').value = planData.idealFor || '';
-            
-            // Populate features
             const featuresContainer = document.getElementById('featuresContainer');
             featuresContainer.innerHTML = '';
             const features = planData.features || [];
-            
             features.forEach((feature, index) => {
                 const div = document.createElement('div');
                 div.style.cssText = 'display: flex; gap: 8px;';
@@ -3164,8 +3161,6 @@
                 };
                 featuresContainer.appendChild(div);
             });
-            
-            // Add empty feature slot
             const emptyDiv = document.createElement('div');
             emptyDiv.style.cssText = 'display: flex; gap: 8px;';
             emptyDiv.innerHTML = `
@@ -3177,27 +3172,15 @@
                 emptyDiv.remove();
             };
             featuresContainer.appendChild(emptyDiv);
-            
-            // Store planId for update
-            document.getElementById('addPlanForm').dataset.planId = planId;
-            document.getElementById('addPlanForm').dataset.planEditMode = 'true';
-            
-            // Change button text and styling to "Update Plan"
             const submitBtn = document.querySelector('#addPlanForm button[type="submit"]');
             submitBtn.textContent = '✅ Update Plan';
             submitBtn.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
-            
-            // Add visual highlight to form
             const form = document.getElementById('addPlanForm');
             form.style.border = '2px solid #667eea';
             form.style.borderRadius = '8px';
             form.style.padding = '15px';
             form.style.background = 'rgba(102, 126, 234, 0.05)';
-            
-            // Scroll to form
             document.getElementById('plansTab').scrollIntoView({ behavior: 'smooth' });
-            
-            // Show notification
             const msg = document.getElementById('addPlanMsg');
             msg.style.color = '#667eea';
             msg.textContent = '✏️ Edit mode: Make your changes and click "Update Plan"';
@@ -3234,83 +3217,115 @@
         // Modify form submission to handle both add and update
         const addPlanForm = document.getElementById('addPlanForm');
         if (addPlanForm) {
-            addPlanForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const msg = document.getElementById('addPlanMsg');
-            msg.textContent = '';
-            
-            const category = document.getElementById('planCategory').value.trim();
-            const tier = document.getElementById('planTier').value.trim();
-            const name = document.getElementById('planName').value.trim();
-            const price = document.getElementById('planPrice').value.trim();
-            const originalRate = document.getElementById('planOriginalRate').value.trim();
-            const offerPercentage = document.getElementById('planOfferPercentage').value.trim();
-            const description = document.getElementById('planDesc').value.trim();
-            const deliveryTime = document.getElementById('planDeliveryTime').value.trim();
-            const idealFor = document.getElementById('planIdealFor').value.trim();
-            const features = Array.from(document.querySelectorAll('.feature-input'))
-                .map(input => input.value.trim())
-                .filter(value => value.length > 0);
-            
-            if (!category || !tier || !name || !price) {
-                msg.style.color = '#ffb3b3';
-                msg.textContent = 'All required fields must be filled';
-                return;
-            }
-            
-            if (features.length === 0) {
-                msg.style.color = '#ffb3b3';
-                msg.textContent = 'Please add at least one feature';
-                return;
-            }
-            
-            try {
-                const planId = parseInt(document.getElementById('addPlanForm').dataset.planId) || null;
-                const method = planId ? 'PUT' : 'POST';
-                const url = planId ? `/api/plans/${planId}` : '/api/plans';
-                
-                const res = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ category, tier, name, price, originalRate, offerPercentage, description, features, deliveryTime, idealFor })
-                });
-                
-                const data = await res.json();
-                
-                if (res.ok && data.success) {
-                    msg.style.color = '#9fbfc6';
-                    msg.textContent = planId ? '✅ Plan updated successfully!' : '✅ Plan added successfully!';
-                    document.getElementById('addPlanForm').reset();
-                    delete document.getElementById('addPlanForm').dataset.planId;
-                    delete document.getElementById('addPlanForm').dataset.planEditMode;
-                    
-                    // Reset form styling
-                    const form = document.getElementById('addPlanForm');
-                    form.style.border = 'none';
-                    form.style.background = 'transparent';
-                    form.style.padding = '0';
-                    
-                    const submitBtn = document.querySelector('#addPlanForm button[type="submit"]');
-                    submitBtn.textContent = 'Add Plan';
-                    submitBtn.style.background = 'linear-gradient(135deg, #20c5b5, #0db8a1)';
-                    
-                    document.getElementById('featuresContainer').innerHTML = `
-                        <div style="display: flex; gap: 8px;">
-                            <input type="text" class="feature-input" placeholder="✅ Feature 1" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;" />
-                            <button type="button" class="remove-feature-btn" style="background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.5); color: #ff6464; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; display: none;">Remove</button>
-                        </div>
-                    `;
-                    setTimeout(() => loadCustomPlans(), 500);
-                } else {
-                    msg.style.color = '#ffb3b3';
-                    msg.textContent = '❌ ' + (data.message || 'Error saving plan');
+            const originalInput = document.getElementById('planOriginalRate');
+            const finalInput = document.getElementById('planPrice');
+            const discountDisplay = document.getElementById('autoDiscountDisplay');
+            function updateDiscountDisplay() {
+                let orig = parseFloat(originalInput.value.replace(/[^\d.]/g, ''));
+                let fin = parseFloat(finalInput.value.replace(/[^\d.]/g, ''));
+                let discount = 0;
+                if (!isNaN(orig) && !isNaN(fin) && orig > 0 && fin >= 0 && fin < orig) {
+                    discount = Math.round(((orig - fin) / orig) * 100);
+                    if (discount < 0) discount = 0;
                 }
-            } catch (error) {
-                msg.style.color = '#ffb3b3';
-                msg.textContent = '❌ Error: ' + error.message;
+                if (!isFinite(discount) || discount < 0) discount = 0;
+                discountDisplay.textContent = discount + '% OFF';
+                return discount;
             }
+            originalInput.addEventListener('input', updateDiscountDisplay);
+            finalInput.addEventListener('input', updateDiscountDisplay);
+            updateDiscountDisplay();
+            addPlanForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const msg = document.getElementById('addPlanMsg');
+                msg.textContent = '';
+                const category = document.getElementById('planCategory').value.trim();
+                const tier = document.getElementById('planTier').value.trim();
+                const name = document.getElementById('planName').value.trim();
+                const price = finalInput.value.replace(/[^\d.]/g, '').trim();
+                const originalRate = originalInput.value.replace(/[^\d.]/g, '').trim();
+                const offerPercentage = updateDiscountDisplay();
+                const description = document.getElementById('planDesc').value.trim();
+                const deliveryTime = document.getElementById('planDeliveryTime').value.trim();
+                const idealFor = document.getElementById('planIdealFor').value.trim();
+                const features = Array.from(document.querySelectorAll('.feature-input'))
+                    .map(input => input.value.trim())
+                    .filter(value => value.length > 0);
+                if (!category || !tier || !name || !price || !originalRate) {
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = 'All required fields must be filled';
+                    return;
+                }
+                if (features.length === 0) {
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = 'Please add at least one feature';
+                    return;
+                }
+                if (parseFloat(price) >= parseFloat(originalRate)) {
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = 'Final price must be less than original price for a discount.';
+                    return;
+                }
+                try {
+                    if (isEditMode && editingPlanId) {
+                        // UPDATE
+                        const res = await fetch(`/api/plans/${editingPlanId}` , {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ category, tier, name, price, originalRate, offerPercentage, description, features, deliveryTime, idealFor })
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.success) {
+                            msg.style.color = '#9fbfc6';
+                            msg.textContent = '✅ Plan updated successfully!';
+                            addPlanForm.reset();
+                            isEditMode = false;
+                            editingPlanId = null;
+                            addPlanForm.style.border = 'none';
+                            addPlanForm.style.background = 'transparent';
+                            addPlanForm.style.padding = '0';
+                            const submitBtn = document.querySelector('#addPlanForm button[type="submit"]');
+                            submitBtn.textContent = 'Add Plan';
+                            submitBtn.style.background = 'linear-gradient(135deg, #20c5b5, #0db8a1)';
+                            document.getElementById('featuresContainer').innerHTML = `
+                                <div style=\"display: flex; gap: 8px;\">
+                                    <input type=\"text\" class=\"feature-input\" placeholder=\"✅ Feature 1\" style=\"flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;\" />
+                                    <button type=\"button\" class=\"remove-feature-btn\" style=\"background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.5); color: #ff6464; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; display: none;\">Remove</button>
+                                </div>
+                            `;
+                            setTimeout(() => loadCustomPlans(), 500);
+                        } else {
+                            msg.style.color = '#ffb3b3';
+                            msg.textContent = '❌ ' + (data.message || 'Error updating plan');
+                        }
+                    } else {
+                        // CREATE
+                        const res = await fetch('/api/plans', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ category, tier, name, price, originalRate, offerPercentage, description, features, deliveryTime, idealFor })
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.success) {
+                            msg.style.color = '#9fbfc6';
+                            msg.textContent = '✅ Plan added successfully!';
+                            addPlanForm.reset();
+                            document.getElementById('featuresContainer').innerHTML = `
+                                <div style=\"display: flex; gap: 8px;\">
+                                    <input type=\"text\" class=\"feature-input\" placeholder=\"✅ Feature 1\" style=\"flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 13px; font-family: inherit;\" />
+                                    <button type=\"button\" class=\"remove-feature-btn\" style=\"background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.5); color: #ff6464; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; display: none;\">Remove</button>
+                                </div>
+                            `;
+                            setTimeout(() => loadCustomPlans(), 500);
+                        } else {
+                            msg.style.color = '#ffb3b3';
+                            msg.textContent = '❌ ' + (data.message || 'Error saving plan');
+                        }
+                    }
+                } catch (error) {
+                    msg.style.color = '#ffb3b3';
+                    msg.textContent = '❌ Error: ' + error.message;
+                }
             });
         }
     </script>

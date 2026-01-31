@@ -22,14 +22,14 @@
       "deliveryTime": "5–7 Days",
       "idealFor": "Online presence & brand visibility",
       "created_at": "2026-01-22T05:34:19.466Z",
-      "updated_at": "2026-01-22T05:39:06.328Z"
+      "updated_at": "2026-01-31T07:50:57.836Z"
     },
     {
       "id": 3,
       "category": "Website",
       "tier": "Platinum",
       "name": "PLATINUM PLAN",
-      "price": "19999/-",
+      "price": "19999",
       "description": "Best for: E-commerce, SaaS platforms, enterprises",
       "features": [
         "✅ 10-15 pages (Dynamic Website)",
@@ -48,7 +48,9 @@
       "deliveryTime": "15–30 Days",
       "idealFor": "High-performing, scalable solutions",
       "created_at": "2026-01-22T05:34:19.472Z",
-      "updated_at": "2026-01-22T13:05:19.539Z"
+      "updated_at": "2026-01-31T08:03:41.077Z",
+      "originalRate": "24999",
+      "offerPercentage": 20
     },
     {
       "id": 4,
@@ -72,111 +74,6 @@
       "deliveryTime": "",
       "idealFor": "",
       "updated_at": "2026-01-22T15:51:36.532Z"
-    },
-    {
-      "id": 5,
-      "category": "App",
-      "tier": "Platinum",
-      "name": "💎 ADVANCED APP PLAN",
-      "price": "39,999/-",
-      "description": "Startups, Scalable apps, Online Businesses",
-      "features": [
-        "✅ Android/iOS App Development",
-        "✅ Firebase Firestore / Realtime Database (Cloud‑based)",
-        "✅ Premium UI/UX Design",
-        "✅ Online & Real‑Time Data Sync",
-        "✅ Firebase Authentication (Email / Phone / Google)",
-        "✅ Cloud Database (Secure & Scalable)",
-        "✅ Push Notifications",
-        "✅ User Roles (Admin / User)",
-        "✅ Play Store Deployment Support"
-      ],
-      "created_at": "2026-01-22T15:54:05.596Z"
-    },
-    {
-      "id": 6,
-      "category": "Social Media",
-      "tier": "Silver",
-      "name": "🥈 SILVER PLAN",
-      "price": "₹4,999 /-",
-      "description": "Small businesses & startups",
-      "features": [
-        "✅ Handling of Instagram, Facebook, LinkedIn & YouTube",
-        "✅ Profile Optimization (Bio, DP, Highlights, About)",
-        "✅ 8–10 Posts / Reels per month (All platforms combined)",
-        "✅ Basic Content Design",
-        "✅ Caption Writing & Hashtags",
-        "✅ Comment & Message Monitoring",
-        "✅ Basic Paid Ads Setup ( ad budget by client)",
-        "✅ Monthly Performance Report"
-      ],
-      "created_at": "2026-01-23T05:45:26.189Z"
-    },
-    {
-      "id": 7,
-      "category": "Social Media",
-      "tier": "Gold",
-      "name": "🥇GOLD PLAN",
-      "price": "₹8,999",
-      "description": "Growing brands & professionals",
-      "features": [
-        "✅ 14-18 Posts / Reels per month",
-        "✅ Advanced Graphic & Video Content",
-        "✅ Brand Theme (Colors, Fonts, Style)",
-        "✅ Content Calendar & Strategy",
-        "✅ Better Hashtag & Reach Strategy",
-        "✅ Lead-Focused Ads Setup",
-        "✅ Audience Targeting & Optimization",
-        "✅ Bi-Weekly Performance Report"
-      ],
-      "created_at": "2026-01-23T05:52:15.604Z",
-      "deliveryTime": "",
-      "idealFor": "",
-      "updated_at": "2026-01-23T05:52:55.611Z"
-    },
-    {
-      "id": 8,
-      "category": "Social Media",
-      "tier": "Platinum",
-      "name": "💎 PLATINUM PLAN",
-      "price": "₹14,999/-",
-      "description": "Serious brands & companies",
-      "features": [
-        "✅ Daily Posts / Reels",
-        "✅ Premium Branding & Visual Identity",
-        "✅ Viral Content Strategy",
-        "✅ Advanced Paid Ads Management",
-        "✅ Lead Generation Funnel",
-        "✅ Weekly Performance Reports",
-        "✅ Competitor Analysis",
-        "✅ Dedicated Account Manager"
-      ],
-      "created_at": "2026-01-23T06:01:17.569Z"
-    },
-    {
-      "id": 9,
-      "category": "Website",
-      "tier": "Gold",
-      "name": "GOLD PLAN",
-      "price": "14999/-",
-      "originalRate": "20000/-",
-      "offerPercentage": "15%",
-      "description": "Best for: Service-based businesses, startups, influencers",
-      "features": [
-        "✅ 5–7 Page Dynamic Website",
-        "✅ Premium UI/UX Design",
-        "✅ Mobile + Tablet Responsive",
-        "✅ SEO Optimization (On-page)",
-        "✅ WhatsApp Chat Integration",
-        "✅ Google Maps Integration",
-        "✅ Admin Panel (Basic CMS)",
-        "✅ Speed Optimization",
-        "✅ Free SSL + Security Setup",
-        "✅ 3 Months Free Maintenance"
-      ],
-      "deliveryTime": "7–10 Days",
-      "idealFor": "Lead generation & credibility",
-      "created_at": "2026-01-29T05:24:25.063Z"
     }
   ]
 }

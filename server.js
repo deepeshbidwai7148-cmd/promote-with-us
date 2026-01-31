@@ -913,32 +913,45 @@ app.post('/api/lead/:id/credentials', (req, res) => {
 
 // API endpoint to add a new plan (frontend auth is handled by login page)
 app.post('/api/plans', (req, res) => {
-  const { category, tier, name, price, originalRate, offerPercentage, description, features, deliveryTime, idealFor } = req.body;
-  
-  if (!category || !tier || !name || !price) {
-    return res.status(400).json({ success: false, message: 'category, tier, name, and price are required' });
+  const { category, tier, name, price, originalRate, description, features, deliveryTime, idealFor } = req.body;
+  if (!category || !tier || !name || !price || !originalRate) {
+    return res.status(400).json({ success: false, message: 'category, tier, name, original price, and price are required' });
   }
-
+  // Ensure numeric-only price storage
+  const cleanPrice = String(price).replace(/[^\d.]/g, '');
+  const cleanOriginalRate = String(originalRate).replace(/[^\d.]/g, '');
+  // Calculate offer percentage
+  let discount = 0;
+  const orig = parseFloat(cleanOriginalRate);
+  const fin = parseFloat(cleanPrice);
+  if (!isNaN(orig) && !isNaN(fin) && orig > 0 && fin >= 0 && fin < orig) {
+    discount = Math.round(((orig - fin) / orig) * 100);
+    if (discount < 0) discount = 0;
+  }
+  if (!isFinite(discount) || discount < 0) discount = 0;
   try {
     const plans = loadPlans();
+    // Ensure unique ID
+    let newId = 1;
+    if (plans.length > 0) {
+      newId = Math.max(...plans.map(p => p.id || 0)) + 1;
+    }
     const newPlan = {
-      id: plans.length + 1,
+      id: newId,
       category: category,
       tier: tier,
       name: name,
-      price: price,
-      originalRate: originalRate || '',
-      offerPercentage: offerPercentage || '',
+      price: Number(cleanPrice),
+      originalRate: Number(cleanOriginalRate),
+      offerPercentage: discount,
       description: description || '',
       features: features || [],
       deliveryTime: deliveryTime || '',
       idealFor: idealFor || '',
       created_at: new Date().toISOString()
     };
-    
     plans.push(newPlan);
     savePlans(plans);
-    
     return res.json({ success: true, id: newPlan.id, plan: newPlan });
   } catch (err) {
     console.error('Error saving plan:', err);
@@ -1073,35 +1086,50 @@ app.delete('/api/plans/:id', (req, res) => {
 // API endpoint to edit a plan
 app.put('/api/plans/:id', (req, res) => {
   const planId = parseInt(req.params.id);
-  const { category, tier, name, price, originalRate, offerPercentage, description, features, deliveryTime, idealFor } = req.body;
-  
+  const { category, tier, name, price, originalRate, description, features, deliveryTime, idealFor } = req.body;
+  // Ensure numeric-only price storage
+  const cleanPrice = String(price).replace(/[^\d.]/g, '');
+  const cleanOriginalRate = String(originalRate).replace(/[^\d.]/g, '');
+  // Calculate offer percentage
+  let discount = 0;
+  const orig = parseFloat(cleanOriginalRate);
+  const fin = parseFloat(cleanPrice);
+  if (!isNaN(orig) && !isNaN(fin) && orig > 0 && fin >= 0 && fin < orig) {
+    discount = Math.round(((orig - fin) / orig) * 100);
+    if (discount < 0) discount = 0;
+  }
+  if (!isFinite(discount) || discount < 0) discount = 0;
+  if (!planId || isNaN(planId)) {
+    return res.status(400).json({ success: false, message: 'Plan ID is required for update' });
+  }
   if (!category || !tier || !name || !price) {
     return res.status(400).json({ success: false, message: 'All required fields must be provided' });
   }
-
   try {
     let plans = loadPlans();
     const planIndex = plans.findIndex(p => p.id === planId);
-    
     if (planIndex === -1) {
       return res.status(404).json({ success: false, message: 'Plan not found' });
     }
-    
+    // Prevent duplicate IDs
+    if (plans.filter(p => p.id === planId).length > 1) {
+      // Remove all but the first occurrence
+      plans = plans.filter((p, idx) => p.id !== planId || idx === planIndex);
+    }
     plans[planIndex] = {
       ...plans[planIndex],
-      category: category,
-      tier: tier,
-      name: name,
-      price: price,
-      originalRate: originalRate || plans[planIndex].originalRate || '',
-      offerPercentage: offerPercentage || plans[planIndex].offerPercentage || '',
+      category,
+      tier,
+      name,
+      price: Number(cleanPrice),
+      originalRate: Number(cleanOriginalRate),
+      offerPercentage: discount,
       description: description || '',
       features: features || plans[planIndex].features || [],
       deliveryTime: deliveryTime || plans[planIndex].deliveryTime || '',
       idealFor: idealFor || plans[planIndex].idealFor || '',
       updated_at: new Date().toISOString()
     };
-    
     savePlans(plans);
     return res.json({ success: true, plan: plans[planIndex] });
   } catch (err) {

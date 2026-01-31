@@ -1,0 +1,32 @@
+/* Premium Corner Ribbon for Plan Cards */
+.corner-ribbon {
+  position: absolute;
+  top: 18px;
+  left: -38px;
+  width: 160px;
+  padding: 8px 0;
+  background: linear-gradient(135deg, #e7d7b9 0%, #c9b07e 100%);
+  color: #5a3e1b;
+  font-size: 13px;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  box-shadow: 0 4px 16px rgba(90,62,27,0.10);
+  transform: rotate(-36deg);
+  border-radius: 8px;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.97;
+}
+
+@media (max-width: 600px) {
+  .corner-ribbon {
+    width: 110px;
+    font-size: 11px;
+    top: 12px;
+    left: -28px;
+    padding: 6px 0;
+  }
+}

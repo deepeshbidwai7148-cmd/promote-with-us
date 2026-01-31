@@ -10,6 +10,7 @@
     <!-- Load Enhanced CSS FIRST -->
     <link rel="stylesheet" href="css/enhanced.css">
     <link rel="stylesheet" crossorigin="" href="css/index-Dn9nLpvq.css">
+    <link rel="stylesheet" href="css/corner-ribbon.css">
     
     <!-- Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -841,6 +842,13 @@
 
         <!-- JavaScript for Advanced Animations -->
         <script>
+              // Reusable price formatter for INR
+              function formatPriceINR(price) {
+                if (typeof price === 'string') price = price.replace(/[^\d.]/g, '');
+                let num = Number(price);
+                if (isNaN(num)) return '';
+                return `₹${num}/-`;
+              }
           // Canvas Particle System
           const canvas = document.getElementById('canvas-bg');
           const ctx = canvas.getContext('2d');
@@ -1559,7 +1567,7 @@
                   <div style="background:rgba(32,197,181,0.1); padding:12px; margin-bottom:10px; border-radius:6px; border-left:3px solid #20c5b5; display:flex; justify-content:space-between; align-items:center;">
                     <div>
                       <p style="color:#cfd8df; margin:0 0 4px 0; font-weight:600;"><strong>${escapeHtml(plan.tier)}</strong> - ${escapeHtml(plan.name)}</p>
-                      <p style="color:#9fbfc6; margin:0; font-size:12px;">${escapeHtml(plan.price)}</p>
+                      <p style="color:#9fbfc6; margin:0; font-size:12px;">${formatPriceINR(plan.price)}</p>
                     </div>
                     <div style="display:flex; gap:6px;">
                       <button onclick="editPlan(${plan.id})" style="background:#20c5b5; border:none; color:#042; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600;">Edit</button>
@@ -2033,7 +2041,7 @@
       allPlans.forEach(plan => {
         const option = document.createElement('option');
         option.value = plan.name;
-        option.textContent = `${plan.tier} - ${plan.category} (${plan.price})`;
+        option.textContent = `${plan.tier} - ${plan.category} (${formatPriceINR(plan.price)})`;
         planSelect.appendChild(option);
       });
     }
@@ -2186,7 +2194,7 @@
         filteredPlans.forEach(plan => {
           const option = document.createElement('option');
           option.value = plan.name;
-          option.textContent = `${plan.tier} - ${plan.price}`;
+          option.textContent = `${plan.tier} - ${formatPriceINR(plan.price)}`;
           planSelect.appendChild(option);
         });
       } else {
@@ -2194,7 +2202,7 @@
         allPlans.forEach(plan => {
           const option = document.createElement('option');
           option.value = plan.name;
-          option.textContent = `${plan.tier} - ${plan.price}`;
+          option.textContent = `${plan.tier} - ${formatPriceINR(plan.price)}`;
           planSelect.appendChild(option);
         });
       }
@@ -2642,17 +2650,12 @@
                 categoryPlans.forEach(plan => {
                   const tierEmoji = plan.tier === 'Silver' ? '🥈' : plan.tier === 'Gold' ? '🥇' : '💎';
                   const featuresList = plan.features ? plan.features.map(f => `<li style="text-align: left; margin-bottom: 8px; color: #333; font-size: 13px;">${escapeHtml(f)}</li>`).join('') : '';
-                  const hasOffer = plan.offerPercentage && plan.originalRate;
+                  const offerValue = plan.offerPercentage ? parseFloat(String(plan.offerPercentage).replace('%','')) : 0;
+                  const hasOffer = offerValue > 0 && plan.originalRate;
                   
                   html += `
                     <div class="glass-card fade-in" data-animate data-plan-id="${plan.id}" style="border: 2px solid #20c5b5; position: relative; display: flex; flex-direction: column; height: 100%; padding: 24px; box-sizing: border-box;">
-                      ${hasOffer ? `
-                        <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
-                          <div class="offer-badge" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);">
-                            🎉 ${plan.offerPercentage}% OFF
-                          </div>
-                        </div>
-                      ` : ''}
+                      ${hasOffer ? `<div class="corner-ribbon">${offerValue}% OFF</div>` : ''}
                       <div style="text-align: center; margin-bottom: 20px;">
                         <h3 style="color: #164069; margin-bottom: 10px; font-size: 24px;">${tierEmoji} ${plan.tier.toUpperCase()} PLAN</h3>
                         <p style="color: #666; font-size: 13px; font-weight: 500; margin: 0; margin-bottom: 10px;">${escapeHtml(plan.description || '')}</p>
@@ -2666,10 +2669,10 @@
                       </div>
                       <div style="text-align: center; margin-bottom: 20px;">
                         ${hasOffer ? `
-                          <p style="color: #20c5b5; font-weight: 600; margin: 0; font-size: 18px;">${escapeHtml(plan.price)}</p>
-                          <p style="color: #999; font-size: 13px; margin: 5px 0 0 0; text-decoration: line-through;">${escapeHtml(plan.originalRate)}</p>
+                          <p style="color: #20c5b5; font-weight: 600; margin: 0; font-size: 18px;">${formatPriceINR(plan.price)}</p>
+                          <p style="color: #999; font-size: 13px; margin: 5px 0 0 0; text-decoration: line-through;">${formatPriceINR(plan.originalRate)}</p>
                         ` : `
-                          <p style="color: #20c5b5; font-weight: 600; margin: 0; font-size: 18px;">${escapeHtml(plan.price)}</p>
+                          <p style="color: #20c5b5; font-weight: 600; margin: 0; font-size: 18px;">${formatPriceINR(plan.price)}</p>
                         `}
                       </div>
                       <div class="plan-button-container" style="width: 100%; display: flex; gap: 4%; justify-content: center;">
