@@ -634,21 +634,20 @@ app.put('/api/lead/:id/payment', (req, res) => {
       }
     }
 
-    // If payment object provided, validate and append (generate transactionId if not provided)
+    // If payment object provided, validate and append
     if (payment) {
       const { amount, method, date, note, transactionId, screenshotData } = payment;
       const amt = Number(amount);
       if (Number.isNaN(amt) || amt <= 0) return res.status(400).json({ success: false, message: 'Invalid payment amount' });
 
-      // helper to create a compact, reasonably-unique transaction id
-      function makeTxn() {
-        return 'TXN' + Date.now().toString(36) + Math.random().toString(36).slice(2,8).toUpperCase();
-      }
+      // Transaction ID is provided by client or not set
 
-      let txn = transactionId && String(transactionId).trim() ? String(transactionId).trim() : makeTxn();
-      // avoid accidental collision within this lead
-      while ((lead.payments || []).some(x => x.transactionId === txn)) {
-        txn = makeTxn();
+      let txn = (transactionId !== undefined && transactionId !== null && String(transactionId).trim()) ? String(transactionId).trim() : null;
+      // avoid accidental collision within this lead if txn provided
+      if (txn) {
+        while ((lead.payments || []).some(x => x.transactionId === txn)) {
+          return res.status(400).json({ success: false, message: 'Transaction ID already exists for this lead' });
+        }
       }
 
       // If a screenshot/data-url is provided, do a lightweight size check to avoid huge blobs
@@ -665,12 +664,12 @@ app.put('/api/lead/:id/payment', (req, res) => {
 
       const p = {
         id: Date.now(),
-        transactionId: txn,
         amount: amt,
         method: method || 'Unknown',
         date: date || new Date().toISOString(),
         note: note || ''
       };
+      if (txn) p.transactionId = txn;
 
       if (screenshot) p.screenshotData = screenshot;
 

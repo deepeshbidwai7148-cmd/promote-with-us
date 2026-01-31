@@ -374,7 +374,7 @@
             border: 1px solid rgba(32, 197, 181, 0.3);
             border-radius: 15px;
             padding: 30px;
-            max-width: 600px;
+            max-width: 900px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
@@ -440,6 +440,684 @@
             padding: 10px 12px;
             border-radius: 6px;
             border-left: 3px solid #20c5b5;
+        }
+        
+        /* New User-Friendly Modal Styles */
+        .detail-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(32, 197, 181, 0.1);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: rgba(32, 197, 181, 0.1);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(32, 197, 181, 0.2);
+        }
+        
+        .section-header h3 {
+            color: #20c5b5;
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .section-content {
+            padding: 20px;
+        }
+        
+        .section-note {
+            color: #9fbfc6;
+            font-size: 13px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .info-item label {
+            color: #20c5b5;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-item span {
+            color: #cfd8df;
+            font-size: 14px;
+            word-break: break-word;
+        }
+        
+        .info-item .highlight {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .info-item .link {
+            color: #20c5b5;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-item .link:hover {
+            text-decoration: underline;
+        }
+        
+        .status-pending {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .status-approved {
+            color: #4caf50;
+            font-weight: 600;
+        }
+        
+        .status-rejected {
+            color: #f44336;
+            font-weight: 600;
+        }
+        
+        .payment-summary {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 120px;
+        }
+        
+        .summary-item .label {
+            color: #9fbfc6;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .summary-item .value {
+            color: #20c5b5;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #20c5b5, #0db8a1);
+            color: #042;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(32, 197, 181, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #cfd8df;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .form-item.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-item label {
+            color: #20c5b5;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-item input,
+        .form-item select,
+        .form-item textarea {
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(32, 197, 181, 0.3);
+            background: rgba(32, 197, 181, 0.1);
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        .form-item input:focus,
+        .form-item select:focus,
+        .form-item textarea:focus {
+            outline: none;
+            border-color: #20c5b5;
+            background: rgba(32, 197, 181, 0.15);
+        }
+        
+        .form-item textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .credentials-section {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+        
+        .credentials-section .section-header {
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .credentials-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .credential-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .credential-item label {
+            color: #4caf50;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .credential-value {
+            color: #4caf50;
+            font-weight: 600;
+            font-size: 14px;
+            background: rgba(76, 175, 80, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .password-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-copy {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            color: #4caf50;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-copy:hover {
+            background: rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        
+        .btn-generate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .credentials-form {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-success {
+            flex: 1;
+            background: linear-gradient(135deg, #20c5b5, #0db8a1);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(32, 197, 181, 0.3);
+        }
+        
+        .btn-cancel {
+            flex: 1;
+            background: rgba(255, 100, 100, 0.2);
+            border: 1px solid rgba(255, 100, 100, 0.5);
+            color: #ff6464;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-cancel:hover {
+            background: rgba(255, 100, 100, 0.3);
+        }
+        
+        .actions-section {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+            border-color: rgba(255, 193, 7, 0.3);
+        }
+        
+        .actions-section .section-header {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.1));
+            border-bottom: 2px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .actions-section .section-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        
+        .action-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 193, 7, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .action-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 193, 7, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.15);
+        }
+        
+        .card-icon {
+            font-size: 24px;
+            background: linear-gradient(135deg, #ffc107, #ffb300);
+            color: #042;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+        
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .card-content h4 {
+            color: #ffc107;
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .card-content p {
+            color: #9fbfc6;
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .status-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 12px;
+        }
+        
+        .status-controls select {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 193, 7, 0.4);
+            background: rgba(255, 193, 7, 0.1);
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        .status-controls select:focus {
+            outline: none;
+            border-color: #ffc107;
+            background: rgba(255, 193, 7, 0.15);
+        }
+        
+        .btn-update {
+            background: linear-gradient(135deg, #20c5b5, #0db8a1);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(32, 197, 181, 0.3);
+        }
+        
+        .btn-update:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(32, 197, 181, 0.4);
+        }
+        
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .btn-approve-large,
+        .btn-reject-large {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .btn-approve-large {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-approve-large:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-reject-large {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+        }
+        
+        .btn-reject-large:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+        }
+        
+        .btn-icon {
+            font-size: 16px;
+        }
+        
+        .btn-text {
+            font-size: 14px;
+        }
+        
+        .management-actions {
+            margin-top: 12px;
+        }
+        
+        .btn-blacklist-large {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            background: linear-gradient(135deg, #b71c1c, #8b0000);
+            color: white;
+            box-shadow: 0 2px 8px rgba(183, 28, 28, 0.3);
+        }
+        
+        .btn-blacklist-large:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(183, 28, 28, 0.4);
+        }
+        
+        .blacklist-notice {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255, 179, 179, 0.1);
+            border: 1px solid rgba(255, 179, 179, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .notice-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .notice-content {
+            color: #ffb3b3;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .notice-content strong {
+            color: #ff8a8a;
+        }
+        
+        /* Payment History Styles */
+        .no-payments {
+            color: #9fbfc6;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+        
+        .payment-record {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 10px;
+            border: 1px solid rgba(32, 197, 181, 0.1);
+        }
+        
+        .payment-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .payment-date {
+            color: #9fbfc6;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .payment-details {
+            color: #cfd8df;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .payment-method {
+            color: #20c5b5;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .payment-amount {
+            color: #20c5b5;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 20px;
+        }
+        
+        .payment-txn {
+            color: #9fbfc6;
+            font-size: 12px;
+            min-width: 120px;
+            text-align: right;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 20px;
+                max-width: 95%;
+            }
+            
+            .info-grid,
+            .form-grid,
+            .credentials-grid,
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-summary {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .status-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+            
+            .card-icon {
+                align-self: center;
+            }
+        }
         }
         
         .notification-item {
@@ -924,7 +1602,7 @@
 
                     <div style="margin-top:6px;">
                         <label style="color:#9fbfc6; font-weight:700;">Transaction ID</label>
-                        <input id="payment_txn" type="text" placeholder="Txn id (optional)" style="width:100%; padding:8px; border-radius:6px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); color:#fff;" />
+                        <textarea id="payment_txn" placeholder="Txn id" style="width:100%; padding:8px; border-radius:6px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); color:#fff; resize:vertical; min-height:40px;"></textarea>
                     </div>
 
                     <div style="margin-top:6px;">
@@ -965,11 +1643,25 @@
         const loginPage = document.getElementById('loginPage');
         const dashboardPage = document.getElementById('dashboardPage');
         
+        function updateTxnPlaceholder() {
+            const method = document.getElementById('payment_method').value;
+            const txnTextarea = document.getElementById('payment_txn');
+            const mandatoryMethods = ['UPI', 'Bank Transfer'];
+            if (mandatoryMethods.includes(method)) {
+                txnTextarea.placeholder = 'Transaction ID (required)';
+            } else {
+                txnTextarea.placeholder = 'Transaction ID (optional)';
+            }
+        }
+        
         // Check if already logged in
         window.addEventListener('load', () => {
             if (sessionStorage.getItem('isAdmin') === 'true') {
                 showDashboard();
             }
+            // Update transaction ID placeholder based on method
+            document.getElementById('payment_method').addEventListener('change', updateTxnPlaceholder);
+            updateTxnPlaceholder(); // initial
         });
         
         // Admin login now authenticates with the backend (passwords are stored as bcrypt hashes server-side)
@@ -1390,160 +2082,260 @@
             const planEndDate = lead.planEndDate ? new Date(lead.planEndDate).toISOString().split('T')[0] : '';
             
             let detailsHTML = `
-                <div class="detail-item">
-                    <div class="detail-label">Company Name</div>
-                    <div class="detail-value" style="border-left: 3px solid #20c5b5; font-weight: 600; font-size: 15px;">${lead.brandName || 'N/A'}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Email</div>
-                    <div class="detail-value"><a href="${gmailLink}" target="_blank" style="color: #20c5b5; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">📧 ${lead.email || 'N/A'}</a></div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Phone</div>
-                    <div class="detail-value"><a href="${whatsappLink}" target="_blank" style="color: #20c5b5; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">💬 ${lead.phone || 'N/A'}</a></div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Selected Plan</div>
-                    <div class="detail-value">${lead.plan || 'Not specified'}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Requirements</div>
-                    <div class="detail-value">${lead.requirements || 'No requirements specified'}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Submitted At</div>
-                    <div class="detail-value">${formattedDate}</div>
-                </div>
-
-                    <!-- Payment summary (admin) -->
-                    <div style="border-top:1px solid rgba(32,197,181,0.08); margin-top:18px; padding-top:14px;">
-                        <div class="detail-item">
-                            <div class="detail-label">Payment Summary</div>
-                            <div class="detail-value" style="font-weight:700; color:#20c5b5;">
-                                Total: ${lead.totalAmount !== undefined ? `₹${lead.totalAmount}` : '—'} &nbsp; • &nbsp; Paid: ₹${lead.paidAmount || 0} &nbsp; • &nbsp; Remaining: ${lead.remainingAmount !== null && lead.remainingAmount !== undefined ? `₹${lead.remainingAmount}` : '—'}
+                <!-- User Overview Section -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <h3>👤 User Information</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Company Name</label>
+                                <span class="highlight">${lead.brandName || 'N/A'}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Email</label>
+                                <a href="${gmailLink}" target="_blank" class="link">📧 ${lead.email || 'N/A'}</a>
+                            </div>
+                            <div class="info-item">
+                                <label>Phone</label>
+                                <a href="${whatsappLink}" target="_blank" class="link">💬 ${lead.phone || 'N/A'}</a>
+                            </div>
+                            <div class="info-item">
+                                <label>Selected Plan</label>
+                                <span>${lead.plan || 'Not specified'}</span>
+                            </div>
+                            <div class="info-item full-width">
+                                <label>Requirements</label>
+                                <span>${lead.requirements || 'No requirements specified'}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Submitted At</label>
+                                <span>${formattedDate}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Status</label>
+                                <span class="status-${currentRemark.toLowerCase()}">${currentRemark}</span>
                             </div>
                         </div>
-                        <div style="margin-top:12px; display:flex; gap:10px;">
-                            <button type="button" onclick="openPaymentModal(${lead.id})" style="background: linear-gradient(135deg,#20c5b5,#0db8a1); color:#042; padding:8px 12px; border-radius:6px; border:none; font-weight:700;">Manage Payments</button>
-                            <button type="button" onclick="viewPaymentHistory(${lead.id})" style="background: rgba(255,255,255,0.04); color:#cfd8df; padding:8px 12px; border-radius:6px; border:1px solid rgba(255,255,255,0.03); font-weight:700;">View History</button>
-                        </div>
-                    </div>
-                        </select>
-                    </div>
-                </div>
-                
-                <div style="border-top: 1px solid rgba(32,197,181,0.2); padding-top: 20px; margin-top: 20px;">
-                    <h3 style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📅 Plan Duration Settings</h3>
-                    <div style="margin-bottom:8px; color:#9fbfc6; font-size:13px;">(You can set plan dates now — they will take effect immediately if the lead is approved)</div>
-                    <div class="detail-item">
-                        <div class="detail-label">Plan Start Date</div>
-                        <input id="planStartDateInput" type="date" value="${planStartDate}" style="padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(32,197,181,0.5); background: rgba(32,197,181,0.1); color: #fff; font-size: 14px; font-family: inherit; width: 100%;" />
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Plan Maintenance Date</div>
-                        <input id="planEndDateInput" type="date" value="${planEndDate}" style="padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(32,197,181,0.5); background: rgba(32,197,181,0.1); color: #fff; font-size: 14px; font-family: inherit; width: 100%;" />
                     </div>
                 </div>
 
-                <div style="border-top: 1px solid rgba(32,197,181,0.2); padding-top: 20px; margin-top: 20px;">
-                    <h3 style="color: #20c5b5; font-size: 14px; font-weight: 600; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px;">✏️ Edit User Data</h3>
-                    <div class="detail-item">
-                        <div class="detail-label">Company Name</div>
-                        <input id="editBrandName" type="text" value="${lead.brandName || ''}" style="padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(32,197,181,0.5); background: rgba(32,197,181,0.1); color: #fff; font-size: 14px; font-family: inherit; width: 100%;" />
+                <!-- Payment Section -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <h3>💰 Payment Management</h3>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Phone Number</div>
-                        <input id="editPhone" type="text" value="${lead.phone || ''}" style="padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(32,197,181,0.5); background: rgba(32,197,181,0.1); color: #fff; font-size: 14px; font-family: inherit; width: 100%;" />
+                    <div class="section-content">
+                        <div class="payment-summary">
+                            <div class="summary-item">
+                                <span class="label">Total Amount</span>
+                                <span class="value">${lead.totalAmount !== undefined ? `₹${lead.totalAmount}` : '—'}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Paid Amount</span>
+                                <span class="value">₹${lead.paidAmount || 0}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Remaining</span>
+                                <span class="value">${lead.remainingAmount !== null && lead.remainingAmount !== undefined ? `₹${lead.remainingAmount}` : '—'}</span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="button" onclick="openPaymentModal(${lead.id})" class="btn-primary">💳 Manage Payments</button>
+                            <button type="button" onclick="viewPaymentHistory(${lead.id})" class="btn-secondary">📊 View History</button>
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Email Address</div>
-                        <input id="editEmail" type="email" value="${lead.email || ''}" style="padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(32,197,181,0.5); background: rgba(32,197,181,0.1); color: #fff; font-size: 14px; font-family: inherit; width: 100%;" />
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Selected Plan</div>
-                        <select id="editPlan" style="padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(32,197,181,0.5); background: rgba(32,197,181,0.1); color: #fff; font-size: 14px; font-family: inherit; width: 100%;">
-                            <option value="">-- Choose a Plan --</option>
-                        </select>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Requirements</div>
-                        <textarea id="editRequirements" style="padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(32,197,181,0.5); background: rgba(32,197,181,0.1); color: #fff; font-size: 14px; font-family: inherit; width: 100%; min-height: 80px; resize: vertical;">${lead.requirements || ''}</textarea>
-                    </div>
-                    <button id="saveEditBtn" style="width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; margin-top: 10px;">💾 Save Changes</button>
                 </div>
-                
+
+                <!-- Plan Settings Section -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <h3>📅 Plan Configuration</h3>
+                    </div>
+                    <div class="section-content">
+                        <p class="section-note">Set plan dates — they will take effect immediately if the lead is approved</p>
+                        <div class="form-grid">
+                            <div class="form-item">
+                                <label>Plan Start Date</label>
+                                <input id="planStartDateInput" type="date" value="${planStartDate}" />
+                            </div>
+                            <div class="form-item">
+                                <label>Plan End Date</label>
+                                <input id="planEndDateInput" type="date" value="${planEndDate}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit User Data Section -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <h3>✏️ Edit Information</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-grid">
+                            <div class="form-item">
+                                <label>Company Name</label>
+                                <input id="editBrandName" type="text" value="${lead.brandName || ''}" />
+                            </div>
+                            <div class="form-item">
+                                <label>Phone Number</label>
+                                <input id="editPhone" type="text" value="${lead.phone || ''}" />
+                            </div>
+                            <div class="form-item">
+                                <label>Email Address</label>
+                                <input id="editEmail" type="email" value="${lead.email || ''}" />
+                            </div>
+                            <div class="form-item">
+                                <label>Selected Plan</label>
+                                <select id="editPlan">
+                                    <option value="">-- Choose a Plan --</option>
+                                </select>
+                            </div>
+                            <div class="form-item full-width">
+                                <label>Requirements</label>
+                                <textarea id="editRequirements">${lead.requirements || ''}</textarea>
+                            </div>
+                        </div>
+                        <button id="saveEditBtn" class="btn-save">💾 Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Credentials Section -->
                 ${lead.username && lead.password ? `
-                    <div style="border-top: 1px solid rgba(32,197,181,0.2); padding-top: 20px; margin-top: 20px; background: rgba(76, 175, 80, 0.1); padding: 15px; border-radius: 6px;">
-                        <h3 style="color: #4caf50; margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">✅ Login Credentials</h3>
-                        <div class="detail-item">
-                            <div class="detail-label">Username</div>
-                            <div class="detail-value" style="border-left-color: #4caf50; color: #4caf50; font-weight: 600;">${lead.username}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Password</div>
-                            <div class="detail-value" style="border-left-color: #4caf50; color: #4caf50; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                                <span>${lead.password}</span>
-                                <button id="copyPasswordBtn" style="background: rgba(76, 175, 80, 0.2); border: 1px solid rgba(76, 175, 80, 0.5); color: #4caf50; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600; white-space: nowrap;">📋 Copy</button>
+                <div class="detail-section credentials-section">
+                    <div class="section-header">
+                        <h3>🔐 Login Credentials</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="credentials-grid">
+                            <div class="credential-item">
+                                <label>Username</label>
+                                <span class="credential-value">${lead.username}</span>
+                            </div>
+                            <div class="credential-item">
+                                <label>Password</label>
+                                <div class="password-container">
+                                    <span class="credential-value">${lead.password}</span>
+                                    <button id="copyPasswordBtn" class="btn-copy">📋 Copy</button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
                 ` : ''}
-                
+
+                <!-- Generate Credentials Section -->
                 ${showCredsButton ? `
-                    <div id="credsSection" style="margin-top: 15px;">
+                <div class="detail-section">
+                    <div class="section-header">
+                        <h3>🔑 Generate Access</h3>
+                    </div>
+                    <div class="section-content">
                         <div id="credsButtonContainer">
-                            <button id="generateCredsBtn" style="width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">🔐 Generate Login Credentials</button>
+                            <button id="generateCredsBtn" class="btn-generate">🔐 Generate Login Credentials</button>
                         </div>
-                        <div id="credsFormContainer" style="display: none; margin-top: 15px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 6px; border: 1px solid rgba(102, 126, 234, 0.3);">
-                            <div style="margin-bottom: 12px;">
-                                <label style="display: block; color: #20c5b5; font-weight: 600; font-size: 13px; margin-bottom: 6px;">👤 Username</label>
-                                <input id="credsUsername" type="text" placeholder="Enter username" style="width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid rgba(32,197,181,0.5); background: rgba(32,197,181,0.1); color: #fff; font-size: 14px; font-family: inherit;" />
+                        <div id="credsFormContainer" class="credentials-form" style="display: none;">
+                            <div class="form-grid">
+                                <div class="form-item">
+                                    <label>👤 Username</label>
+                                    <input id="credsUsername" type="text" placeholder="Enter username" />
+                                </div>
+                                <div class="form-item">
+                                    <label>🔒 Password</label>
+                                    <input id="credsPassword" type="text" placeholder="Enter password" />
+                                </div>
                             </div>
-                            <div style="margin-bottom: 12px;">
-                                <label style="display: block; color: #20c5b5; font-weight: 600; font-size: 13px; margin-bottom: 6px;">🔒 Password</label>
-                                <input id="credsPassword" type="text" placeholder="Enter password" style="width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid rgba(32,197,181,0.5); background: rgba(32,197,181,0.1); color: #fff; font-size: 14px; font-family: inherit;" />
-                            </div>
-                            <div style="display: flex; gap: 8px;">
-                                <button id="submitCredsBtn" style="flex: 1; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; color: white; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">✅ Create Credentials</button>
-                                <button id="cancelCredsBtn" style="flex: 1; background: rgba(255, 100, 100, 0.2); border: 1px solid rgba(255, 100, 100, 0.5); color: #ff6464; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">❌ Cancel</button>
+                            <div class="form-actions">
+                                <button id="submitCredsBtn" class="btn-success">✅ Create Credentials</button>
+                                <button id="cancelCredsBtn" class="btn-cancel">❌ Cancel</button>
                             </div>
                         </div>
                     </div>
+                </div>
                 ` : ''}
                 
-                <div style="display:flex; gap:12px; margin-top: 15px; align-items:center;">
-                    <div style="flex:1; display:flex; gap:10px; align-items:center;">
-                        <select id="remarkDropdown" style="min-width:180px; height:44px; padding:0 14px; border-radius:8px; background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.03); color:#cfd8df; font-weight:700; display:inline-flex; align-items:center;">
-                            <option value="Pending" ${currentRemark === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
-                            <option value="Approved" ${currentRemark === 'Approved' ? 'selected' : ''}>✅ Approved</option>
-                            <option value="Rejected" ${currentRemark === 'Rejected' ? 'selected' : ''}>❌ Rejected</option>
-                        </select>
-                        <button id="updateRemarkBtn" style="height:44px; display:inline-flex; align-items:center; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); border: none; color: white; padding: 0 18px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px;">💾 Update Remark</button>
-                        <button onclick="event.stopPropagation(); document.getElementById('remarkDropdown').value='Approved'; updateLeadRemark(${lead.id});" style="height:44px; display:inline-flex; align-items:center; background: #20c5b5; color:#042; padding: 0 14px; border-radius:8px; border:none; font-weight:700;">✅ Approve</button>
-                        <button onclick="event.stopPropagation(); document.getElementById('remarkDropdown').value='Rejected'; updateLeadRemark(${lead.id});" style="height:44px; display:inline-flex; align-items:center; background: rgba(255,100,100,0.12); color:#ff6b6b; padding: 0 14px; border-radius:8px; border:1px solid rgba(255,100,100,0.15); font-weight:700;">❌ Reject</button>
+                <!-- Actions Section -->
+                <div class="detail-section actions-section">
+                    <div class="section-header">
+                        <h3>⚡ Quick Actions</h3>
                     </div>
-                    <div style="min-width:160px; display:flex; flex-direction:column; gap:8px; justify-content:center;">
-                        <button id="blacklistBtn" style="height:44px; background: linear-gradient(135deg,#b71c1c,#8b0000); border: none; color: white; padding: 0 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 13px;">🔒 ${lead && lead.blacklisted ? 'Remove from blacklist' : 'Blacklist user'}</button>
-                        <div id="blacklistInfo" style="color:#ffb3b3; font-size:12px; display: ${lead && lead.blacklisted ? 'block' : 'none'};">${lead && lead.blacklistReason ? escapeHtml(lead.blacklistReason) + '<br/>' : ''}${lead && lead.blacklistedAt ? 'Since: ' + new Date(lead.blacklistedAt).toLocaleString() : ''}</div>
+                    <div class="section-content">
+                        <!-- Status Management Card -->
+                        <div class="action-card">
+                            <div class="card-icon">📝</div>
+                            <div class="card-content">
+                                <h4>Status Management</h4>
+                                <p>Update lead status and approval state</p>
+                                <div class="status-controls">
+                                    <select id="remarkDropdown">
+                                        <option value="Pending" ${currentRemark === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+                                        <option value="Approved" ${currentRemark === 'Approved' ? 'selected' : ''}>✅ Approved</option>
+                                        <option value="Rejected" ${currentRemark === 'Rejected' ? 'selected' : ''}>❌ Rejected</option>
+                                    </select>
+                                    <button id="updateRemarkBtn" class="btn-update">💾 Update Status</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions Card -->
+                        <div class="action-card">
+                            <div class="card-icon">⚡</div>
+                            <div class="card-content">
+                                <h4>Quick Actions</h4>
+                                <p>Instant approve or reject decisions</p>
+                                <div class="quick-actions-grid">
+                                    <button onclick="event.stopPropagation(); document.getElementById('remarkDropdown').value='Approved'; updateLeadRemark(${lead.id});" class="btn-approve-large">
+                                        <span class="btn-icon">✅</span>
+                                        <span class="btn-text">Approve Lead</span>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); document.getElementById('remarkDropdown').value='Rejected'; updateLeadRemark(${lead.id});" class="btn-reject-large">
+                                        <span class="btn-icon">❌</span>
+                                        <span class="btn-text">Reject Lead</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Management Card -->
+                        <div class="action-card">
+                            <div class="card-icon">🛡️</div>
+                            <div class="card-content">
+                                <h4>User Management</h4>
+                                <p>Control user access and restrictions</p>
+                                <div class="management-actions">
+                                    <button id="blacklistBtn" class="btn-blacklist-large">
+                                        <span class="btn-icon">${lead && lead.blacklisted ? '🔓' : '🔒'}</span>
+                                        <span class="btn-text">${lead && lead.blacklisted ? 'Remove Blacklist' : 'Blacklist User'}</span>
+                                    </button>
+                                    <div id="blacklistInfo" class="blacklist-notice" style="display: ${lead && lead.blacklisted ? 'block' : 'none'};">
+                                        <div class="notice-icon">⚠️</div>
+                                        <div class="notice-content">
+                                            <strong>Blacklisted</strong>
+                                            ${lead && lead.blacklistReason ? '<br/>Reason: ' + escapeHtml(lead.blacklistReason) : ''}
+                                            ${lead && lead.blacklistedAt ? '<br/>Since: ' + new Date(lead.blacklistedAt).toLocaleString() : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment History Section -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <h3>📊 Payment History</h3>
+                    </div>
+                    <div class="section-content">
+                        <div id="autoPaymentHistoryContent"></div>
                     </div>
                 </div>
             `;
             
 
             modalBody.innerHTML = detailsHTML;
-            // --- Show payment history automatically below the payment summary ---
-            // Create a container for payment history if not present
-            let paymentHistoryDiv = document.createElement('div');
-            paymentHistoryDiv.id = 'autoPaymentHistoryList';
-            paymentHistoryDiv.style.marginTop = '18px';
-            paymentHistoryDiv.innerHTML = '<h4 style="color:#20c5b5; margin-bottom:8px;">Payment History</h4><div id="autoPaymentHistoryContent"></div>';
-            // Insert after payment summary (find payment summary by label)
-            const paymentSummary = modalBody.querySelector('.detail-label')?.parentElement?.parentElement;
-            if (paymentSummary) {
-                paymentSummary.parentElement.insertBefore(paymentHistoryDiv, paymentSummary.nextSibling);
-            } else {
-                modalBody.appendChild(paymentHistoryDiv);
-            }
             // Render payment history for this lead
             renderPaymentHistoryForDetails(lead);
         // Render payment history for details modal (separate from payment modal)
@@ -1552,14 +2344,14 @@
             if (!container) return;
             container.innerHTML = '';
             if (!lead || !Array.isArray(lead.payments) || lead.payments.length === 0) {
-                container.innerHTML = '<div style="color:#9fbfc6;">No payments recorded</div>';
+                container.innerHTML = '<div class="no-payments">No payment records found for this user.</div>';
                 return;
             }
             const rows = lead.payments.slice().reverse().map(p => {
                 const d = new Date(p.date).toLocaleDateString();
                 const txn = p.transactionId || p.txnId || p.id || '—';
                 const thumb = p.screenshotData ? `<div style="margin-left:12px;"><img src="${p.screenshotData}" style="max-width:110px; border-radius:6px; cursor:pointer; border:1px solid rgba(255,255,255,0.04);" onclick="window.open('${p.screenshotData}','_blank')" title="Open attachment"></div>` : '';
-                return `\n<div style="padding:10px; border-radius:6px; background:rgba(255,255,255,0.02); margin-bottom:8px;">\n  <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">\n    <div style="min-width:120px; color:#9fbfc6;">${d}<div style=\"color:#9fbfc6; font-size:11px; margin-top:6px;\">TXN: <span style=\"color:#cfd8df; font-weight:700;\">${txn}</span></div></div>\n    <div style="flex:1; color:#cfd8df; display:flex; gap:12px; align-items:center;">${p.note || ''} ${thumb}</div>\n    <div style="font-weight:700; color:#20c5b5;">₹${p.amount}</div>\n    <div style="min-width:110px; text-align:right; color:#9fbfc6;">${p.method}</div>\n  </div>\n</div>`;
+                return `\n<div class="payment-record">\n  <div class="payment-info">\n    <div class="payment-date">${d}</div>\n    <div class="payment-details">${p.note || ''} ${thumb}</div>\n    <div class="payment-method">${p.method}</div>\n  </div>\n  <div class="payment-amount">₹${p.amount}</div>\n  <div class="payment-txn">TXN: ${txn}</div>\n</div>`;
             }).join('');
             container.innerHTML = rows;
         }
@@ -1692,11 +2484,22 @@
             const method = document.getElementById('payment_method').value;
             const date = document.getElementById('payment_date').value;
             const note = document.getElementById('payment_note').value;
+            const txn = document.getElementById('payment_txn').value.trim();
+
+            // Validation: Transaction ID is mandatory for UPI and Bank Transfer
+            const mandatoryMethods = ['UPI', 'Bank Transfer'];
+            if (mandatoryMethods.includes(method) && !txn) {
+                alert(`Transaction ID is required for ${method}`);
+                return;
+            }
 
             const payload = {};
             if (total !== '') payload.totalAmount = total;
             const parsedAmount = (amount === '' || amount === null) ? '' : Number(amount);
-            if (parsedAmount !== '') payload.payment = { amount: parsedAmount, method, date, note };
+            if (parsedAmount !== '') {
+                payload.payment = { amount: parsedAmount, method, date, note };
+                if (txn) payload.payment.transactionId = txn;
+            }
 
             // helper to persist unsent payment locally so user doesn't lose data
             function savePending(paymentPayload) {

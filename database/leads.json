@@ -10,6 +10,50 @@
       "created_at": "2026-01-30T16:14:46.947Z",
       "remark": "Approved",
       "approvedBy": "promotewithus",
+      "blacklisted": false,
+      "username": "Promote",
+      "password": "ACDS@123",
+      "description": "need basic UI design",
+      "payments": [
+        {
+          "id": 1769838894623,
+          "transactionId": "TXNml1wdr1a8QTSFW",
+          "amount": 10000,
+          "method": "UPI",
+          "date": "2026-01-31",
+          "note": ""
+        },
+        {
+          "id": 1769840296276,
+          "transactionId": "AHGFcvjhg4356",
+          "amount": 5000,
+          "method": "UPI",
+          "date": "2026-01-31",
+          "note": ""
+        },
+        {
+          "id": 1769840304590,
+          "transactionId": "TXNml1x7yz2JDOXVI",
+          "amount": 5000,
+          "method": "Cash",
+          "date": "2026-01-31",
+          "note": ""
+        }
+      ],
+      "totalAmount": 20000,
+      "paidAmount": 20000,
+      "remainingAmount": 0
+    },
+    {
+      "id": 2,
+      "brand_name": "Promote",
+      "phone": "9922477583",
+      "email": "cmagrawal133@gmail.com",
+      "plan": "🥈 SILVER PLAN",
+      "requirements": "",
+      "created_at": "2026-01-31T05:37:26.268Z",
+      "remark": "Pending",
+      "approvedBy": "promotewithus",
       "blacklisted": false
     }
   ]

@@ -151,6 +151,51 @@
       },
       "read": false,
       "createdAt": "2026-01-30T16:28:48.957Z"
+    },
+    {
+      "id": 1769837891359,
+      "type": "profile_update",
+      "leadId": 2,
+      "brandName": "Promote",
+      "email": "cmagrawal133@gmail.com",
+      "details": {
+        "changes": [
+          "User blacklisted"
+        ],
+        "timestamp": "2026-01-31T05:38:11.359Z"
+      },
+      "read": false,
+      "createdAt": "2026-01-31T05:38:11.359Z"
+    },
+    {
+      "id": 1769838823778,
+      "type": "profile_update",
+      "leadId": 4,
+      "brandName": "55",
+      "email": "11@gmail.com",
+      "details": {
+        "changes": [
+          "Description Updated"
+        ],
+        "timestamp": "2026-01-31T05:53:43.776Z"
+      },
+      "read": false,
+      "createdAt": "2026-01-31T05:53:43.778Z"
+    },
+    {
+      "id": 1769840677255,
+      "type": "profile_update",
+      "leadId": 2,
+      "brandName": "Promote",
+      "email": "cmagrawal133@gmail.com",
+      "details": {
+        "changes": [
+          "User removed from blacklist"
+        ],
+        "timestamp": "2026-01-31T06:24:37.254Z"
+      },
+      "read": false,
+      "createdAt": "2026-01-31T06:24:37.255Z"
     }
   ]
 }

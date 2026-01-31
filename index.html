@@ -820,10 +820,6 @@
             <button onclick="openPlanModal()" type="button" class="start-now" style="display:inline-block; padding: 16px 45px; font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #20c5b5 0%, #0db8a1 100%); color: white; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; letter-spacing: 1px; text-transform: uppercase;">
               Start <span style="display: inline-block; animation: nowPulse 1s ease-in-out infinite; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.8);">Now</span> →
             </button>
-            <button class="learn-more-btn" onclick="openPlansTo()" style="padding: 16px 45px; font-size: 16px; font-weight: 700; background: transparent; color: #20c5b5; border: 2px solid #20c5b5; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; text-transform: uppercase; position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 8px;">
-              <span class="learn-more-text">Learn More</span>
-              <span class="learn-more-icon">→</span>
-            </button>
           </div>
 
           <!-- Statistics Section -->
@@ -2531,7 +2527,7 @@
       })();
     </script>
     <script>
-      // Global switchTab function for external button clicks (Learn More, etc.)
+      // Global switchTab function for external button clicks (Plans, etc.)
       function showTempBanner(msg) {
         let b = document.getElementById('tempBanner');
         if (!b) {
@@ -2608,9 +2604,9 @@
         }
       }
 
-      // Global handler: ensure any "Learn More" control opens Plans and closes the Start modal if visible
+      // Global handler: ensure any "Plans" control opens Plans and closes the Start modal if visible
       document.addEventListener('click', function (e) {
-        const target = e.target.closest('.learn-more-btn, .learn-more, [data-open-plans], a.learn-more-link');
+        const target = e.target.closest('.plans-btn, .learn-more, [data-open-plans], a.learn-more-link');
         if (!target) return;
         e.preventDefault();
         const planIdentifier = target.dataset.planId || target.dataset.plan || undefined;
