@@ -74,6 +74,29 @@
       "deliveryTime": "",
       "idealFor": "",
       "updated_at": "2026-01-22T15:51:36.532Z"
+    },
+    {
+      "id": 5,
+      "category": "Social Media",
+      "tier": "Gold",
+      "name": "🥇 GOLD PLAN – Brand Growth",
+      "price": 9999,
+      "originalRate": 14999,
+      "offerPercentage": 33,
+      "description": "",
+      "features": [
+        "✅ 15–20 Posts / Reels per month",
+        "✅ Advanced Graphic & Video Content",
+        "✅ Brand Theme (Colors, Fonts, Style)",
+        "✅ Content Calendar & Strategy",
+        "✅ Better Hashtag & Reach Strategy",
+        "✅ Lead-Focused Ads Setup",
+        "✅ Audience Targeting & Optimization",
+        "✅ Bi-Weekly Performance Report"
+      ],
+      "deliveryTime": "10-15 days",
+      "idealFor": "Best for: Growing brands & professionals",
+      "created_at": "2026-02-01T06:37:02.841Z"
     }
   ]
 }

@@ -552,6 +552,20 @@ app.put('/api/lead/:id', (req, res) => {
     }
 
     if (plan !== undefined && plan !== lead.plan) {
+      // Validate plan exists if a non-empty plan value is provided
+      if (plan && plan.trim() !== '') {
+        const plans = loadPlans();
+        const planExists = plans.some(p => 
+          p.name.toLowerCase() === plan.toLowerCase() || 
+          p.tier.toLowerCase() === plan.toLowerCase() ||
+          `${p.tier.toLowerCase()} plan` === plan.toLowerCase()
+        );
+        // Allow the plan to be saved even if not found in database (for flexibility)
+        // but log a warning
+        if (!planExists) {
+          console.warn(`Warning: Plan "${plan}" not found in plans database for lead ${leadId}`);
+        }
+      }
       updateDetails.push(`Plan: ${lead.plan || 'Not specified'} → ${plan || 'Not specified'}`);
       leads[leadIndex].plan = plan || lead.plan;
     }

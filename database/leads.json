@@ -11,7 +11,7 @@
       "remark": "Approved",
       "approvedBy": "promotewithus",
       "blacklisted": false,
-      "username": "Promote",
+      "username": "Deepeh",
       "password": "ACDS@123",
       "description": "need basic UI design",
       "payments": [
@@ -55,6 +55,21 @@
       "remark": "Pending",
       "approvedBy": "promotewithus",
       "blacklisted": false
+    },
+    {
+      "id": 3,
+      "brand_name": "ayesha",
+      "phone": "9579423935",
+      "email": "arshintamboli@gmail.com",
+      "plan": "SILVER PLAN",
+      "requirements": "",
+      "created_at": "2026-02-02T08:39:05.337Z",
+      "remark": "Approved",
+      "approvedBy": "promotewithus",
+      "planStartDate": "2026-02-02",
+      "planEndDate": "2026-02-24",
+      "username": "ayesha",
+      "password": "ACDS@123"
     }
   ]
 }

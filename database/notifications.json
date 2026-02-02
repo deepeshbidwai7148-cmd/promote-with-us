@@ -196,6 +196,22 @@
       },
       "read": false,
       "createdAt": "2026-01-31T06:24:37.255Z"
+    },
+    {
+      "id": 1770022569553,
+      "type": "profile_update",
+      "leadId": 3,
+      "brandName": "ayesha",
+      "email": "arshintamboli@gmail.com",
+      "details": {
+        "changes": [
+          "Plan Start Date: none → 2026-02-02",
+          "Plan End Date: none → 2026-02-24"
+        ],
+        "timestamp": "2026-02-02T08:56:09.553Z"
+      },
+      "read": false,
+      "createdAt": "2026-02-02T08:56:09.553Z"
     }
   ]
 }
