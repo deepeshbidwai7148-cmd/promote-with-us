@@ -1160,7 +1160,9 @@ app.listen(PORT, () => {
 // Generic error handler: if an error bubbles up, return JSON for API routes
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
-  if (rknahtsnakujhbuiklybhfvjkmynl, nfurmsivmrynwiamdydbapsmeysnsd
-  // For);
-}); non-API routes, delegate to default error handler
-  next(err
+  if (req.path && req.path.startsWith('/api')) {
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+  // For non-API routes, delegate to default error handler
+  next(err);
+});
