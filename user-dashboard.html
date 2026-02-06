@@ -538,6 +538,171 @@
                 width: 100%;
             }
         }
+
+        /* Analytics Section Styles */
+        .analytics-section {
+            margin-bottom: 40px;
+        }
+
+        .analytics-title {
+            color: #20c5b5;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(32, 197, 181, 0.3);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .analytics-card {
+            background: linear-gradient(135deg, #0a1929 0%, #0f2847 100%);
+            border: 1px solid rgba(32, 197, 181, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(32, 197, 181, 0.7);
+            box-shadow: 0 15px 40px rgba(32, 197, 181, 0.2);
+        }
+
+        .analytics-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #20c5b5 0%, #0db8a1 100%);
+        }
+
+        .chart-title {
+            color: #20c5b5;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Heatmap Styles */
+        .heatmap-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .heatmap-container {
+            position: relative;
+            height: auto;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0a1929 0%, #0f2847 100%);
+            border: 1px solid rgba(32, 197, 181, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: 50px repeat(24, 1fr);
+            grid-template-rows: 30px repeat(7, 1fr);
+            gap: 2px;
+            width: 100%;
+            height: 250px;
+        }
+
+        .heatmap-cell {
+            background: rgba(32, 197, 181, 0.1);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(32, 197, 181, 0.5);
+        }
+
+        .heatmap-cell.intensity-1 { background: rgba(32, 197, 181, 0.2); }
+        .heatmap-cell.intensity-2 { background: rgba(32, 197, 181, 0.4); }
+        .heatmap-cell.intensity-3 { background: rgba(32, 197, 181, 0.6); }
+        .heatmap-cell.intensity-4 { background: rgba(32, 197, 181, 0.8); }
+        .heatmap-cell.intensity-5 { background: rgba(32, 197, 181, 1.0); }
+
+        .heatmap-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #9fbfc6;
+            font-weight: 600;
+        }
+
+        .heatmap-day-label {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 5px;
+            font-size: 10px;
+            color: #9fbfc6;
+            font-weight: 600;
+        }
+
+        .heatmap-tooltip {
+            position: absolute;
+            background: rgba(15, 22, 48, 0.9);
+            color: #cfd8df;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(32, 197, 181, 0.3);
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .heatmap-tooltip.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .analytics-title {
+                font-size: 20px;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+            
+            .heatmap-container {
+                height: 200px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -589,6 +754,34 @@
 
         <!-- Content Section -->
         <div class="content">
+            <!-- Analytics Section -->
+            <div class="analytics-section">
+                <h3 class="analytics-title">📊 Analytics Overview</h3>
+                <div class="analytics-grid">
+                    <!-- Impressions & Reach Chart -->
+                    <div class="analytics-card">
+                        <h4 class="chart-title">Impressions & Reach</h4>
+                        <div class="chart-container">
+                            <canvas id="impressionsReachChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Followers Chart -->
+                    <div class="analytics-card">
+                        <h4 class="chart-title">Followers Growth</h4>
+                        <div class="chart-container">
+                            <canvas id="followersChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- Heatmap Section -->
+                <div class="heatmap-section">
+                    <h4 class="chart-title">Activity Heatmap (Last 7 Days)</h4>
+                    <div class="heatmap-container">
+                        <div id="activityHeatmap" class="heatmap-grid"></div>
+                    </div>
+                </div>
+            </div>
+            
             <div id="plansContainer" class="loading-text">Loading your plans...</div>
         </div>
     </div>
@@ -1767,6 +1960,301 @@
                 alert(`❌ Error: ${error.message}`);
             }
         }
+
+        // Initialize Analytics Charts
+        function initializeAnalyticsCharts() {
+            console.log('Initializing analytics charts...');
+            const impressionsCanvas = document.getElementById('impressionsReachChart');
+            const followersCanvas = document.getElementById('followersChart');
+            
+            if (!impressionsCanvas) {
+                console.error('Impressions chart canvas not found');
+                return;
+            }
+            if (!followersCanvas) {
+                console.error('Followers chart canvas not found');
+                return;
+            }
+            
+            console.log('Canvas elements found, creating charts...');
+            // Impressions & Reach Chart
+            const impressionsCtx = document.getElementById('impressionsReachChart').getContext('2d');
+            const impressionsGradient = impressionsCtx.createLinearGradient(0, 0, 0, 400);
+            impressionsGradient.addColorStop(0, 'rgba(32, 197, 181, 0.8)');
+            impressionsGradient.addColorStop(1, 'rgba(32, 197, 181, 0.1)');
+            
+            const reachGradient = impressionsCtx.createLinearGradient(0, 0, 0, 400);
+            reachGradient.addColorStop(0, 'rgba(246, 166, 35, 0.8)');
+            reachGradient.addColorStop(1, 'rgba(246, 166, 35, 0.1)');
+
+            new Chart(impressionsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Impressions',
+                        data: [12000, 19000, 15000, 25000, 22000, 30000],
+                        borderColor: '#20c5b5',
+                        backgroundColor: impressionsGradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#20c5b5',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }, {
+                        label: 'Reach',
+                        data: [8000, 12000, 10000, 18000, 15000, 22000],
+                        borderColor: '#f6a623',
+                        backgroundColor: reachGradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#f6a623',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#cfd8df',
+                                font: {
+                                    size: 14,
+                                    weight: '600'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 22, 48, 0.9)',
+                            titleColor: '#20c5b5',
+                            bodyColor: '#cfd8df',
+                            borderColor: 'rgba(32, 197, 181, 0.3)',
+                            borderWidth: 1,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(32, 197, 181, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9fbfc6',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(32, 197, 181, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9fbfc6',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+
+            // Followers Chart
+            const followersCtx = document.getElementById('followersChart').getContext('2d');
+            const followersGradient = followersCtx.createLinearGradient(0, 0, 0, 400);
+            followersGradient.addColorStop(0, 'rgba(245, 87, 108, 0.8)');
+            followersGradient.addColorStop(1, 'rgba(245, 87, 108, 0.1)');
+
+            new Chart(followersCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                    datasets: [{
+                        label: 'New Followers',
+                        data: [150, 230, 180, 320, 280, 400],
+                        backgroundColor: followersGradient,
+                        borderColor: '#f5576c',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#cfd8df',
+                                font: {
+                                    size: 14,
+                                    weight: '600'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 22, 48, 0.9)',
+                            titleColor: '#f5576c',
+                            bodyColor: '#cfd8df',
+                            borderColor: 'rgba(245, 87, 108, 0.3)',
+                            borderWidth: 1,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(245, 87, 108, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9fbfc6',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(245, 87, 108, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9fbfc6',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart',
+                        delay: function(context) {
+                            return context.dataIndex * 200;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Activity Heatmap
+        function initializeHeatmap() {
+            console.log('Initializing activity heatmap...');
+            const heatmapContainer = document.getElementById('activityHeatmap');
+            
+            if (!heatmapContainer) {
+                console.error('Heatmap container not found');
+                return;
+            }
+            
+            console.log('Heatmap container found, creating heatmap grid...');
+            
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const hours = Array.from({length: 24}, (_, i) => i);
+            
+            // Clear existing content
+            heatmapContainer.innerHTML = '';
+            
+            // Create tooltip element
+            const tooltip = document.createElement('div');
+            tooltip.className = 'heatmap-tooltip';
+            document.body.appendChild(tooltip);
+            
+            // Create grid
+            // Header row with hour labels
+            const headerRow = document.createElement('div');
+            headerRow.style.gridColumn = '1 / -1';
+            headerRow.style.gridRow = '1';
+            headerRow.style.display = 'contents';
+            
+            // Empty cell for day labels
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'heatmap-header';
+            emptyCell.textContent = '';
+            headerRow.appendChild(emptyCell);
+            
+            // Hour headers
+            hours.forEach(hour => {
+                const hourCell = document.createElement('div');
+                hourCell.className = 'heatmap-header';
+                hourCell.textContent = hour.toString().padStart(2, '0');
+                headerRow.appendChild(hourCell);
+            });
+            
+            heatmapContainer.appendChild(headerRow);
+            
+            // Data rows
+            days.forEach((day, dayIndex) => {
+                // Day label
+                const dayLabel = document.createElement('div');
+                dayLabel.className = 'heatmap-day-label';
+                dayLabel.textContent = day;
+                dayLabel.style.gridColumn = '1';
+                dayLabel.style.gridRow = `${dayIndex + 2}`;
+                heatmapContainer.appendChild(dayLabel);
+                
+                // Activity cells
+                hours.forEach((hour, hourIndex) => {
+                    const activity = Math.floor(Math.random() * 100);
+                    const intensity = Math.floor(activity / 20) + 1; // 1-5 levels
+                    
+                    const cell = document.createElement('div');
+                    cell.className = `heatmap-cell intensity-${Math.min(intensity, 5)}`;
+                    cell.style.gridColumn = `${hourIndex + 2}`;
+                    cell.style.gridRow = `${dayIndex + 2}`;
+                    cell.dataset.day = day;
+                    cell.dataset.hour = hour;
+                    cell.dataset.activity = activity;
+                    
+                    // Hover effects
+                    cell.addEventListener('mouseenter', (e) => {
+                        tooltip.textContent = `${day} ${hour}:00 - Activity: ${activity}`;
+                        tooltip.classList.add('show');
+                        tooltip.style.left = `${e.pageX + 10}px`;
+                        tooltip.style.top = `${e.pageY - 30}px`;
+                    });
+                    
+                    cell.addEventListener('mouseleave', () => {
+                        tooltip.classList.remove('show');
+                    });
+                    
+                    cell.addEventListener('mousemove', (e) => {
+                        tooltip.style.left = `${e.pageX + 10}px`;
+                        tooltip.style.top = `${e.pageY - 30}px`;
+                    });
+                    
+                    heatmapContainer.appendChild(cell);
+                });
+            });
+            
+            console.log('Heatmap grid created successfully');
+        }
+
+        // Call initializeAnalyticsCharts when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Existing code...
+            loadUserPlans();
+            // Delay chart initialization to ensure DOM is ready
+            setTimeout(() => {
+                initializeAnalyticsCharts();
+                initializeHeatmap();
+            }, 1000);
+        });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>

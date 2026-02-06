@@ -210,7 +210,7 @@
         ],
         "timestamp": "2026-02-02T08:56:09.553Z"
       },
-      "read": false,
+      "read": true,
       "createdAt": "2026-02-02T08:56:09.553Z"
     }
   ]
